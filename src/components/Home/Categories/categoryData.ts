@@ -1,43 +1,33 @@
 const data = [
   {
-    title: "Televisions",
+    title: "VW-T5 Parts",
     id: 1,
-    img: "/images/categories/categories-01.png",
+    img: "/images/categories/VW-T52.png",
   },
   {
-    title: "Laptop & PC",
+    title: "VW-T6.1 Parts",
     id: 2,
-    img: "/images/categories/categories-02.png",
+    img: "/images/categories/VW-T6.png",
   },
   {
-    title: "Mobile & Tablets",
+    title: "VW-T7 Parts",
     id: 3,
-    img: "/images/categories/categories-03.png",
+    img: "/images/categories/VW-T7.png",
   },
   {
-    title: "Games & Videos",
+    title: "Universal Camper Parts",
     id: 4,
-    img: "/images/categories/categories-04.png",
+    img: "/images/categories/universal.png",
   },
   {
-    title: "Home Appliances",
+    title: "Audio Upgrades",
     id: 5,
-    img: "/images/categories/categories-05.png",
+    img: "/images/categories/audio.png",
   },
   {
-    title: "Health & Sports",
+    title: "Detailing",
     id: 6,
-    img: "/images/categories/categories-06.png",
-  },
-  {
-    title: "Watches",
-    id: 7,
-    img: "/images/categories/categories-07.png",
-  },
-  {
-    title: "Televisions",
-    id: 8,
-    img: "/images/categories/categories-04.png",
+    img: "/images/categories/detailing.png",
   },
 ];
 

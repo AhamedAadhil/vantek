@@ -115,7 +115,7 @@ const QuickViewModal = () => {
 
                 <div className="relative z-1 overflow-hidden flex items-center justify-center w-full sm:min-h-[508px] bg-gray-1 rounded-lg border border-gray-3">
                   <div>
-                    <button
+                    {/* <button
                       onClick={handlePreviewSlider}
                       aria-label="button for zoom"
                       className="gallery__Image w-10 h-10 rounded-[5px] bg-white shadow-1 flex items-center justify-center ease-out duration-200 text-dark hover:text-blue absolute top-4 lg:top-8 right-4 lg:right-8 z-50"
@@ -135,7 +135,7 @@ const QuickViewModal = () => {
                           fill=""
                         />
                       </svg>
-                    </button>
+                    </button> */}
 
                     <Image
                       src={product?.imgs?.previews?.[activePreview]}
@@ -303,8 +303,7 @@ const QuickViewModal = () => {
               </div>
 
               <p>
-                Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has.
+                {product.description}
               </p>
 
               <div className="flex flex-wrap justify-between gap-5 mt-6 mb-7.5">
