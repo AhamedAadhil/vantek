@@ -32,7 +32,7 @@ const Footer = () => {
                     />
                   </svg>
                 </span>
-                685 Market Street,Las Vegas, LA 95820,United States.
+                685 Market Street,Ontario,95820,Canada.
               </li>
 
               <li>
@@ -81,7 +81,7 @@ const Footer = () => {
                       fill="#3C50E0"
                     />
                   </svg>
-                  support@example.com
+                  support@vantek.com
                 </a>
               </li>
             </ul>
@@ -203,27 +203,27 @@ const Footer = () => {
 
             <ul className="flex flex-col gap-3.5">
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/my-account">
                   My Account
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/signin">
                   Login / Register
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/cart">
                   Cart
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/wishlist">
                   Wishlist
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/shop-with-sidebar">
                   Shop
                 </a>
               </li>
@@ -257,7 +257,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="#">
+                <a className="ease-out duration-200 hover:text-blue" href="/contact">
                   Contact
                 </a>
               </li>
@@ -270,7 +270,7 @@ const Footer = () => {
             </h2>
 
             <p className="lg:text-right text-custom-sm mb-4">
-              Save $3 With App & New User only
+              Mobile Apps are Coming Soon
             </p>
 
             <ul className="flex flex-col lg:items-end gap-3">
@@ -338,7 +338,7 @@ const Footer = () => {
         <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-5 flex-wrap items-center justify-between">
             <p className="text-dark font-medium">
-              &copy; {year}. All rights reserved by PimjoLabs.
+              &copy; {year}. All rights reserved by VANTEK. Developed by A2 Labz
             </p>
 
             <div className="flex flex-wrap items-center gap-4">

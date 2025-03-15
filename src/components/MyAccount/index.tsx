@@ -39,7 +39,7 @@ const MyAccount = () => {
 
                   <div>
                     <p className="font-medium text-dark mb-0.5">
-                      James Septimus
+                      Aadhil Shihabdeen
                     </p>
                     <p className="text-custom-xs">Member Since Sep 2020</p>
                   </div>

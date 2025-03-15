@@ -7,7 +7,6 @@ import BestSeller from "./BestSeller";
 import CounDown from "./Countdown";
 import Testimonials from "./Testimonials";
 import Newsletter from "../Common/Newsletter";
-
 const Home = () => {
   return (
     <main>
