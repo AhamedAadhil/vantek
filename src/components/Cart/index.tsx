@@ -61,7 +61,7 @@ const Cart = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11 mt-9">
-              <Discount />
+              {/* <Discount /> */}
               <OrderSummary />
             </div>
           </div>
