@@ -3,16 +3,19 @@ import React, { useState } from 'react';
 import { LucideUpload, LucideCalendar, Clock, Calendar } from 'lucide-react';
 import ToggleSwitch from '@/components/Admin/ToggleSwitch';
 
-const AddProduct = () => {
-  const [productName, setProductName] = useState('');
-  const [productDescription, setProductDescription] = useState('');
-  const [publishDate, setPublishDate] = useState('');
+const EditProduct = () => {
+  const [productName, setProductName] = useState('Grilled Bed');
+  const [ActPrice, setActPrice] = useState('48.65');
+  const [DealerPrice, setDealerPrice] = useState('30.65');
+  const [Disc, setDisc] = useState('25%');
+  const [productDescription, setProductDescription] = useState('Steel Comfortable Bed For VW-T5');
+  const [publishDate, setPublishDate] = useState('2025-12-05');
   const [topSelling, setTopSelling] = useState(false);
   const [featured, setFeatured] = useState(false);
 
   return (
     <div className= "m-4 p-6 bg-dark min-h-screen text-white rounded-lg">
-      <h2 className="text-2xl font-semibold">Add Products</h2>
+      <h2 className="text-2xl font-semibold">Edit Products Details</h2>
       <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="space-y-4">
@@ -73,9 +76,9 @@ const AddProduct = () => {
         {/* Right Column */}
         <div className="space-y-4 pt-7">
           <div className="grid grid-cols-3 gap-4">
-            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Actual Price" />
-            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Dealer Price" />
-            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Discount in %" />
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Actual Price" value={ActPrice} onChange={(e) => setActPrice(e.target.value)}/>
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Dealer Price" value={DealerPrice} onChange={(e) => setDealerPrice(e.target.value)}/>
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Discount in %" value={Disc} onChange={(e) => setDisc(e.target.value)}/>
           </div>
 
           <div>
@@ -141,13 +144,13 @@ const AddProduct = () => {
       
 
       <button className="ml-6 mt-6 bg-green-light-3 hover:bg-blue-light-2 text-dark font-semibold px-6 py-2 border-hidden rounded">
-        SAVE PRODUCT
+        UPDATE PRODUCT
       </button>
       <button className="ml-6 mt-6 bg-red-light-3 hover:bg-red-dark text-dark hover:text-white font-semibold px-6 py-2 border-hidden rounded">
-        CLEAR
+        DELETE PRODUCT
       </button>
     </div>
   );
 };
 
-export default AddProduct;
+export default EditProduct;

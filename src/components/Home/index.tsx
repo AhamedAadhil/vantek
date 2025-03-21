@@ -10,11 +10,17 @@ import Newsletter from "../Common/Newsletter";
 import Orders from "../Admin/Orders";
 import Customers from "../Admin/Customers";
 import AddProduct from "../Admin/AddProduct";
+import EditProduct from "../Admin/EditProduct";
+import UserDetails from "../Admin/UserDetails";
+import ProductList from "../Admin/Products";
 const Home = () => {
   return (
     <main>
       <Hero />
+      <ProductList />
+      <UserDetails />
       <AddProduct />
+      <EditProduct />
       <Orders />
       <Customers />
       <Categories />
