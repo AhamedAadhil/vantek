@@ -88,6 +88,15 @@ const config: Config = {
         "light-2": "#FEF3C7",
         "light-4": "#FFFBEB",
       },
+      purple: {
+        DEFAULT: "#7C3AED",
+        dark: "#5B21B6",
+        "dark-2": "#4C1D95",
+        light: "#DDD6FE",
+        "light-1": "#C4B5FD",
+        "light-2": "#A78BFA",
+        "light-4": "#8B5CF6",
+      },
       teal: {
         DEFAULT: "#02AAA4",
         dark: "#06A09B",

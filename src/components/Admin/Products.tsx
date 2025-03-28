@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Eye, Pencil, Trash2 } from 'lucide-react';
+import { Search, Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
 
 const productData = [
@@ -59,6 +59,8 @@ const ProductList = () => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
+
+
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
     const [selectAll, setSelectAll] = useState(false);
 
@@ -88,19 +90,35 @@ const ProductList = () => {
 
   return (
     <div className="m-4 p-6 bg-dark text-white rounded-lg">
-      <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-4">
+        {/* Left-aligned Title */}
         <h2 className="text-lg font-bold">All Products</h2>
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search customers..."
-            className="bg-dark text-white border border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-          <Search className="absolute left-3 top-2 text-gray-400" size={18} />
+
+        {/* Right-aligned Search and Button */}
+        <div className="flex items-center space-x-4">
+            {/* Search Input */}
+            <div className="relative">
+            <input
+                type="text"
+                placeholder="Search customers..."
+                className="bg-dark-2 text-white border-hidden border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+            <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+            </div>
+            
+            {/* ADD PRODUCT Button */}
+            <button
+            className="bg-blue-light hover:bg-blue-dark text-white font-semibold px-6 py-2 border-hidden rounded flex items-center justify-center"
+            disabled={selectedProducts.length === 0}
+            >
+            <Plus className="mr-2" /> {/* Lucide Plus icon */}
+            ADD PRODUCT
+            </button>
+            
         </div>
-      </div>
+        </div>
 
       <table className="w-full text-left border-collapse">
         <thead className='border-b'>
@@ -174,7 +192,9 @@ const ProductList = () => {
             <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)} className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50">Next</button>
         </div>
       </div>
+      
     </div>
+    
   );
 };
 

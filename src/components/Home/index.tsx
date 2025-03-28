@@ -13,16 +13,20 @@ import AddProduct from "../Admin/AddProduct";
 import EditProduct from "../Admin/EditProduct";
 import UserDetails from "../Admin/UserDetails";
 import ProductList from "../Admin/Products";
+import AdminOrderDetails from "../Admin/AdminOrderDetails";
+import Dashboard from "../Admin/dashboard";
 const Home = () => {
   return (
     <main>
       <Hero />
-      <ProductList />
+      <Dashboard />
+      <AdminOrderDetails/>
       <UserDetails />
+      <Customers />
+      <ProductList />
       <AddProduct />
       <EditProduct />
       <Orders />
-      <Customers />
       <Categories />
       <NewArrival />
       <PromoBanner />

@@ -6,7 +6,7 @@ export function middleware(req: NextRequest) {
 
   // Redirect unauthenticated users trying to access admin pages
   if (req.nextUrl.pathname.startsWith("/signin") && !isAdminLoggedIn) {
-    return NextResponse.redirect(new URL("/home", req.url));
+    return NextResponse.redirect(new URL("/signin", req.url));
   }
 
   return NextResponse.next();  // Allow request to continue
