@@ -1,6 +1,8 @@
 'use client';
 
 import { ShoppingBag } from 'lucide-react';
+import { PieChart } from 'recharts';
+import RevenueBreakdownChart from './RevenueBreakdownChart';
 
 const Dashboard = () => {
   return (
@@ -73,7 +75,7 @@ const Dashboard = () => {
             </div>
         </div>
         <div className="col-span-3 row-span-2 col-start-1 row-start-2">4</div>
-        <div className="col-span-3 row-span-3 col-start-4 row-start-1">5</div>
+        <div className="col-span-3 row-span-3 col-start-4 row-start-1"><RevenueBreakdownChart/></div>
         <div className="col-span-2 row-span-2 row-start-4">6</div>
         <div className="col-span-2 row-span-2 col-start-3 row-start-4">7</div>
         <div className="col-span-2 row-span-2 col-start-5 row-start-4">8</div>
