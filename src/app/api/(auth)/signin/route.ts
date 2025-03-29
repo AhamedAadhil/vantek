@@ -49,9 +49,11 @@ export const POST = async (req: Request) => {
       { expiresIn: "7d" }
     );
 
+    const { password: _, ...rest } = user._doc;
+
     // Set JWT in HTTP-only cookie
     const response = NextResponse.json(
-      { message: "Login successful", success: true },
+      { message: "Login successful", success: true,user:rest,token },
       { status: 200 }
     );
 

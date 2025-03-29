@@ -49,7 +49,7 @@ export const POST = async (req: Request) => {
     const { password: _, ...user } = newUser._doc;
 
     const response = NextResponse.json(
-      { message: "Account created", data: user, success: true },
+      { message: "Account created", user,token, success: true },
       { status: 201 }
     );
 

@@ -4,8 +4,15 @@ import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import AddressModal from "./AddressModal";
 import Orders from "../Orders";
+import { useRouter } from "next/navigation";
+import { useSelector,useDispatch } from "react-redux";
+import { RootState } from "@/redux/store";
+import { logout } from "@/redux/features/authSlice";
 
 const MyAccount = () => {
+  const router = useRouter()
+  const user = useSelector((state:RootState)=>state.auth.user)
+  const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("dashboard");
   const [addressModal, setAddressModal] = useState(false);
 
@@ -16,6 +23,11 @@ const MyAccount = () => {
   const closeAddressModal = () => {
     setAddressModal(false);
   };
+
+  const handleLogout = ()=>{
+dispatch(logout())
+router.replace("/")
+  }
 
   return (
     <>
@@ -39,9 +51,9 @@ const MyAccount = () => {
 
                   <div>
                     <p className="font-medium text-dark mb-0.5">
-                      Aadhil Shihabdeen
+                      {user?.name}
                     </p>
-                    <p className="text-custom-xs">Member Since Sep 2020</p>
+                    <p className="text-custom-xs">`Member Since {user?.createdAt.split("T")[0]}`</p>
                   </div>
                 </div>
 
@@ -219,7 +231,7 @@ const MyAccount = () => {
                     </button>
 
                     <button
-                      onClick={() => setActiveTab("logout")}
+                      onClick={() => handleLogout()}
                       className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
                         activeTab === "logout"
                           ? "text-white bg-blue"
