@@ -80,6 +80,11 @@ const productSchema = new Schema(
       required: true,
       default: false,
     },
+    isVisible: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
     stock: {
       type: Number,
       required: true,
