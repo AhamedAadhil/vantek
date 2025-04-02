@@ -1,6 +1,35 @@
-import mongoose, { model, models, Schema } from "mongoose";
+import mongoose, { model, models, Schema, Document } from "mongoose";
 
-const userSchema = new Schema(
+// Define Address Type
+interface IAddress {
+  phone?: string;
+  houseNumber?: string;
+  street?: string;
+  city?: string;
+  district?: string;
+  zipCode?: string;
+  country?: string;
+}
+
+// Define IUser Interface
+export interface IUser extends Document {
+  email: string;
+  password: string;
+  name: string;
+  role: "user" | "admin";
+  isActive: boolean;
+  address: IAddress[];
+  cart: mongoose.Types.ObjectId[];
+  wishlist: mongoose.Types.ObjectId[];
+  orders: mongoose.Types.ObjectId[];
+  reviews: mongoose.Types.ObjectId[];
+  resetToken?: string;
+  expiresAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const userSchema = new Schema<IUser>(
   {
     email: {
       type: String,
@@ -69,5 +98,5 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
-const User = models.User || model("User", userSchema);
+const User = models.User || model<IUser>("User", userSchema);
 export default User;

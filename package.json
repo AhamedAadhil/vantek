@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "seedAdmin": "ts-node --loader ts-node/esm src/scripts/seedAdmin.ts",
     "lint": "next lint"
   },
   "dependencies": {
