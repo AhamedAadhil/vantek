@@ -28,7 +28,7 @@ const UserDetails = () => {
   return (
     <div className="bg-dark text-white m-4 p-5 rounded-lg shadow-md max-w-md">
       <h2 className="text-lg font-semibold border-hidden border-gray-700 pb-2 mb-4 flex items-center">
-        <span className="border-l-4 border-purple-500 pl-2">User Details</span>
+        <span className="border-l-4 border-l-purple-light-2 pl-2">User Details</span>
       </h2>
       <hr className="mb-4"/>
       

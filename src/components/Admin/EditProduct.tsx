@@ -80,6 +80,8 @@ const EditProduct = () => {
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Dealer Price" value={DealerPrice} onChange={(e) => setDealerPrice(e.target.value)}/>
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Discount in %" value={Disc} onChange={(e) => setDisc(e.target.value)}/>
           </div>
+            <label className="block">Stocks :</label>
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Available Stocks" />
 
           <div>
             <label className="block mb-1">Product Images</label>
@@ -116,9 +118,9 @@ const EditProduct = () => {
             </div>
             <div className='flex flex-col'>
                 <div></div>
-                <div className='mt-8'>
+                <div className='mt-8 text-white'>
 
-                <ToggleSwitch 
+                <ToggleSwitch
                     label="Top Selling Product" 
                     enabled={topSelling}
                     setEnabled={setTopSelling}

@@ -35,7 +35,7 @@ const orderDetails = {
   items: [
     {
       id: 1,
-      name: "Orange Watch Series 4",
+      name: "Sorento Turbo",
       size: "44mm",
       color: "Metallic Black",
       trackingNo: "SPK1218153635",
@@ -46,9 +46,9 @@ const orderDetails = {
     },
     {
       id: 2,
-      name: "DapZem & Co Sweat Shirt",
-      size: "Large",
-      color: "Grey",
+      name: "KIA Sorento break lights",
+      size: "Unique",
+      color: "Red",
       trackingNo: "SPK3789423789",
       price: "$499",
       quantity: 2,
@@ -85,10 +85,10 @@ const AdminOrderDetails = () => {
     <div className="col-span-2 row-span-5 p-4">
     <div className="bg-dark text-white p-6 rounded-lg">
       <div className="flex justify-between items-center border-b border-gray-700 pb-3">
-        <h2 className="text-lg font-bold">
+        <h2 className="border-l-4 border-l-blue-600 pl-2 text-lg font-bold">
           Order No - <span className="text-green-light-3">#{orderDetails.orderNo}</span>
         </h2>
-        <span className="text-sm bg-purple-700 text-green-light-3 px-3 py-1 rounded">
+        <span className="text-sm bg-purple-300 text-green-900 px-3 py-1 rounded">
           Estimated delivery : {orderDetails.estimatedDelivery}
         </span>
       </div>
@@ -153,7 +153,7 @@ const AdminOrderDetails = () => {
       </div>
 
       <div className="flex justify-end space-x-3 mt-6">
-        <button className="flex items-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded">
+        <button className="flex items-center bg-teal-700 hover:bg-teal-900 text-white px-4 py-2 rounded">
           <Printer size={16} className="mr-2" /> Print
         </button>
         <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
@@ -167,7 +167,7 @@ const AdminOrderDetails = () => {
       
         <div className="bg-dark text-white p-5 rounded-lg shadow-md max-w-md">
           <h2 className="text-lg font-semibold border-hidden border-gray-700 pb-2 mb-4 flex items-center">
-            <span className="border-l-4 border-purple-500 pl-2">User Details</span>
+            <span className="border-l-4 border-purple-light-2 pl-2">User Details</span>
           </h2>
           <hr className="mb-4"/>
           
@@ -222,7 +222,8 @@ const AdminOrderDetails = () => {
 
     <div className="col-span-2 row-span-5 col-start-5">
         <div className="bg-dark text-white mt-4 p-6 rounded-lg shadow-md w-full max-w-md">
-          <h2 className="text-lg font-semibold border-b border-gray-700 pb-2 mb-4">Order Tracking <span className="text-green-light-3">#SPK1218153635</span></h2>
+          <h2 className="border-l-4 border-l-purple-light-2 pl-2 text-lg font-semibold pb-2 mb-4">Order Tracking <span className="text-green-light-3">#SPK1218153635</span></h2>
+          <hr className='pt-2 pb-2'/>
           <div className="space-y-4">
             {trackingSteps.map((step, index) => (
               <div key={index} className="flex items-start space-x-3">

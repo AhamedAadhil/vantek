@@ -1,81 +1,76 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
-import { 
-  SmartphoneIcon, 
-  TabletIcon, 
-  MonitorIcon, 
-  MoreHorizontalIcon 
-} from 'lucide-react';
+import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-// Sample revenue data by device category
-const deviceData = [
-  { name: 'Mobile', value: 66.3, color: '#10b981', icon: SmartphoneIcon },
-  { name: 'Tablet', value: 17.68, color: '#f59e0b', icon: TabletIcon },
-  { name: 'Desktop', value: 10.5, color: '#3b82f6', icon: MonitorIcon },
-  { name: 'Others', value: 5.16, color: '#6366f1', icon: MoreHorizontalIcon }
-];
+interface DeviceData {
+  name: string;
+  value: number;
+  color: string;
+  percentage: string;
+}
 
-const RevenueBreakdownChart: React.FC = () => {
+const SalesByCatergoryChart: React.FC = () => {
+  const deviceData: DeviceData[] = [
+    { name: 'VW-T5', value: 2825, color: '#2DD4BF', percentage: '68.3%' },
+    { name: 'VW-T6.1', value: 731, color: '#F59E0B', percentage: '17.68%' },
+    { name: 'VW-T7', value: 434, color: '#38BDF8', percentage: '10.5%' },
+    { name: 'Other Parts', value: 146, color: '#8B5CF6', percentage: '3.52%' },
+  ];
+
   const totalSessions = deviceData.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <div className="bg-dark-3 rounded-lg p-6 shadow-lg">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-white text-lg font-semibold">Sessions By Device</h2>
-        <button className="text-white hover:text-white text-sm">View All</button>
+    <div className="bg-gray-7 rounded-lg overflow-hidden">
+      {/* Header */}
+      <div className="flex justify-between items-center p-4 border-b border-gray-800">
+        <div className="flex items-center">
+          <div className="w-1 h-5 bg-blue-500 mr-2"></div>
+          <h2 className="text-white text-sm font-medium">Sales By Catergory</h2>
+        </div>
+        <button className="text-purple-light-1 text-xs hover:text-purple-light-4 transition-colors">
+          View All
+        </button>
       </div>
-      
-      <div className="relative h-64">
-        <ResponsiveContainer width="100%" height="100%">
-          <PieChart>
-            <Pie
-              data={deviceData}
-              cx="50%"
-              cy="50%"
-              innerRadius="70%"
-              outerRadius="90%"
-              paddingAngle={2}
-              dataKey="value"
-            >
-              {deviceData.map((entry) => (
-                <Cell key={entry.name} fill={entry.color} />
-              ))}
-            </Pie>
-            <Tooltip 
-              contentStyle={{ 
-                backgroundColor: '#1f2937', 
-                color: 'white',
-                border: 'none',
-                borderRadius: '8px'
-              }}
-              formatter={(value) => [`${value}%`, 'Sessions']}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-        
-        <div className="absolute inset-0 flex flex-col justify-center items-center">
-          <div className="text-white text-2xl font-bold">{totalSessions.toFixed(0)}</div>
-          <div className="text-white text-sm">Total</div>
+
+      {/* Chart */}
+      <div className="p-4 flex justify-center">
+        <div className="h-64 w-full relative">
+          <ResponsiveContainer width="100%" height="100%">
+            <PieChart>
+              <Pie
+                data={deviceData}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={90}
+                paddingAngle={2}
+                dataKey="value"
+                startAngle={90}
+                endAngle={-270}
+              >
+                {deviceData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+          </ResponsiveContainer>
+          
+          {/* Center Text */}
+          <div className="absolute inset-0 flex flex-col items-center justify-center">
+            <p className="text-gray-4 text-base">Total</p>
+            <p className="text-white text-2xl font-semibold">{totalSessions}</p>
+          </div>
         </div>
       </div>
-      
-      <div className="grid grid-cols-2 gap-2 mt-4">
-        {deviceData.map((item) => (
-          <div key={item.name} className="flex items-center space-x-2 bg-white rounded-sm p-2">
-            <item.icon 
-              className="text-white" 
-              size={16} 
-              style={{ color: item.color }}
-            />
-            <div className="flex justify-between w-full">
-              <span className="text-dark text-sm">{item.name}</span>
-              <span 
-                className="text-white text-sm font-semibold"
-                style={{ color: item.color }}
-              >
-                {item.value}%
-              </span>
-            </div>
+
+      {/* Legend */}
+      <div className="grid grid-cols-4 border-t border-gray-800">
+        {deviceData.map((device) => (
+          <div 
+            key={device.name} 
+            className="flex flex-col items-center justify-center py-3"
+          >
+            <p className="text-gray-4 text-xs mb-1">{device.name}</p>
+            <p className="text-white text-sm font-medium">{device.percentage}</p>
           </div>
         ))}
       </div>
@@ -83,4 +78,4 @@ const RevenueBreakdownChart: React.FC = () => {
   );
 };
 
-export default RevenueBreakdownChart;
+export default SalesByCatergoryChart;

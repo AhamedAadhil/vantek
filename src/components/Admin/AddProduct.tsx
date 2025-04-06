@@ -76,8 +76,10 @@ const AddProduct = () => {
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Actual Price" />
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Dealer Price" />
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Discount in %" />
+            
           </div>
-
+            <label className="block">Stocks :</label>
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Available Stocks" />
           <div>
             <label className="block mb-1">Product Images</label>
             <div className="border-2 border-dashed p-6 text-center rounded bg-gray-700">

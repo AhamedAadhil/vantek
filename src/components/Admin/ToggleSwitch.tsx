@@ -12,7 +12,7 @@ const ToggleSwitch = ({
     <div className="flex flex-row space-y-1">
       {label && (
         <div className="flex items-center justify-between mr-3">
-          <label htmlFor={id} className="text-sm font-medium text-gray-900 dark:text-gray-100">
+          <label htmlFor={id} className="text-sm font-medium text-white dark:text-gray-100">
             {label}
           </label>
         </div>
