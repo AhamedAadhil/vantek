@@ -2,14 +2,22 @@
 import { useState, useEffect } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
-// import AdminHeader from "../../components/Admin/AdminHeader";
-// import AdminFooter from "../../components/Admin/AdminFooter";
+import Header from "../../components/Header";
+import Footer from "../../components/Footer";
 
+import { ModalProvider } from "../context/QuickViewModalContext";
+import { CartModalProvider } from "../context/CartSidebarModalContext";
 import { ReduxProvider } from "@/redux/provider";
+import QuickViewModal from "@/components/Common/QuickViewModal";
+import CartSidebarModal from "@/components/Common/CartSidebarModal";
+import { PreviewSliderProvider } from "../context/PreviewSliderContext";
+import PreviewSliderModal from "@/components/Common/PreviewSlider";
+
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
+import Sidebar from "@/components/Admin/Sidebar";
 
-export default function AdminLayout({
+export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
@@ -28,11 +36,22 @@ export default function AdminLayout({
         ) : (
           <>
             <ReduxProvider>
-              {/* <AdminHeader /> */}
-              {children}
+              <CartModalProvider>
+                <ModalProvider>
+                  <PreviewSliderProvider>
+                    <Header />
+                    <Sidebar />
+                    {children}
+
+                    <QuickViewModal />
+                    <CartSidebarModal />
+                    <PreviewSliderModal />
+                  </PreviewSliderProvider>
+                </ModalProvider>
+              </CartModalProvider>
             </ReduxProvider>
             <ScrollToTop />
-            {/* <AdminFooter /> */}
+            <Footer />
           </>
         )}
       </body>

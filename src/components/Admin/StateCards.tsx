@@ -49,7 +49,7 @@ const PendingOrdersWidget = ({
       </div>
       
       <div className="relative">
-        <div className="absolute -left-8 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color }}>
+        <div className="absolute -left-15.5 top-1/2 -translate-y-1/2 text-sm font-medium" style={{ color }}>
           {percentage}%
         </div>
         <div>
