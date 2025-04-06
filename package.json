@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "seedAdmin": "ts-node --loader ts-node/esm src/scripts/seedAdmin.ts",
     "lint": "next lint"
   },
   "dependencies": {
@@ -14,10 +15,18 @@
     "@types/react": "18.2.21",
     "@types/react-dom": "18.2.7",
     "autoprefixer": "10.4.15",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.6.0",
     "eslint": "8.49.0",
     "eslint-config-next": "13.4.19",
+
     "lucide-react": "^0.482.0",
+
+    "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.12.1",
+
     "next": "^14.2.14",
+    "nodemailer": "^6.10.0",
     "postcss": "8.4.29",
     "react": "18.2.0",
     "react-dom": "18.2.0",
@@ -25,7 +34,11 @@
     "react-range-slider-input": "^3.0.7",
     "react-redux": "^8.1.2",
     "react-slider": "^2.0.6",
+
     "recharts": "^2.15.1",
+
+    "redux-persist": "^6.0.0",
+
     "swiper": "^10.2.0",
     "tailwindcss": "^3.3.3",
     "typescript": "5.2.2"

@@ -1,16 +1,19 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import CustomSelect from "./CustomSelect";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
-import { useAppSelector } from "@/redux/store";
+import { RootState, useAppSelector } from "@/redux/store";
 import { useSelector } from "react-redux";
 import { selectTotalPrice } from "@/redux/features/cart-slice";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import Image from "next/image";
 
 const Header = () => {
+  const router = useRouter()
+  const user = useSelector((state:RootState) => state.auth.user);
   const [searchQuery, setSearchQuery] = useState("");
   const [navigationOpen, setNavigationOpen] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -29,6 +32,15 @@ const Header = () => {
       setStickyMenu(true);
     } else {
       setStickyMenu(false);
+    }
+  };
+
+  const handleAccountClick = () => {
+    // Navigate to the appropriate page based on user authentication status
+    if (user) {
+      router.push("/my-account"); // If user is authenticated, go to "my-account" page
+    } else {
+      router.push("/signin"); // If not, go to "signin" page
     }
   };
 
@@ -158,7 +170,7 @@ const Header = () => {
 
             <div className="flex w-full lg:w-auto justify-between items-center gap-5">
               <div className="flex items-center gap-5">
-                <Link href="/signin" className="flex items-center gap-2.5">
+                <button onClick={handleAccountClick} className="flex items-center gap-2.5">
                   <svg
                     width="24"
                     height="24"
@@ -185,10 +197,10 @@ const Header = () => {
                       account
                     </span>
                     <p className="font-medium text-custom-sm text-dark">
-                      Sign In
+                     {user ? user.name:"Sign in"}
                     </p>
                   </div>
-                </Link>
+                </button>
 
                 <button
                   onClick={handleOpenCartModal}
