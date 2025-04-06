@@ -20,14 +20,6 @@ const Home = () => {
   return (
     <main>
       <Hero />
-      <Dashboard />
-      <AdminOrderDetails/>
-      <UserDetails/>
-      <Customers />
-      <ProductList />
-      <AddProduct />
-      <EditProduct />
-      <Orders />
       <Categories />
       <NewArrival />
       <PromoBanner />

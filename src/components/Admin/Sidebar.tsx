@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { Home, Users, ShoppingCart, MessageSquare, Inbox, FileText, Layers, Package, LogOut } from 'lucide-react';
 
 const Sidebar = () => {
-  const [active, setActive] = useState('Orders');
+  const [active, setActive] = useState('Dashboard');
 
   const menuItems = [
-    { name: 'Dashboards', icon: Layers, link: '#' },
+    { name: 'Dashboard', icon: Layers, link: '#' },
     { name: 'Orders', icon: ShoppingCart, link: '#', active: true },
     { name: 'Customers', icon: Users, link: '#' },
     { name: 'Transactions', icon: FileText, link: '#' },
@@ -18,7 +18,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="w-64 h-screen bg-dark-2 text-white p-4 flex flex-col">
+    <aside className="w-64 h-auto bg-dark-2 text-white p-4 flex flex-col">
       {/* Logo */}
       <div className="flex items-center space-x-2 mb-6">
         <div className="bg-pink-500 p-2 rounded-full">

@@ -39,9 +39,12 @@ export default function RootLayout({
               <CartModalProvider>
                 <ModalProvider>
                   <PreviewSliderProvider>
-                    <Header />
-                    <Sidebar />
-                    {children}
+                    {/* <Header /> */}
+                    <div className="flex flex-row">
+                      <Sidebar />
+                      {children}
+                    </div>
+                    
 
                     <QuickViewModal />
                     <CartSidebarModal />
@@ -51,7 +54,7 @@ export default function RootLayout({
               </CartModalProvider>
             </ReduxProvider>
             <ScrollToTop />
-            <Footer />
+            {/* <Footer /> */}
           </>
         )}
       </body>

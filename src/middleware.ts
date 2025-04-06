@@ -1,16 +1,19 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import jwt from "jsonwebtoken";
 
 export function middleware(req: NextRequest) {
-  const isAdminLoggedIn = true
-//   req.cookies.get("admin_token");  // Check admin auth
+  const token = req.cookies.get("token")?.value
+  const decoded = jwt.decode(token,process.env.JWT_SECRET);
+  const isAdmin = decoded.role==="admin"
 
   // Redirect unauthenticated users trying to access admin pages
-  if (req.nextUrl.pathname.startsWith("/admin") && !isAdminLoggedIn) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (req.nextUrl.pathname.startsWith("/admin") && !isAdmin) {
+    return NextResponse.redirect(new URL("/", req.url));
   }
-
-  return NextResponse.next();  // Allow request to continue
+  
+     return NextResponse.next();  // Allow request to continue
+ 
 }
 
 // Apply middleware only to `/admin/*` routes
