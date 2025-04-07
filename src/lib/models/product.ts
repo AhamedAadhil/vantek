@@ -91,6 +91,12 @@ const productSchema = new Schema(
       default: 0,
       min: 0,
     },
+    overAllRating: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
     reviews: [reviewSchema],
   },
   { timestamps: true }
