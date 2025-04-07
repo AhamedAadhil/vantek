@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 // POST /api/products/reviews
 
 // TODO: CREATE CART and CHECKOUT API FIRST
-// TODO: SO THAT WE CAN ENSURE THAT THE USER IS PURCHASED THAT PRODUCT BEFORE GIVING REVIEW
+// TODO: SO THAT WE CAN ENSURE THAT THE USER IS PURCHASED THAT PRODUCT BEFORE GIVING REVIEW.
 export const POST = async (req: NextRequest) => {
   const { productId, review, orderId } = await req.json();
   console.log(productId, review, orderId);
