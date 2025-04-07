@@ -1,6 +1,37 @@
-import mongoose, { model, models, Schema } from "mongoose";
+import mongoose, { model, models, Schema, Document } from "mongoose";
 
 const mainCategories = ["VW-T5", "VW-T6.1", "VW-T7", "Universal Camper Parts"];
+
+// Define Review Interface
+export interface IReview {
+  userId: mongoose.Types.ObjectId;
+  rate: number;
+  comment?: string;
+  order: mongoose.Types.ObjectId;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+// Define Product Interface
+export interface IProduct extends Document {
+  name: string;
+  description: string;
+  mainCategory: "VW-T5" | "VW-T6.1" | "VW-T7" | "Universal Camper Parts"; // Enum values
+  subCategory1: string;
+  subCategory2: string;
+  tags: string[];
+  labelPrice: number;
+  actualPrice: number;
+  images: string[];
+  topSellingProduct: boolean;
+  featuredProduct: boolean;
+  isVisible: boolean;
+  stock: number;
+  overAllRating: number;
+  reviews: IReview[];
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 // Separate schema for Reviews
 const reviewSchema = new Schema(
@@ -19,6 +50,11 @@ const reviewSchema = new Schema(
     comment: {
       type: String,
       trim: true,
+    },
+    order: {
+      type: mongoose.Types.ObjectId,
+      ref: "Order",
+      required: true,
     },
   },
   { timestamps: true }
@@ -102,5 +138,5 @@ const productSchema = new Schema(
   { timestamps: true }
 );
 
-const Product = models.Product || model("Product", productSchema);
+const Product = models.Product || model<IProduct>("Product", productSchema);
 export default Product;

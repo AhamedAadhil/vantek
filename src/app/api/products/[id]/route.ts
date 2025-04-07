@@ -1,5 +1,5 @@
 import connectDB from "@/lib/db";
-import Product from "@/lib/models/product";
+import Product, { IProduct } from "@/lib/models/product";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -27,7 +27,9 @@ export const GET = async (
       );
     }
 
-    const product = await Product.findById(id).populate("reviews.userId");
+    const product = await (Product as mongoose.Model<IProduct>)
+      .findById(id)
+      .populate("reviews.userId");
     if (!product) {
       return NextResponse.json(
         { success: false, message: "Product not found" },

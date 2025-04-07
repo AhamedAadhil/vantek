@@ -1,7 +1,7 @@
 import mongoose, { model, models, Schema, Document } from "mongoose";
 
 // Define Address Type
-interface IAddress {
+export interface IAddress {
   phone?: string;
   houseNumber?: string;
   street?: string;
@@ -60,7 +60,7 @@ const userSchema = new Schema<IUser>(
         houseNumber: { type: String },
         street: { type: String },
         city: { type: String },
-        district: { type: String },
+        state: { type: String },
         zipCode: { type: String },
         country: { type: String },
       },
