@@ -2,8 +2,8 @@ import Signin from "@/components/Auth/Signin";
 import React from "react";
 import { Metadata } from "next";
 export const metadata: Metadata = {
-  title: "Shop Page | Vantek E-commerce",
-  description: "This is Shop Page for Vantek E-commerce Site",
+  title: "SignIn Page | Vantek E-commerce",
+  description: "This is SignIn Page for Vantek E-commerce Site",
   // other metadata
 };
 
