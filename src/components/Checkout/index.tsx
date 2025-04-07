@@ -7,6 +7,7 @@ import ShippingMethod from "./ShippingMethod";
 import PaymentMethod from "./PaymentMethod";
 import Coupon from "./Coupon";
 import Billing from "./Billing";
+import Image from "next/image";
 
 const Checkout = () => {
   return (
@@ -80,8 +81,9 @@ const Checkout = () => {
 
                     {/* <!-- product item --> */}
                     <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">Asus RT Dual Band Router</p>
+                      <div >
+                        
+                        <p className="text-dark">Asus RT Dual Band Router </p>
                       </div>
                       <div>
                         <p className="text-dark text-right">$129.00</p>

@@ -24,9 +24,16 @@ const MyAccount = () => {
     setAddressModal(false);
   };
 
-  const handleLogout = ()=>{
-dispatch(logout())
-router.replace("/")
+  const handleLogout = async()=>{
+  const res =  await fetch("http://localhost:3000/api/logout")
+    const data = await res.json()
+    console.log(data)
+  if(res.ok){
+    dispatch(logout())
+    router.replace("/")
+  }
+  // TODO: implement Toaster to show errors ....
+  console.log("Logout failed");
   }
 
   return (
