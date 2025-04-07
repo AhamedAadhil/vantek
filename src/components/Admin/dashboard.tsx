@@ -8,11 +8,12 @@ import TopSellingProductsTable from './TopSellingItems';
 import TopCustomerTable from './TopCustomer';
 import SalesReportChart from './SalesByMonthChart';
 import PendingOrdersWidget from './StateCards';
+import LowStocksTable from './LowStocks';
 
 const Dashboard = () => {
   return (
     
-    <div className="grid grid-cols-5 grid-rows-1 gap-4 bg-gray-900 p-4">
+    <div className="grid grid-cols-5 w-full grid-rows-1 gap-4 bg-gray-900 p-4">
         <div className='h-fit' >
             
             <div className="bg-gray-7 p-4 rounded-lg flex items-center space-x-4 shadow-md">
@@ -98,12 +99,12 @@ const Dashboard = () => {
                     <div className='mb-4'><RevenueBreakdownChart/></div>
                     <div className='mb-4'><PendingOrdersWidget percentage={56} total={100}/></div>
                     <div className='mb-4'><PendingOrdersWidget percentage={56} total={100}/></div>
-                    <div className='mb-4'><PendingOrdersWidget percentage={56} total={100}/></div>
+                    {/* <div className='mb-4'><PendingOrdersWidget percentage={56} total={100}/></div> */}
                 </div>
             </div>
         </div>
         <div className="col-span-2 row-span-2 row-start-4"><TopSellingProductsTable/></div>
-        <div className="col-span-2 row-span-2 col-start-3 row-start-4"><TopSellingProductsTable/></div>
+        <div className="col-span-2 row-span-2 col-start-3 row-start-4"><LowStocksTable/></div>
         <div className="col-span-2 row-span-2 col-start-5 row-start-4"><TopCustomerTable/></div>
     </div>
     
