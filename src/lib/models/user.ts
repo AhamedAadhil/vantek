@@ -20,7 +20,7 @@ export interface IUser extends Document {
   isActive: boolean;
   address: IAddress[];
   cart: mongoose.Types.ObjectId[];
-  wishlist: mongoose.Types.ObjectId[];
+  wishlist: mongoose.Types.ObjectId;
   orders: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
   resetToken?: string;
@@ -71,12 +71,11 @@ const userSchema = new Schema<IUser>(
         ref: "Cart",
       },
     ],
-    wishlist: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Wishlist",
-      },
-    ],
+    wishlist: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wishlist",
+    },
+
     orders: [
       {
         type: mongoose.Schema.Types.ObjectId,
