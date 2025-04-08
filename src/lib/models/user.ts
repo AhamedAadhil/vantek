@@ -19,7 +19,7 @@ export interface IUser extends Document {
   role: "user" | "admin";
   isActive: boolean;
   address: IAddress[];
-  cart: mongoose.Types.ObjectId[];
+  cart: mongoose.Types.ObjectId;
   wishlist: mongoose.Types.ObjectId;
   orders: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
@@ -63,14 +63,14 @@ const userSchema = new Schema<IUser>(
         state: { type: String },
         zipCode: { type: String },
         country: { type: String },
+        deliveryNote: { type: String },
       },
     ],
-    cart: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cart",
-      },
-    ],
+    cart: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    },
+
     wishlist: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Wishlist",
