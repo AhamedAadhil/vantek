@@ -80,3 +80,54 @@ export const POST = async (req: NextRequest) => {
     );
   }
 };
+
+// VIEW WISHLIST
+// GET /api/products/wishlist
+export const GET = async (req: NextRequest) => {
+  const authMiddlewareResponse = await authMiddleware(req);
+  if (authMiddlewareResponse) {
+    return authMiddlewareResponse;
+  }
+  try {
+    await connectDB();
+    const userId = req.headers.get("userId");
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "User not authenticated",
+          success: false,
+        },
+        { status: 401 }
+      );
+    }
+    const wishlist = await (Wishlist as mongoose.Model<IWishlist>)
+      .findOne({ user: userId })
+      .select("products")
+      .populate("products");
+    if (!wishlist) {
+      return NextResponse.json(
+        {
+          message: "No wishlist exist",
+          success: false,
+        },
+        { status: 401 }
+      );
+    }
+    return NextResponse.json(
+      {
+        data: wishlist,
+        success: true,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        message: "Error while fetching wishlist",
+        success: false,
+        error: error,
+      },
+      { status: 500 }
+    );
+  }
+};
