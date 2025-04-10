@@ -3,7 +3,7 @@ import connectDB from "@/lib/db";
 import Cart, { ICart } from "@/lib/models/cart";
 import mongoose from "mongoose";
 
-// GET USERS CART
+// GET CURRENT USERS CART
 // GET /api/cart
 export async function GET(
   req: NextRequest,

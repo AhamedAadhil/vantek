@@ -202,7 +202,10 @@ export async function PATCH(req: NextRequest) {
         { data: cart, success: true, message: "Product quantity updated" },
         { status: 200 }
       );
-    } else if (action === "clearCart") {
+    }
+
+    // ✅ Clear the cart
+    else if (action === "clearCart") {
       const cart = await (Cart as mongoose.Model<ICart>).findOneAndDelete({
         user: userId,
       });
@@ -223,7 +226,10 @@ export async function PATCH(req: NextRequest) {
         { data: cart, success: true, message: "Cart cleared" },
         { status: 200 }
       );
-    } else {
+    }
+
+    // ✅ Invalid Action type
+    else {
       return NextResponse.json(
         { message: "Invalid action", success: false },
         { status: 400 }

@@ -1,8 +1,9 @@
 import connectDB from "@/lib/db";
-import User from "@/lib/models/user";
+import User, { IUser } from "@/lib/models/user";
 import { sendMail } from "@/lib/nodemailer/nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
@@ -18,7 +19,9 @@ export const POST = async (req: Request) => {
     }
 
     // Check if user exists
-    const user = await User.findOne({ email }).exec();
+    const user = await (User as mongoose.Model<IUser>)
+      .findOne({ email })
+      .exec();
     if (!user) {
       return NextResponse.json(
         { message: "Invalid email or password", success: false },

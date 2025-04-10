@@ -3,6 +3,8 @@ import Product, { IProduct } from "@/lib/models/product";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
+// GET A SINGLE PRODUCT
+// api/products/[id]
 export const GET = async (
   req: Request,
   context: { params?: { id?: string } }

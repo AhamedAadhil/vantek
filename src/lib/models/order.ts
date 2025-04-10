@@ -10,12 +10,19 @@ interface IOrderItem {
 }
 
 export interface IOrder extends Document {
+  orderId: string;
   user: mongoose.Types.ObjectId | IUser;
   items: IOrderItem[];
   totalAmount: number;
+  isUK: boolean;
+  couponCode: string;
+  trackingId: string;
+  trackingUrl: string;
   status: "pending" | "shipped" | "delivered" | "cancelled";
   paymentMethod: "creditCard" | "paypal" | "cod";
   paymentStatus: "paid" | "unpaid";
+  shippingMethod: "standard" | "express";
+  deliveryNote: string;
   shippingAddress: mongoose.Types.ObjectId | IAddress;
   createdAt: Date;
   updatedAt: Date;
@@ -23,6 +30,11 @@ export interface IOrder extends Document {
 
 const orderSchema = new Schema<IOrder>(
   {
+    orderId: {
+      type: String,
+      required: true,
+      unique: true,
+    },
     user: {
       type: mongoose.Types.ObjectId,
       ref: "User",
@@ -49,10 +61,12 @@ const orderSchema = new Schema<IOrder>(
     totalAmount: {
       type: Number,
       required: true,
+      min: 0,
     },
     status: {
       type: String,
       enum: ["pending", "shipped", "delivered", "cancelled"],
+      required: true,
       default: "pending",
     },
     paymentMethod: {
@@ -65,10 +79,32 @@ const orderSchema = new Schema<IOrder>(
       enum: ["paid", "unpaid"],
       default: "unpaid",
     },
+    shippingMethod: {
+      type: String,
+      enum: ["standard", "express"],
+      default: "standard",
+    },
     shippingAddress: {
       type: mongoose.Types.ObjectId,
       ref: "User",
       required: true,
+    },
+    deliveryNote: {
+      type: String,
+    },
+    isUK: {
+      type: Boolean,
+      default: true,
+    },
+    couponCode: {
+      type: String,
+      degault: "",
+    },
+    trackingId: {
+      type: String,
+    },
+    trackingUrl: {
+      type: String,
     },
   },
   {
