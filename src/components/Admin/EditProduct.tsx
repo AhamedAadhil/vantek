@@ -1,12 +1,16 @@
 'use client'
 import React, { useState } from 'react';
-import { LucideUpload, LucideCalendar, Clock, Calendar } from 'lucide-react';
+import { LucideUpload, LucideCalendar, Clock, Calendar, X } from 'lucide-react';
 import ToggleSwitch from '@/components/Admin/ToggleSwitch';
 
-const EditProduct = () => {
+interface EditProductProps {
+  onClose: () => void;
+}
+
+const EditProduct: React.FC<EditProductProps> = ({ onClose }) => {
   const [productName, setProductName] = useState('Grilled Bed');
   const [ActPrice, setActPrice] = useState('48.65');
-  const [DealerPrice, setDealerPrice] = useState('30.65');
+  const [LabelPrice, setLabelPrice] = useState('30.65');
   const [Disc, setDisc] = useState('25%');
   const [productDescription, setProductDescription] = useState('Steel Comfortable Bed For VW-T5');
   const [publishDate, setPublishDate] = useState('2025-12-05');
@@ -16,6 +20,9 @@ const EditProduct = () => {
   return (
     <div className= "m-4 p-6 bg-dark min-h-screen text-white rounded-lg">
       <h2 className="text-2xl font-semibold">Edit Products Details</h2>
+      <div className='flex justify-end'>
+      <button className='rounded-2xl bg-reds-500 w-fit p-2 flex flex-end' onClick={onClose}><X/></button>
+      </div>
       <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="space-y-4">
@@ -77,7 +84,7 @@ const EditProduct = () => {
         <div className="space-y-4 pt-7">
           <div className="grid grid-cols-3 gap-4">
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Actual Price" value={ActPrice} onChange={(e) => setActPrice(e.target.value)}/>
-            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Dealer Price" value={DealerPrice} onChange={(e) => setDealerPrice(e.target.value)}/>
+            <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Label Price" value={LabelPrice} onChange={(e) => setLabelPrice(e.target.value)}/>
             <input type="text" className="p-2 rounded bg-meta-2 text-white" placeholder="Discount in %" value={Disc} onChange={(e) => setDisc(e.target.value)}/>
           </div>
             <label className="block">Stocks :</label>
