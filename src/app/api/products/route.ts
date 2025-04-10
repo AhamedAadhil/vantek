@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import Product from "@/lib/models/product";
+import Product, { IProduct } from "@/lib/models/product";
+import mongoose from "mongoose";
 
 export async function GET(req: Request) {
   try {
@@ -39,7 +40,8 @@ export async function GET(req: Request) {
     const totalProducts = await Product.countDocuments(query);
 
     // ✅ Fetch filtered products with pagination
-    const products = await Product.find(query)
+    const products = await (Product as mongoose.Model<IProduct>)
+      .find(query)
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ createdAt: -1 }); // Latest products first

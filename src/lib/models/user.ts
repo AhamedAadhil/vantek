@@ -1,7 +1,7 @@
 import mongoose, { model, models, Schema, Document } from "mongoose";
 
 // Define Address Type
-interface IAddress {
+export interface IAddress {
   phone?: string;
   houseNumber?: string;
   street?: string;
@@ -19,8 +19,8 @@ export interface IUser extends Document {
   role: "user" | "admin";
   isActive: boolean;
   address: IAddress[];
-  cart: mongoose.Types.ObjectId[];
-  wishlist: mongoose.Types.ObjectId[];
+  cart: mongoose.Types.ObjectId;
+  wishlist: mongoose.Types.ObjectId;
   orders: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
   resetToken?: string;
@@ -60,23 +60,22 @@ const userSchema = new Schema<IUser>(
         houseNumber: { type: String },
         street: { type: String },
         city: { type: String },
-        district: { type: String },
+        state: { type: String },
         zipCode: { type: String },
         country: { type: String },
+        deliveryNote: { type: String },
       },
     ],
-    cart: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Cart",
-      },
-    ],
-    wishlist: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Wishlist",
-      },
-    ],
+    cart: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Cart",
+    },
+
+    wishlist: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Wishlist",
+    },
+
     orders: [
       {
         type: mongoose.Schema.Types.ObjectId,
