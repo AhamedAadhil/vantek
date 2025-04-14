@@ -25,13 +25,13 @@ export async function GET(
 
     const cart = await (Cart as mongoose.Model<ICart>)
       .findOne({ user: userId })
-      .populate("items.product");
+      .populate("items.product", "_id");
 
     if (!cart) {
       return NextResponse.json(
         {
-          message: "Cart not found",
-          success: false,
+          message: "User's cart not found",
+          success: true,
         },
         { status: 404 }
       );

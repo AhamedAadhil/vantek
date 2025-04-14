@@ -1,7 +1,8 @@
 import cloudinary from "@/lib/cloudinary";
 import connectDB from "@/lib/db";
 import { isAdmin } from "@/lib/middleware";
-import Product from "@/lib/models/product";
+import Product, { IProduct } from "@/lib/models/product";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 // CREATE NEW PRODUCT
@@ -14,11 +15,10 @@ export const POST = async (req: NextRequest) => {
   try {
     await connectDB();
     const {
+      productCode,
       name,
       description,
-      labelPrice,
-      actualPrice,
-      stock,
+      variants,
       tags,
       mainCategory,
       subCategory1,
@@ -30,10 +30,10 @@ export const POST = async (req: NextRequest) => {
 
     // ✅ Validate required fields
     if (
+      !productCode ||
       !name ||
       !description ||
-      !actualPrice ||
-      !labelPrice ||
+      !variants?.length ||
       !mainCategory ||
       !subCategory1 ||
       !subCategory2 ||
@@ -41,6 +41,22 @@ export const POST = async (req: NextRequest) => {
     ) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // ✅ Validate variants
+    const isVariantValid = variants.every(
+      (variant: any) =>
+        variant.name &&
+        typeof variant.labelPrice === "number" &&
+        typeof variant.actualPrice === "number" &&
+        typeof variant.stock === "number"
+    );
+
+    if (!isVariantValid) {
+      return NextResponse.json(
+        { success: false, message: "Invalid or incomplete variant data" },
         { status: 400 }
       );
     }
@@ -69,11 +85,10 @@ export const POST = async (req: NextRequest) => {
 
     // ✅ Create new product
     const newProduct = new Product({
+      productCode,
       name,
       description,
-      labelPrice,
-      actualPrice,
-      stock,
+      variants,
       tags,
       mainCategory,
       subCategory1,
@@ -112,11 +127,12 @@ export const PATCH = async (req: NextRequest) => {
     await connectDB();
     const {
       id,
+      productCode,
       name,
       description,
-      labelPrice,
-      actualPrice,
-      stock,
+      variantAdds = [],
+      variantUpdates = [],
+      variantDeletes = [],
       tags,
       mainCategory,
       subCategory1,
@@ -129,7 +145,7 @@ export const PATCH = async (req: NextRequest) => {
     } = await req.json();
     console.log("topSellingProduct", topSellingProduct);
     console.log("featuredProduct", featuredProduct);
-    const product = await Product.findById(id);
+    const product = await (Product as mongoose.Model<IProduct>).findById(id);
     if (!product) {
       return NextResponse.json(
         { success: false, message: "Product not found" },
@@ -222,14 +238,65 @@ export const PATCH = async (req: NextRequest) => {
 
       // update the details of the product
       product.name = name || product.name;
+      product.productCode = productCode || product.productCode;
       product.description = description || product.description;
-      product.labelPrice = labelPrice || product.labelPrice;
-      product.actualPrice = actualPrice || product.actualPrice;
-      product.stock = stock || product.stock;
       product.tags = tags || product.tags;
       product.mainCategory = mainCategory || product.mainCategory;
       product.subCategory1 = subCategory1 || product.subCategory1;
       product.subCategory2 = subCategory2 || product.subCategory2;
+
+      // Add new variants
+      if (variantAdds && variantAdds.length > 0) {
+        for (const newVariant of variantAdds) {
+          if (
+            newVariant.name &&
+            typeof newVariant.labelPrice === "number" &&
+            typeof newVariant.actualPrice === "number" &&
+            typeof newVariant.stock === "number"
+          ) {
+            product.variants.push(newVariant);
+          }
+        }
+      }
+
+      // Update existing variants
+      if (variantUpdates && variantUpdates.length > 0) {
+        product.variants = product.variants.map((existingVariant: any) => {
+          const update = variantUpdates.find(
+            (v: any) => v.name === existingVariant.name
+          );
+          return update
+            ? {
+                ...existingVariant,
+                labelPrice: update.labelPrice ?? existingVariant.labelPrice,
+                actualPrice: update.actualPrice ?? existingVariant.actualPrice,
+                stock: update.stock ?? existingVariant.stock,
+              }
+            : existingVariant;
+        });
+      }
+
+      // Delete specific variants by name
+      if (variantDeletes && variantDeletes.length > 0) {
+        product.variants = product.variants.filter(
+          (variant: any) => !variantDeletes.includes(variant.name)
+        );
+      }
+
+      // SAMPLE INPUT FOR UPDATE PRODUCT WITH UPDATE VARIENT
+      //       {
+      //   "id": "6616d1c89c7fbb47f3441107",
+      //   "name": "Updated Toyota Door",
+      //   "variantAdds": [
+      //     { "name": "new variant", "labelPrice": 5000, "actualPrice": 4000, "stock": 5 }
+      //   ],
+      //   "variantUpdates": [
+      //     { "name": "toyota door driver side", "actualPrice": 4200, "stock": 6 }
+      //   ],
+      //   "variantDeletes": ["toyota door passanger side"],
+      //   "action": "updateDetails"
+      // }
+
       await product.save();
 
       return NextResponse.json(

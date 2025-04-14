@@ -3,6 +3,7 @@ import { IUser } from "./user";
 
 interface ICartItem {
   product: mongoose.Types.ObjectId;
+  variantId: mongoose.Types.ObjectId;
   quantity: number;
 }
 
@@ -27,6 +28,10 @@ const cartSchema = new Schema<ICart>(
         product: {
           type: mongoose.Types.ObjectId,
           ref: "Product",
+          required: true,
+        },
+        variantId: {
+          type: mongoose.Types.ObjectId,
           required: true,
         },
         quantity: {
