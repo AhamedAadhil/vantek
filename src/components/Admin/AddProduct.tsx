@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import vanPartsData from "@/data/van_parts_categories.json";
 
 const AddProduct = () => {
+  const [productCode,setProductCode]=useState("")
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [topSelling, setTopSelling] = useState(false);
@@ -15,16 +16,12 @@ const AddProduct = () => {
   const [mainCategory, setMainCategory] = useState("");
   const [subCategory1, setSubCategory1] = useState("");
   const [subCategory2, setSubCategory2] = useState("");
-  const [ActPrice, setActPrice] = useState<number>();
-  const [LabelPrice, setLabelPrice] = useState<number>();
-  const [stock, setStock] = useState<number>(0);
   const [images, setImages] = useState<string[]>([]);
   const [imageError,setImageError]=useState("")
   const [base64Images, setBase64Images] = useState<string[]>([]);
-  const [isVisible, setIsVisible] = useState(true);
   const [tags, setTags] = useState<string[]>([]);
   const [variants, setVariants] = useState([
-    { variant: '', actualPrice: 0, labelPrice: 0, stock: 0 }
+    { name: '', actualPrice: 0, labelPrice: 0, stock: 0 }
   ]);
 
   const router = useRouter();
@@ -36,7 +33,7 @@ const AddProduct = () => {
   };
   
   const handleAddVariant = () => {
-    setVariants([...variants, { variant: '', actualPrice: 0, labelPrice: 0, stock: 0 }]);
+    setVariants([...variants, { name: '', actualPrice: 0, labelPrice: 0, stock: 0 }]);
   };
   
   const handleRemoveVariant = (index: number) => {
@@ -61,6 +58,7 @@ const AddProduct = () => {
   };
 // Reset values
   const resetForm = () => {
+    setProductCode("");
     setProductName("");
     setProductDescription("");
     setTopSelling(false);
@@ -68,19 +66,16 @@ const AddProduct = () => {
     setMainCategory("");
     setSubCategory1("");
     setSubCategory2("");
-    setActPrice(undefined);
-    setLabelPrice(undefined);
-    setStock(0);
     setImages([]);
     setBase64Images([]);
-    setIsVisible(true);
     setTags([]);
-    setVariants([{ variant: "", actualPrice: 0, labelPrice: 0, stock: 0 }]); // if using variant list
+    setVariants([{ name: "", actualPrice: 0, labelPrice: 0, stock: 0 }]); // if using variant list
   };
 
   const handleSaveProduct = async(e) => {
     e.preventDefault();
     const productData = {
+      productCode,
       name: productName,
       description: productDescription,
       mainCategory: mainCategory as
@@ -91,14 +86,10 @@ const AddProduct = () => {
       subCategory1,
       subCategory2,
       tags,
-      labelPrice: LabelPrice || 0,
-      actualPrice: ActPrice || 0,
       images: base64Images,
       variants,
       topSellingProduct: topSelling,
       featuredProduct: featured,
-      isVisible,
-      stock
     };
 
      try {
@@ -111,11 +102,12 @@ const AddProduct = () => {
           const data = await res.json();
         
           if (res.ok) {
-          //  TODO
+            console.log(data)
           }
     
           if (!res.ok) {
-          //  TODO
+         console.log(data.message)
+         return
           }
     
           setError("")
@@ -161,19 +153,36 @@ if(images.length==0){
       <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="space-y-4">
+          {/* Product code */}
+        <div>
+            <label className="block mb-1">Product Code</label>
+            <input
+              type="text"
+              required
+              className="w-full p-2 rounded bg-meta-2 text-white"
+              placeholder="Product Code"
+              maxLength={10}
+              value={productCode}
+              onChange={(e) => setProductCode(e.target.value)}
+            />
+            <small className="text-gray-400">
+              *Product Code should not exceed 10 characters
+            </small>
+          </div>
+
           <div>
             <label className="block mb-1">Product Name</label>
             <input
               type="text"
               required
               className="w-full p-2 rounded bg-meta-2 text-white"
-              placeholder="Name"
-              maxLength={30}
+              placeholder="Product Name"
+              maxLength={100}
               value={productName}
               onChange={(e) => setProductName(e.target.value)}
             />
             <small className="text-gray-400">
-              *Product Name should not exceed 30 characters
+              *Product Name should not exceed 100 characters
             </small>
           </div>
 
@@ -265,10 +274,10 @@ if(images.length==0){
                   required
                     type="text"
                     className="p-2 rounded bg-meta-2 text-white w-35"
-                    placeholder="Variant"
-                    value={v.variant}
+                    placeholder="Name"
+                    value={v.name}
                     onChange={(e) =>
-                      handleVariantChange(index, "variant", e.target.value)
+                      handleVariantChange(index, "name", e.target.value)
                     }
                   />
                 </div>

@@ -1,66 +1,71 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
-import AddProduct from './AddProduct';
-import EditProduct from './EditProduct';
 import { useRouter } from 'next/navigation';
 
-const productData = [
-    {
-        Image : '/images/products/product-gen-bg-1.png',
-        id : 56,
-        product: "Fridge Freezer Alpicool TWW35 35L",
-        category: "VW-T5",
-        subCategory: "Alloy Wheels",
-        subCategory2: "High End",
-        price: 1500,
-        stock: 25,
-        brand: "BMW",
-        published: '12/05/2024',
-    },
-    {
-        Image : '/images/products/product-gen-bg-1.png',
-        id : 3544,
-        product: "Fridge Freezer Alpicool TWW35 35L",
-        category: "VW-T5",
-        subCategory: "Alloy Wheels",
-        subCategory2: "High End",
-        price: 1500,
-        stock: 25,
-        brand: "BMW",
-        published: '12/05/2024',
-    },
-    {
-        Image : '/images/products/product-gen-bg-1.png',
-        id : 66,
-        product: "Fridge Freezer Alpicool TWW35 35L",
-        category: "VW-T5",
-        subCategory: "Alloy Wheels",
-        subCategory2: "High End",
-        price: 1500,
-        stock: 25,
-        brand: "BMW",
-        published: '12/05/2024',
-    },
-    {
-        Image : '/images/products/product-gen-bg-1.png',
-        id : 23,
-        product: "Fridge Freezer Alpicool TWW35 35L",
-        category: "VW-T5",
-        subCategory: "Alloy Wheels",
-        subCategory2: "High End",
-        price: 1500,
-        stock: 25,
-        brand: "BMW",
-        published: '12/05/2024',
-    },
-];
+
+
+// const productData = [
+//     {
+//         Image : '/images/products/product-gen-bg-1.png',
+//         id : 56,
+//         product: "Fridge Freezer Alpicool TWW35 35L",
+//         category: "VW-T5",
+//         subCategory: "Alloy Wheels",
+//         subCategory2: "High End",
+//         price: 1500,
+//         stock: 25,
+//         brand: "BMW",
+//         published: '12/05/2024',
+//     },
+//     {
+//         Image : '/images/products/product-gen-bg-1.png',
+//         id : 3544,
+//         product: "Fridge Freezer Alpicool TWW35 35L",
+//         category: "VW-T5",
+//         subCategory: "Alloy Wheels",
+//         subCategory2: "High End",
+//         price: 1500,
+//         stock: 25,
+//         brand: "BMW",
+//         published: '12/05/2024',
+//     },
+//     {
+//         Image : '/images/products/product-gen-bg-1.png',
+//         id : 66,
+//         product: "Fridge Freezer Alpicool TWW35 35L",
+//         category: "VW-T5",
+//         subCategory: "Alloy Wheels",
+//         subCategory2: "High End",
+//         price: 1500,
+//         stock: 25,
+//         brand: "BMW",
+//         published: '12/05/2024',
+//     },
+//     {
+//         Image : '/images/products/product-gen-bg-1.png',
+//         id : 23,
+//         product: "Fridge Freezer Alpicool TWW35 35L",
+//         category: "VW-T5",
+//         subCategory: "Alloy Wheels",
+//         subCategory2: "High End",
+//         price: 1500,
+//         stock: 25,
+//         brand: "BMW",
+//         published: '12/05/2024',
+//     },
+// ];
+
+
+
 
 const ProductList = () => {
+  const [productData,setProductData]=useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages,setTotalPages]=useState(1);
   const productsPerPage = 5;
 
   const router = useRouter();
@@ -71,10 +76,10 @@ const ProductList = () => {
     const [selectAll, setSelectAll] = useState(false);
 
   const filteredProducts = productData.filter(product =>
-    product.product.toLowerCase().includes(search.toLowerCase())
+    product?.name?.toLowerCase().includes(search?.toLowerCase()) || product?.productCode?.toLowerCase().includes(search?.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+  // const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
   const currentProducts = filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
 
    // Handle individual selection
@@ -89,10 +94,34 @@ const ProductList = () => {
         if (selectAll) {
             setSelectedProducts([]);
         } else {
-            setSelectedProducts(currentProducts.map(product => product.id));
+            setSelectedProducts(currentProducts.map(product => product._id));
         }
         setSelectAll(!selectAll);
     };
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/products");
+        const data = await res.json();
+    
+        if (res.ok) {
+          console.log("✅ Raw API Response:", data);
+          setProductData(data.products);
+          setCurrentPage(data.currentPage)
+          setTotalPages(data.totalProducts)
+        } else {
+          console.error("❌ API Error:", data.message);
+        }
+      } catch (error) {
+        console.error("❌ Fetch error:", error);
+      }
+    };
+    
+    useEffect(() => {
+      fetchData()
+      console.log("✅ Updated productData:", productData);
+    }, []);
+    
 
   return (
     <div className="m-4 p-6 bg-dark text-white rounded-lg">
@@ -149,14 +178,15 @@ const ProductList = () => {
                 onChange={handleSelectAll}
               />
             </th>
-            <th className="p-3">ID</th>
+            <th className="p-3">PRODUCT CODE</th>
             <th className="p-3">PRODUCT</th>
             <th className="p-3">CATEGORY</th>
             <th className="p-3">SUB-CATEGORY</th>
             <th className="p-3">SUB-CATEGORY-2</th>
-            <th className="p-3">PRICE</th>
-            <th className="p-3">STOCK</th>
-            <th className="p-3">BRAND</th>
+            <th className="p-3">VARIANTS</th>
+            {/* <th className="p-3">PRICE</th>
+            <th className="p-3">STOCK</th> */}
+            <th className="p-3">LAST UPDATE</th>
             <th className="p-3">PUBLISHED</th>
             <th className="p-3">ACTION</th>
           </tr>
@@ -165,34 +195,34 @@ const ProductList = () => {
         <tbody>
           {currentProducts.map((product) => (
             <tr
-              key={product.id}
+              key={product._id}
               className="border-b border-dashed border-gray-700"
             >
               <td className="p-3">
                 <input
                   type="checkbox"
-                  checked={selectedProducts.includes(product.id)}
-                  onChange={() => handleSelectProduct(product.id)}
+                  checked={selectedProducts.includes(product?._id)}
+                  onChange={() => handleSelectProduct(product?._id)}
                 />
               </td>
-              <td className="p-3">{product.id}</td>
+              <td className="p-3">{product?.productCode}</td>
               <td className="p-3 flex items-center space-x-3">
-                <Image
-                  src={product.Image}
-                  alt={product.product}
+                {/* <Image
+                  src={product?.images[0]}
+                  alt={product?.name}
                   width={40}
                   height={40}
                   className="rounded-full"
-                />
-                <span>{product.product}</span>
+                /> */}
+                <span>{product.name}</span>
               </td>
-              <td className="p-3">{product.category}</td>
-              <td className="p-3">{product.subCategory}</td>
-              <td className="p-3">{product.subCategory2}</td>
-              <td className="p-3">${product.price}</td>
-              <td className="p-3">{product.stock}</td>
-              <td className="p-3">{product.brand}</td>
-              <td className="p-3">{product.published}</td>
+              <td className="p-3">{product?.mainCategory}</td>
+              <td className="p-3">{product?.subCategory1}</td>
+              <td className="p-3">{product?.subCategory2}</td>
+              <td className="p-3">{product.variants.length}</td>
+              {/* <td className="p-3">{product.stock}</td> */}
+              <td className="p-3">{product?.updatedAt.split("T")[0]}</td>
+              <td className="p-3">{product?.createdAt.split("T")[0]}</td>
               <td className="p-3 flex space-x-2">
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white">
                   <Eye size={16} />
