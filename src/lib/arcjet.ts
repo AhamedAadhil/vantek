@@ -3,6 +3,7 @@ import { isSpoofedBot } from "@arcjet/inspect";
 import { NextResponse } from "next/server";
 
 // TODO: integrate with with global middlware
+
 const aj = arcjet({
   key: process.env.ARCJET_KEY!, // Get your site key from https://app.arcjet.com
   characteristics: ["ip.src"], // Track requests by IP
