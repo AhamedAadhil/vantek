@@ -82,7 +82,6 @@ const productSchema = new Schema(
     },
     subCategory2: {
       type: String,
-      required: true,
     },
     tags: {
       type: [String],

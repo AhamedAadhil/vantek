@@ -2,12 +2,10 @@
 import React, { useState } from 'react';
 import { LucideUpload, LucideCalendar, Clock, Calendar, X } from 'lucide-react';
 import ToggleSwitch from '@/components/Admin/ToggleSwitch';
+import { useRouter } from 'next/navigation';
 
-interface EditProductProps {
-  onClose: () => void;
-}
 
-const EditProduct: React.FC<EditProductProps> = ({ onClose }) => {
+const EditProduct = () => {
   const [productName, setProductName] = useState('Grilled Bed');
   const [ActPrice, setActPrice] = useState('48.65');
   const [LabelPrice, setLabelPrice] = useState('30.65');
@@ -17,11 +15,13 @@ const EditProduct: React.FC<EditProductProps> = ({ onClose }) => {
   const [topSelling, setTopSelling] = useState(false);
   const [featured, setFeatured] = useState(false);
 
+  const router = useRouter();
+
   return (
     <div className= "m-4 p-6 bg-dark min-h-screen text-white rounded-lg">
       <h2 className="text-2xl font-semibold">Edit Products Details</h2>
       <div className='flex justify-end'>
-      <button className='rounded-2xl bg-reds-500 w-fit p-2 flex flex-end' onClick={onClose}><X/></button>
+      <button className='rounded-2xl bg-reds-500 w-fit p-2 flex flex-end' onClick={() => router.push("/admin/inventoryPage") }><X/></button>
       </div>
       <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
         {/* Left Column */}

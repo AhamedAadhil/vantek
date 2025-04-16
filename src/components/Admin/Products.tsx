@@ -5,6 +5,7 @@ import { Search, Eye, Pencil, Trash2, Plus } from 'lucide-react';
 import Image from 'next/image';
 import AddProduct from './AddProduct';
 import EditProduct from './EditProduct';
+import { useRouter } from 'next/navigation';
 
 const productData = [
     {
@@ -61,9 +62,10 @@ const ProductList = () => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const productsPerPage = 5;
-  const [showAddProduct, setShowAddProduct] = useState(false);
-  const [showEditProduct, setShowEditProduct] = useState(false);
 
+  const router = useRouter();
+ 
+    
 
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
     const [selectAll, setSelectAll] = useState(false);
@@ -94,7 +96,7 @@ const ProductList = () => {
 
   return (
     <div className="m-4 p-6 bg-dark text-white rounded-lg">
-      {showAddProduct && (
+      {/* {showAddProduct && (
         <div className="fixed inset-0 z-50 bg-black bg-opacity-20 flex items-center justify-center">
           <div className="h-screen w-screen m-1 bg-dark-2 p-6 rounded-lg">
             <AddProduct onClose={() => setShowAddProduct(false)} />
@@ -107,7 +109,7 @@ const ProductList = () => {
             <EditProduct onClose={() => setShowEditProduct(false)} />
           </div>
         </div>
-      )}
+      )} */}
       <div className="flex justify-between items-center mb-4">
         {/* Left-aligned Title */}
         <h2 className="text-lg font-bold">All Products</h2>
@@ -129,7 +131,7 @@ const ProductList = () => {
           {/* ADD PRODUCT Button */}
           <button
             className="bg-blue-light hover:bg-blue-dark text-white font-semibold px-6 py-2 border-hidden rounded flex items-center justify-center"
-            onClick={() => setShowAddProduct(true)}
+            onClick={() => router.push("/admin/adminAddProducts")}
           >
             <Plus className="mr-2" /> {/* Lucide Plus icon */}
             ADD PRODUCT
@@ -195,7 +197,7 @@ const ProductList = () => {
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white">
                   <Eye size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white" onClick={() => setShowEditProduct(true)}>
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white" onClick={() => router.push("/admin/adminEditProduct")}>
                   <Pencil size={16} />
                 </button>
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
