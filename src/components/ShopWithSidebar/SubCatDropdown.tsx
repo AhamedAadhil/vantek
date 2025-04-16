@@ -34,7 +34,7 @@ const GenderItem = ({ category }) => {
   );
 };
 
-const GenderDropdown = ({ genders }) => {
+const SubCat1Dropdown = ({ genders }) => {
   const [toggleDropdown, setToggleDropdown] = useState(true);
 
   return (
@@ -71,4 +71,4 @@ const GenderDropdown = ({ genders }) => {
   );
 };
 
-export default GenderDropdown;
+export default SubCat1Dropdown;

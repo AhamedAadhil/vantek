@@ -36,7 +36,6 @@ export const POST = async (req: NextRequest) => {
       !variants?.length ||
       !mainCategory ||
       !subCategory1 ||
-      !subCategory2 ||
       !images?.length
     ) {
       return NextResponse.json(

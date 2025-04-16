@@ -1,0 +1,207 @@
+{
+    "VW-T5": {
+        "Exterior styling": [
+            "Front",
+            "Rear"
+        ],
+        "OEM Replacement Items": [
+            "side door tread plate",
+            "Rear Inner treadplate",
+            "Rear outer treadplate barndoor",
+            "Rear outer treadplate Tailgate"
+        ],
+        "Alloy Wheels": [
+            "Wolfrace",
+            "Riveera",
+            "Calibre"
+        ],
+        "Night Diesel Heaters": [],
+        "Kitchen Furniture Units": ["LWB","SWB"],
+        "Upholstery": [
+            "Drivers seat/Single Passenger",
+            "Double Passenger",
+            "RIB Bed",
+            "Kombi",
+            "Steering Wheel",
+            "Gear Gaiter",
+            "RIB Pull Strap",
+            "Jack Bag"
+        ],
+        "Beds": [],
+        "Pop Top": [
+            "SWB",
+            "LWB"
+        ],
+        "Solar kits": [
+            "Panels",
+            "Controller"
+        ],
+        "Stretch carpet Kits": [
+            "Smoke",
+            "Silver",
+            "Beige",
+            "Graphite"
+        ],
+        "Insulation": [
+            "10MM Reflective",
+            "2mm "
+        ],
+        "Flooring": [],
+        "Power banks": [],
+        "Window Blinds": [
+            "OS mid sliding door/non sliding",
+            "NS mid Sliding door/non sliding",
+            "NS Rear Solid",
+            "Rear Door Barndoor (2)",
+            "Rear Door Tailgate"
+        ]
+    },
+    "VW-T6.1": {
+        "Exterior styling": [
+            "Front",
+            "Rear",
+            "Spoilers",
+            "Mirrors",
+            "Badges"
+        ],
+        "OEM Replacement Items": [
+            "side door tread plate",
+            "Rear Inner treadplate",
+            "Rear outer treadplate barndoor",
+            "Rear outer treadplate Tailgate"
+        ],
+        "Alloy Wheels": [
+            "Wolfrace",
+            "Riveera",
+            "Calibre"
+        ],
+        "Night Diesel Heaters": [
+            "5KW"
+        ],
+        "Kitchen Furniture Units": [
+            "SWB",
+            "LWB"
+        ],
+        "Upholstery": [
+            "Drivers seat/Single Passenger",
+            "Double Passenger",
+            "RIB Bed",
+            "Kombi",
+            "Steering Wheel",
+            "Gear Gaiter",
+            "RIB Pull Strap",
+            "Jack Bag"
+        ],
+        "Beds": [],
+        "Pop Tops": [
+            "SWB",
+            "LWB"
+        ],
+        "Solar kits": [
+            "Panels",
+            "Controller"
+        ],
+        "Stretch carpet Kits": [
+            "Smoke",
+            "Silver",
+            "Beige",
+            "Graphite"
+        ],
+        "Insulation": [
+            "10mm Reflective",
+            "2mm Underlay"
+        ],
+        "Flooring": [
+            "SWB",
+            "LWB"
+        ],
+        "Power banks": [],
+        "Window Blinds": [
+            "OS mid sliding door/non sliding",
+            "NS mid Sliding door/non sliding",
+            "NS Rear Solid",
+            "Rear Door Barndoor (2)",
+            "Rear Door Tailgate"
+        ]
+    },
+    "VW-T7": {
+        "Exterior styling": [
+            "Front",
+            "Rear",
+            "Spoilers",
+            "Mirrors",
+            "Badges"
+        ],
+        "OEM Replacement Items": [
+            "side door tread plate",
+            "Rear Inner treadplate",
+            "Rear outer treadplate barndoor",
+            "Rear outer treadplate Tailgate"
+        ],
+        "Alloy Wheels": [
+            "Wolfrace",
+            "Riveera",
+            "Calibre"
+        ],
+        "Night Diesel Heaters": [],
+        "Kitchen Furniture Units": [
+            "SWB",
+            "LWB"
+        ],
+        "Upholstery": [
+            "Drivers seat/Single Passenger",
+            "Double Passenger",
+            "RIB Bed",
+            "Kombi",
+            "Steering Wheel",
+            "Gear Gaiter",
+            "RIB Pull Strap",
+            "Jack Bag"
+        ],
+        "Beds": [],
+        "Pop Tops": [
+            "SWB",
+            "LWB"
+        ],
+        "Solar kits": [
+            "Panels",
+            "Controller"
+        ],
+        "Stretch carpet Kits": [
+            "Smoke",
+            "Silver",
+            "Beige",
+            "Graphite"
+        ],
+        "Insulation": [
+            "10MM Reflective",
+            "2mm"
+        ],
+        "Flooring": [
+            "LWB",
+            "SWB"
+        ],
+        "Power banks": [],
+        "Window Blinds": [
+            "OS mid sliding door/non sliding",
+            "NS mid Sliding door/non sliding",
+            "NS Rear Solid",
+            "Rear Door Barndoor (2)",
+            "Rear Door Tailgate"
+        ]
+    },
+    "Universal Camper Parts": {
+        "Fridge Freezer 12v 50L": [
+            "Black",
+            "Silver"
+        ],
+        "Sink/Hob 2 burner": [
+            "RHD",
+            "LHD"
+        ],
+        "35psi Water Pump": [],
+        "External Shower Point": [],
+        "External Power Point": [],
+        "External Water Inlet lockable": []
+    }
+}

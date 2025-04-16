@@ -8,10 +8,16 @@ export const metadata: Metadata = {
   // other metadata
 };
 
-const ShopDetailsPage = () => {
+interface Props {
+  params: {
+    id: string;
+  };
+}
+
+const ShopDetailsPage = ({ params }: Props) => {
   return (
     <main>
-      <ShopDetails />
+      <ShopDetails productId={params.id} />
     </main>
   );
 };
