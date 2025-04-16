@@ -1,11 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
 import Newsletter from "../Common/Newsletter";
 import RecentlyViewdItems from "./RecentlyViewd";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
-import { productData } from "./productData"; // Import product data
 import {
   CreditCard,
   Heart,
@@ -19,47 +18,83 @@ import {
   ThumbsUp,
   Truck,
 } from "lucide-react";
-const ShopDetails = () => {
+const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
   const [storage, setStorage] = useState("");
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<'description' | 'reviews'>('description');
+  const [product, setProduct] = useState<any>(null);
+  const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  const [activeTab, setActiveTab] = useState<"description" | "reviews">(
+    "description"
+  );
+
+  const maxStock = 10; // or dynamically fetched
+  const currentStock = product?.variants[selectedVariantIndex]?.stock ?? 0;
+  const stockPercentage = Math.min((currentStock / maxStock) * 100, 100); // Cap at 100%
 
   const handlePreviewSlider = () => {
     openPreviewModal();
   };
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const res = await fetch(`/api/products/${productId}`);
+        const data = await res.json();
+
+        if (res.ok) {
+          setProduct(data.product);
+        } else {
+          console.error("Failed to load product:", data.message);
+        }
+      } catch (err) {
+        console.error("Fetch error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
+
+  console.log(product);
+
   return (
     <>
       <Breadcrumb title={"Shop Details"} pages={["shop details"]} />
 
-      {productData.title === "" ? (
+      {product?.name === "" ? (
         "Please add products"
       ) : (
-        <>          
+        <>
           <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0 grid grid-cols-1 md:grid-cols-3 gap-6 p-6 bg-white">
             {/* Column 1 - Product Images */}
             <div className="space-y-4">
               <div className="border rounded-xl overflow-hidden">
                 <Image
-                  src="/images/products/product-gen-bg-1.png"
-                  alt="Rusty Lee Bed"
+                  src={product?.images[previewImg]}
+                  alt={product?.name}
                   width={500}
                   height={500}
                   className="w-full object-cover"
                 />
               </div>
               <div className="flex gap-2">
-                {[1, 2, 3, 4].map((item) => (
+                {product?.images?.map((img: string, index: number) => (
                   <div
-                    key={item}
-                    className="border rounded-xl overflow-hidden w-20 h-20"
+                    key={index}
+                    className={`border rounded-xl overflow-hidden w-20 h-20 cursor-pointer ${
+                      index === previewImg ? "ring-2 ring-green-500" : ""
+                    }`}
+                    onClick={() => setPreviewImg(index)}
                   >
                     <Image
-                      src="/images/products/product-gen-bg-1.png"
-                      alt="Thumbnail"
+                      src={img}
+                      alt={`Thumbnail ${index + 1}`}
                       width={80}
                       height={80}
                       className="w-full h-full object-cover"
@@ -72,18 +107,50 @@ const ShopDetails = () => {
             {/* Column 2 - Product Info */}
             <div className="space-y-4">
               <h2 className="text-2xl font-semibold text-gray-800">
-                Rusty Lee 3/4 Campervan Bed – T5/T6
+                {product?.name}
               </h2>
               <div className="flex items-center gap-2 text-yellow-500 text-sm">
-                <span>⭐⭐⭐⭐☆</span>
-                <span className="text-gray-600">4.7 Star Rating (671)</span>
+                <span>⭐</span>
+                <span className="text-gray-600">
+                  {product?.overAllRating} Rating ({product?.reviews?.length}{" "}
+                  Reviews)
+                </span>
               </div>
-              <p className="text-sm text-gray-600">
-                Rusty Lee 3/4 Campervan Bed For VW T5/T6 – Legless – 5 Stage
-                Recliner – ISOFIX – M1 Tested – Inc Mounting Plate
-              </p>
-              <div className="text-3xl font-bold text-green-600">$25.00</div>
-              <div className="text-sm line-through text-gray-400">$38.00</div>
+              {/* <p className="text-sm text-gray-600">{product?.description}</p> */}
+              <div
+                className="prose prose-sm max-w-none text-gray-800 line-clamp-5"
+                dangerouslySetInnerHTML={{ __html: product?.description }}
+              ></div>
+              <div className="text-3xl font-bold text-green-600">
+                ${product?.variants[selectedVariantIndex]?.actualPrice}
+              </div>
+              <div className="text-sm line-through text-gray-400">
+                ${product?.variants[selectedVariantIndex]?.labelPrice}
+              </div>
+
+              <div className="mt-4">
+                <label className="block mb-1 text-sm text-gray-700 font-medium">
+                  Select Variant
+                </label>
+                <select
+                  className="p-2 rounded bg-gray-100 text-gray-700 w-full"
+                  value={product?.variants[selectedVariantIndex]?.name}
+                  onChange={(e) => {
+                    const selectedIndex = product?.variants.findIndex(
+                      (v: any) => v.name === e.target.value
+                    );
+                    setSelectedVariantIndex(
+                      selectedIndex !== -1 ? selectedIndex : 0
+                    );
+                  }}
+                >
+                  {product?.variants?.map((variant: any, index: number) => (
+                    <option key={variant._id || index} value={variant.name}>
+                      {variant.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
 
               <div className="mt-2">
                 <span className="text-green-500 font-medium text-sm">
@@ -92,9 +159,15 @@ const ShopDetails = () => {
               </div>
 
               <div className="w-full bg-gray-200 h-2 rounded-full mt-4">
-                <div className="bg-orange-500 h-2 rounded-full w-3/4"></div>
+                <div
+                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${stockPercentage}%` }}
+                ></div>
               </div>
-              <div className="text-sm text-gray-600">Available only: 45</div>
+
+              <div className="text-sm text-gray-600">
+                Available: {product?.variants[selectedVariantIndex]?.stock ?? 0}
+              </div>
 
               <div className="flex items-center mt-4 gap-2">
                 <button className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700">
@@ -184,7 +257,7 @@ const ShopDetails = () => {
               </div>
             </div>
           </div>
-          
+
           <div className="max-w-[1170px] mx-auto px-4 mt-10 p-6 border bg-white rounded-lg shadow-md">
             {/* Description & Reviews Tabs */}
             <div className="flex items-center justify-between border-b border-gray-200 pb-2">
@@ -220,42 +293,13 @@ const ShopDetails = () => {
             {/* Tab Content */}
             <div className="mt-6 text-gray-800 leading-relaxed">
               {activeTab === "description" ? (
-                <div>
-                  <h3 className="text-lg font-semibold mb-2">
-                    Rusty Lee 3/4 Campervan Bed For VW T5/T6
-                  </h3>
-                  <p className="mb-4">
-                    This is the ¾ Width TUV-In-Vehicle-Tested and Approved Bed.
-                    This is where the ‘ROCK N ROLL’ bed comes into its own! This
-                    is the gold standard in bed safety, and no other UK-made bed
-                    has this certification. Many other beds are only plate
-                    tested. There is a major difference.
-                  </p>
-                  <ul className="list-disc ml-6 space-y-1">
-                    <li>Width 1120mm</li>
-                    <li>Length in Bed Mode 1830mm</li>
-                    <li>
-                      Fully Powder Coated in Black (Other Colours Available To
-                      Order)
-                    </li>
-                    <li>Storage Space Underneath The Bed</li>
-                    <li>Includes Gas Strut And Two Seat Belts</li>
-                    <li>
-                      Please Note: T6.1s Require Our TUV Tested{" "}
-                      <a href="#" className="text-green-600 underline">
-                        chassis Mounting Plate
-                      </a>
-                    </li>
-                    <li>M1 Tested</li>
-                    <li>Easy to Operate</li>
-                    <li>All Fittings & Installation components included</li>
-                    <li>T5, T5.1, T6 & T6.1</li>
-                    <li>2003–Current Models</li>
-                    <li>Does Not Fit A LHD Vehicle</li>
-                  </ul>
-                </div>
+                <div
+                  className="prose prose-sm max-w-none text-gray-800"
+                  dangerouslySetInnerHTML={{ __html: product?.description }}
+                ></div>
               ) : (
                 <div>
+                  {/* TODO */}
                   <h3 className="text-lg font-semibold mb-2">
                     Customer Reviews
                   </h3>

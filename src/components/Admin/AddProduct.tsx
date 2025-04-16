@@ -5,6 +5,10 @@ import ToggleSwitch from "@/components/Admin/ToggleSwitch";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import vanPartsData from "@/data/van_parts_categories.json";
+import dynamic from "next/dynamic";
+import { quillModules } from "@/lib/quillModule";
+
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 const AddProduct = () => {
   const [productCode,setProductCode]=useState("")
@@ -231,21 +235,19 @@ if(images.length==0){
             </div>
             <small className="sm text-reds-500">{error}</small>
 
-          <div>
-            <label className="block mb-1">Product Description</label>
-            <textarea
-            required
-              className="w-full p-2 rounded bg-meta-2 text-white"
-              rows={3}
-              maxLength={1500}
-              placeholder="Description"
-              value={productDescription}
-              onChange={(e) => setProductDescription(e.target.value)}
-            ></textarea>
-            <small className="text-gray-400">
-              *Description should not exceed 500 letters
-            </small>
-          </div>
+            <div>
+  <label className="block mb-1">Product Description</label>
+  <ReactQuill
+  theme="snow"
+  value={productDescription}
+  onChange={setProductDescription}
+  modules={quillModules}
+  className="dark-quill"
+/>
+  <small className="text-gray-400">
+    *Add a rich description about the product (1500 characters max)
+  </small>
+</div>
           <div>
             <label className="block mb-1">Tags</label>
             <input

@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import "react-quill/dist/quill.snow.css";
+
+
 @layer base {
   html {
     @apply scroll-smooth;
