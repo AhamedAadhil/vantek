@@ -8,8 +8,9 @@ export function middleware(req: NextRequest) {
   // Redirect if no token exists
   if (!token) {
     if (
-      req.nextUrl.pathname.startsWith("/admin") || 
-      req.nextUrl.pathname === "/my-account"||req.nextUrl.pathname ==="/wishlist"
+      req.nextUrl.pathname.startsWith("/admin") ||
+      req.nextUrl.pathname === "/my-account" ||
+      req.nextUrl.pathname === "/wishlist"
     ) {
       return NextResponse.redirect(new URL("/signin", req.url)); // Redirect unauthenticated users to login page
     }
@@ -38,5 +39,5 @@ export function middleware(req: NextRequest) {
 
 // Apply middleware to `/admin/*` routes and `/my-account`
 export const config = {
-  matcher: ["/admin/:path*", "/my-account","/wishlist"],
+  matcher: ["/admin/:path*", "/my-account", "/wishlist"],
 };
