@@ -32,9 +32,9 @@ export async function GET(req: Request) {
 
     if (category) query.mainCategory = category;
     if (minPrice || maxPrice)
-      query.actualPrice = { $gte: minPrice, $lte: maxPrice };
+      query["variants.actualPrice"] = { $gte: minPrice, $lte: maxPrice };
     if (minRating) query["reviews.rate"] = { $gte: minRating };
-    if (stockAvailable) query.stock = { $gt: 0 }; // Only products with stock > 0
+    if (stockAvailable) query["variants.stock"] = { $gt: 0 }; // Only products with stock > 0
 
     // ✅ Get total count for pagination
     const totalProducts = await Product.countDocuments(query);

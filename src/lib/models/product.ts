@@ -12,21 +12,28 @@ export interface IReview {
   updatedAt?: Date;
 }
 
+export interface IProductVariant {
+  _id: any;
+  name: string;
+  labelPrice: number;
+  actualPrice: number;
+  stock: number;
+}
+
 // Define Product Interface
 export interface IProduct extends Document {
+  productCode: string;
   name: string;
   description: string;
-  mainCategory: "VW-T5" | "VW-T6.1" | "VW-T7" | "Universal Camper Parts"; // Enum values
+  mainCategory: "VW-T5" | "VW-T6.1" | "VW-T7" | "Universal Camper Parts";
   subCategory1: string;
   subCategory2: string;
   tags: string[];
-  labelPrice: number;
-  actualPrice: number;
   images: string[];
+  variants: IProductVariant[];
   topSellingProduct: boolean;
   featuredProduct: boolean;
   isVisible: boolean;
-  stock: number;
   overAllRating: number;
   reviews: IReview[];
   createdAt: Date;
@@ -60,8 +67,21 @@ const reviewSchema = new Schema(
   { timestamps: true }
 );
 
+const variantSchema = new Schema({
+  name: { type: String, required: true },
+  labelPrice: { type: Number, required: true, min: 0 },
+  actualPrice: { type: Number, required: true, min: 0 },
+  stock: { type: Number, required: true, min: 0, default: 0 },
+});
+
 const productSchema = new Schema(
   {
+    productCode: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
     name: {
       type: String,
       required: true,
@@ -91,16 +111,7 @@ const productSchema = new Schema(
         message: "Maximum 10 tags allowed",
       },
     },
-    labelPrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    actualPrice: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
+    variants: { type: [variantSchema], required: true },
     images: {
       type: [String],
       required: true,
@@ -119,12 +130,6 @@ const productSchema = new Schema(
       type: Boolean,
       required: true,
       default: true,
-    },
-    stock: {
-      type: Number,
-      required: true,
-      default: 0,
-      min: 0,
     },
     overAllRating: {
       type: Number,
