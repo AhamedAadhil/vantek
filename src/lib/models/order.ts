@@ -5,6 +5,7 @@ import { IAddress } from "./user";
 
 interface IOrderItem {
   product: mongoose.Types.ObjectId;
+  variant: mongoose.Types.ObjectId;
   quantity: number;
   price: number;
 }
@@ -45,6 +46,10 @@ const orderSchema = new Schema<IOrder>(
         product: {
           type: mongoose.Types.ObjectId,
           ref: "Product",
+          required: true,
+        },
+        variant: {
+          type: mongoose.Types.ObjectId,
           required: true,
         },
         quantity: {

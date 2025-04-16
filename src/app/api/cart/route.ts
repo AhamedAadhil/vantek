@@ -5,8 +5,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import Product, { IProduct } from "@/lib/models/product";
 import User, { IUser } from "@/lib/models/user";
-import { getVariantPrice } from "../../../../utils/getVariantPrice";
-import { cleanCart } from "../../../../utils/cleanCart";
+import { getVariantPrice } from "@/lib/utils/getVariantPrice";
+import { cleanCart } from "@/lib/utils/cleanCart";
 
 // ADD PRODUCT TO CART
 // POST /api/cart
