@@ -7,66 +7,12 @@ import { useRouter } from 'next/navigation';
 
 
 
-// const productData = [
-//     {
-//         Image : '/images/products/product-gen-bg-1.png',
-//         id : 56,
-//         product: "Fridge Freezer Alpicool TWW35 35L",
-//         category: "VW-T5",
-//         subCategory: "Alloy Wheels",
-//         subCategory2: "High End",
-//         price: 1500,
-//         stock: 25,
-//         brand: "BMW",
-//         published: '12/05/2024',
-//     },
-//     {
-//         Image : '/images/products/product-gen-bg-1.png',
-//         id : 3544,
-//         product: "Fridge Freezer Alpicool TWW35 35L",
-//         category: "VW-T5",
-//         subCategory: "Alloy Wheels",
-//         subCategory2: "High End",
-//         price: 1500,
-//         stock: 25,
-//         brand: "BMW",
-//         published: '12/05/2024',
-//     },
-//     {
-//         Image : '/images/products/product-gen-bg-1.png',
-//         id : 66,
-//         product: "Fridge Freezer Alpicool TWW35 35L",
-//         category: "VW-T5",
-//         subCategory: "Alloy Wheels",
-//         subCategory2: "High End",
-//         price: 1500,
-//         stock: 25,
-//         brand: "BMW",
-//         published: '12/05/2024',
-//     },
-//     {
-//         Image : '/images/products/product-gen-bg-1.png',
-//         id : 23,
-//         product: "Fridge Freezer Alpicool TWW35 35L",
-//         category: "VW-T5",
-//         subCategory: "Alloy Wheels",
-//         subCategory2: "High End",
-//         price: 1500,
-//         stock: 25,
-//         brand: "BMW",
-//         published: '12/05/2024',
-//     },
-// ];
-
-
-
-
 const ProductList = () => {
   const [productData,setProductData]=useState([]);
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages,setTotalPages]=useState(1);
-  const productsPerPage = 5;
+  const productsPerPage = 25;
 
   const router = useRouter();
  
@@ -124,21 +70,7 @@ const ProductList = () => {
     
 
   return (
-    <div className="m-4 p-6 bg-dark text-white rounded-lg">
-      {/* {showAddProduct && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-20 flex items-center justify-center">
-          <div className="h-screen w-screen m-1 bg-dark-2 p-6 rounded-lg">
-            <AddProduct onClose={() => setShowAddProduct(false)} />
-          </div>
-        </div>
-      )}
-      {showEditProduct && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-20 flex items-center justify-center">
-          <div className="h-screen w-screen m-1 bg-dark-2 p-6 rounded-lg">
-            <EditProduct onClose={() => setShowEditProduct(false)} />
-          </div>
-        </div>
-      )} */}
+    <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         {/* Left-aligned Title */}
         <h2 className="text-lg font-bold">All Products</h2>
@@ -162,7 +94,7 @@ const ProductList = () => {
             className="bg-blue-light hover:bg-blue-dark text-white font-semibold px-6 py-2 border-hidden rounded flex items-center justify-center"
             onClick={() => router.push("/admin/adminAddProducts")}
           >
-            <Plus className="mr-2" /> {/* Lucide Plus icon */}
+            <Plus className="mr-2" />
             ADD PRODUCT
           </button>
         </div>
@@ -178,17 +110,17 @@ const ProductList = () => {
                 onChange={handleSelectAll}
               />
             </th>
-            <th className="p-3">PRODUCT CODE</th>
-            <th className="p-3">PRODUCT</th>
-            <th className="p-3">CATEGORY</th>
-            <th className="p-3">SUB-CATEGORY</th>
-            <th className="p-3">SUB-CATEGORY-2</th>
-            <th className="p-3">VARIANTS</th>
+            <th className="p-3 text-sm">PRODUCT CODE</th>
+            <th className="p-3 text-sm">PRODUCT</th>
+            <th className="p-3 text-sm">CATEGORY</th>
+            <th className="p-3 text-sm">SUB-CATEGORY</th>
+            <th className="p-3 text-sm">SUB-CATEGORY-2</th>
+            <th className="p-3 text-sm">VARIANTS</th>
             {/* <th className="p-3">PRICE</th>
             <th className="p-3">STOCK</th> */}
-            <th className="p-3">LAST UPDATE</th>
-            <th className="p-3">PUBLISHED</th>
-            <th className="p-3">ACTION</th>
+            <th className="p-3 text-sm">LAST UPDATE</th>
+            <th className="p-3 text-sm">PUBLISHED</th>
+            <th className="p-3 text-sm">ACTION</th>
           </tr>
         </thead>
 
@@ -196,7 +128,7 @@ const ProductList = () => {
           {currentProducts.map((product) => (
             <tr
               key={product._id}
-              className="border-b border-dashed border-gray-700"
+              className="border-b border-dashed border-gray-5"
             >
               <td className="p-3">
                 <input
@@ -227,7 +159,7 @@ const ProductList = () => {
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white">
                   <Eye size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white" onClick={() => router.push("/admin/adminEditProduct")}>
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white" onClick={() => router.push(`/admin/adminEditProduct/${product._id}`)}>
                   <Pencil size={16} />
                 </button>
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
@@ -241,14 +173,14 @@ const ProductList = () => {
 
       {/* Pagination */}
       <div>
-        <div className="mt-4">
+        {/* <div className="mt-4">
           <button
             className="mt-6 bg-red-light-3 hover:bg-red-dark text-dark hover:text-white font-semibold px-6 py-2 border-hidden rounded"
             disabled={selectedProducts.length === 0}
           >
             DELETE SELECTED PRODUCTS
           </button>
-        </div>
+        </div> */}
         <div className="flex justify-end mt-4 space-x-2">
           <button
             disabled={currentPage === 1}

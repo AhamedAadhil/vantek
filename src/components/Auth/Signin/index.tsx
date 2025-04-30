@@ -1,11 +1,12 @@
 "use client"; // Ensure this runs on the client side
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
 import { loginSuccess } from "@/redux/features/authSlice";
+import { setWishlist } from "@/redux/features/wishlist-slice";
 
 const Signin = () => {
   const dispatch = useDispatch();
@@ -13,6 +14,27 @@ const Signin = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+//Fetch Wishlist
+    const fetchWishlist = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/products/wishlist");
+        const data = await res.json();
+        console.log("Fetched Wishlist:", data);
+
+        if (res.ok) {
+          dispatch(setWishlist(data.data.products));
+        } else {
+          throw new Error(data.message || "Failed to fetch wishlist");
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    };
+
+    useEffect(() => {
+      fetchWishlist();
+    }, []);
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

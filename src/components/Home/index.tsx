@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Hero from "./Hero";
 import Categories from "./Categories";
 import NewArrival from "./NewArrivals";
@@ -16,7 +16,7 @@ import ProductList from "../Admin/Products";
 import AdminOrderDetails from "../Admin/AdminOrderDetails";
 import Dashboard from "../Admin/dashboard";
 const Home = () => {
-
+ 
   return (
     <main>
       <Hero />

@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { useSelector,useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from "@/redux/features/authSlice";
+import { removeAllItemsFromWishlist } from "@/redux/features/wishlist-slice";
 
 const MyAccount = () => {
   const router = useRouter()
@@ -30,6 +31,7 @@ const MyAccount = () => {
     console.log(data)
   if(res.ok){
     dispatch(logout())
+    dispatch(removeAllItemsFromWishlist())
     router.replace("/")
   }
   // TODO: implement Toaster to show errors ....

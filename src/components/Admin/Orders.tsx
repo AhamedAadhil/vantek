@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Search, Eye, Pencil, Trash2 } from 'lucide-react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 
 const ordersData = [
   {
@@ -103,6 +104,8 @@ const ordersData = [
   },
 ];
 
+
+
 const Orders = () => {
   const [search, setSearch] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -114,9 +117,9 @@ const Orders = () => {
 
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
   const currentOrders = filteredOrders.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage);
-
+  const router = useRouter();
   return (
-    <div className="m-4 p-6 bg-dark text-white rounded-lg">
+    <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">All Order List</h2>
         <div className="relative">
@@ -133,7 +136,7 @@ const Orders = () => {
 
       <table className="w-full text-left border-collapse">
         <thead>
-          <tr className="bg-gray-800 text-gray-300">
+          <tr className="bg-gray-800 text-gray-300 text-base">
             <th className="p-3">Customer</th>
             <th className="p-3">Purchase Date</th>
             <th className="p-3">Contact</th>
@@ -168,9 +171,15 @@ const Orders = () => {
                                 }`}>{order.status}</span>
               </td>
               <td className="p-3 flex space-x-2">
-                <button className="flex items-center m-3 justify-center rounded-lg max-w-[38px] w-full h-9.5 bg-blue-light-4 border border-blue-light-4 ease-out duration-200 hover:bg-red-light-6 hover:border-white hover:text-dark text-dark"><Eye size={16} /></button>
-                <button className="flex items-center m-3 justify-center rounded-lg max-w-[38px] w-full h-9.5 bg-blue-light-4 border border-blue-light-4 ease-out duration-200 hover:bg-green-light-6 hover:border-green-light-6 hover:text-green text-dark"><Pencil size={16} /></button>
-                <button className="flex items-center m-3 justify-center rounded-lg max-w-[38px] w-full h-9.5 bg-blue-light-4 border border-blue-light-4 ease-out duration-200 hover:bg-red-light-3 hover:border-red-light-3 hover:text-red-dark text-dark"><Trash2 size={16} /></button>
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white" onClick={() => router.push("/admin/adminOrderDetails")}>
+                  <Eye size={16} />
+                </button>
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white">
+                  <Pencil size={16} />
+                </button>
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
+                  <Trash2 size={16} />
+                </button>
               </td>
             </tr>
           ))}
