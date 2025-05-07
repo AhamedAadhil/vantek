@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Search, Eye, Pencil, Trash2, Plus } from 'lucide-react';
+import { Search, Eye, Pencil, Trash2, Plus, Upload } from 'lucide-react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-
-
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const ProductList = () => {
   const [productData,setProductData]=useState([]);
@@ -34,6 +34,30 @@ const ProductList = () => {
         prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
     );
    };
+
+
+   //Export To Excel
+   const exportToExcel = () => {
+    const dataToExport = productData.map((product) => ({
+      'Product Code': product.productCode,
+      'Name': product.name,
+      'Category': product.mainCategory,
+      'Sub-Category 1': product.subCategory1,
+      'Sub-Category 2': product.subCategory2,
+      'Variants Count': product.variants.length,
+      'Last Update': product.updatedAt?.split('T')[0],
+      'Published Date': product.createdAt?.split('T')[0],
+    }));
+  
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'ALL_PRODUCTS');
+  
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const dataBlob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+  
+    saveAs(dataBlob, 'products.xlsx');
+  };
 
     // Handle "Select All" toggle
     const handleSelectAll = () => {
@@ -68,6 +92,7 @@ const ProductList = () => {
       console.log("✅ Updated productData:", productData);
     }, []);
     
+  
 
   return (
     <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
@@ -88,6 +113,12 @@ const ProductList = () => {
             />
             <Search className="absolute left-3 top-3 text-gray-400" size={18} />
           </div>
+          <button
+            className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded flex items-center justify-center"
+            onClick={exportToExcel}
+          >
+            <Upload size={17} className='mr-2'/>Export to Excel
+          </button>
 
           {/* ADD PRODUCT Button */}
           <button
@@ -156,15 +187,23 @@ const ProductList = () => {
               <td className="p-3">{product?.updatedAt.split("T")[0]}</td>
               <td className="p-3">{product?.createdAt.split("T")[0]}</td>
               <td className="p-3 flex space-x-2">
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white">
+                <button
+                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white"
+                  onClick={() => router.push(`/shop-details/${product._id}`)}
+                >
                   <Eye size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white" onClick={() => router.push(`/admin/adminEditProduct/${product._id}`)}>
+                <button
+                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white"
+                  onClick={() =>
+                    router.push(`/admin/adminEditProduct/${product._id}`)
+                  }
+                >
                   <Pencil size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
+                {/* <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
                   <Trash2 size={16} />
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}

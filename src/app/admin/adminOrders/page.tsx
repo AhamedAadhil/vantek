@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const AdminOrdersPage = () => {
   return (
-    <div className="bg-gray-900 w-screen h-full">
+    <div className="bg-gray-900 w-screen h-full min-h-screen">
       <Orders/>
     </div>
   );

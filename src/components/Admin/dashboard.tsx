@@ -2,13 +2,14 @@
 
 import { Currency, DollarSign, ShoppingBag, User } from 'lucide-react';
 import { PieChart } from 'recharts';
-import RevenueBreakdownChart from './RevenueBreakdownChart';
+import RevenueBreakdownChart from './SalesByCatChart';
 import RecentOrdersTable from './RecentOrdersTable';
 import TopSellingProductsTable from './TopSellingItems';
 import TopCustomerTable from './TopCustomer';
 import SalesReportChart from './SalesByMonthChart';
 import PendingOrdersWidget from './StateCards';
 import LowStocksTable from './LowStocks';
+import SalesByCatergoryChart from './SalesByCatChart';
 
 const Dashboard = () => {
   return (
@@ -87,7 +88,7 @@ const Dashboard = () => {
         </div>
         
         <div className="col-span-3 row-span-3 col-start-4 row-start-1">
-            <div className='mb-4'><RevenueBreakdownChart/></div>
+            <div className='mb-4'><SalesByCatergoryChart/></div>
             <div className='mb-4'><TopCustomerTable/></div>
             
         </div>
