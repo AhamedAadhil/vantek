@@ -18,7 +18,7 @@ const Sidebar = () => {
     { name: 'Customers', icon: Users, link: '/admin/adminCustomers' },
     { name: 'Transactions', icon: FileText, link: '/adminTransactions' },
     { name: 'Inventory', icon: Package, link: '/admin/inventoryPage' },
-    { name: 'Banner', icon: MessageSquare, link: '/adminBanner' },
+    { name: 'Banner', icon: MessageSquare, link: '/admin/adminBanners' },
     { name: 'Logout', icon: LogOut, link: '', onClick: () => handleLogout()},
   ];
 

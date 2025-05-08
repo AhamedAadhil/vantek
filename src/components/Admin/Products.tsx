@@ -1,98 +1,116 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { Search, Eye, Pencil, Trash2, Plus, Upload } from 'lucide-react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import * as XLSX from 'xlsx';
-import { saveAs } from 'file-saver';
+import { useEffect, useState } from "react";
+import { Search, Eye, Pencil, Trash2, Plus, Upload } from "lucide-react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import EditProduct from "./EditProduct";
 
 const ProductList = () => {
-  const [productData,setProductData]=useState([]);
-  const [search, setSearch] = useState('');
+  const [productData, setProductData] = useState([]);
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages,setTotalPages]=useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const productsPerPage = 25;
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
 
   const router = useRouter();
- 
-    
 
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-    const [selectAll, setSelectAll] = useState(false);
+  const [selectAll, setSelectAll] = useState(false);
 
-  const filteredProducts = productData.filter(product =>
-    product?.name?.toLowerCase().includes(search?.toLowerCase()) || product?.productCode?.toLowerCase().includes(search?.toLowerCase())
+  const filteredProducts = productData.filter(
+    (product) =>
+      product?.name?.toLowerCase().includes(search?.toLowerCase()) ||
+      product?.productCode?.toLowerCase().includes(search?.toLowerCase())
   );
 
   // const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-  const currentProducts = filteredProducts.slice((currentPage - 1) * productsPerPage, currentPage * productsPerPage);
+  const currentProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
 
-   // Handle individual selection
-   const handleSelectProduct = (id: number) => {
-    setSelectedProducts(prev =>
-        prev.includes(id) ? prev.filter(pid => pid !== id) : [...prev, id]
+  // Handle individual selection
+  const handleSelectProduct = (id: number) => {
+    setSelectedProducts((prev) =>
+      prev.includes(id) ? prev.filter((pid) => pid !== id) : [...prev, id]
     );
-   };
-
-
-   //Export To Excel
-   const exportToExcel = () => {
-    const dataToExport = productData.map((product) => ({
-      'Product Code': product.productCode,
-      'Name': product.name,
-      'Category': product.mainCategory,
-      'Sub-Category 1': product.subCategory1,
-      'Sub-Category 2': product.subCategory2,
-      'Variants Count': product.variants.length,
-      'Last Update': product.updatedAt?.split('T')[0],
-      'Published Date': product.createdAt?.split('T')[0],
-    }));
-  
-    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, 'ALL_PRODUCTS');
-  
-    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
-    const dataBlob = new Blob([excelBuffer], { type: 'application/octet-stream' });
-  
-    saveAs(dataBlob, 'products.xlsx');
   };
 
-    // Handle "Select All" toggle
-    const handleSelectAll = () => {
-        if (selectAll) {
-            setSelectedProducts([]);
-        } else {
-            setSelectedProducts(currentProducts.map(product => product._id));
-        }
-        setSelectAll(!selectAll);
-    };
+  //Export To Excel
+  const exportToExcel = () => {
+    const dataToExport = productData.map((product) => ({
+      "Product Code": product.productCode,
+      Name: product.name,
+      Category: product.mainCategory,
+      "Sub-Category 1": product.subCategory1,
+      "Sub-Category 2": product.subCategory2,
+      "Variants Count": product.variants.length,
+      "Last Update": product.updatedAt?.split("T")[0],
+      "Published Date": product.createdAt?.split("T")[0],
+    }));
 
-    const fetchData = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/products");
-        const data = await res.json();
-    
-        if (res.ok) {
-          console.log("✅ Raw API Response:", data);
-          setProductData(data.products);
-          setCurrentPage(data.currentPage)
-          setTotalPages(data.totalProducts)
-        } else {
-          console.error("❌ API Error:", data.message);
-        }
-      } catch (error) {
-        console.error("❌ Fetch error:", error);
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ALL_PRODUCTS");
+
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+
+    saveAs(dataBlob, "products.xlsx");
+  };
+
+  // Handle "Select All" toggle
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedProducts([]);
+    } else {
+      setSelectedProducts(currentProducts.map((product) => product._id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const fetchData = async () => {
+    try {
+      const res = await fetch("http://localhost:3000/api/products");
+      const data = await res.json();
+
+      if (res.ok) {
+        console.log("✅ Raw API Response:", data);
+        setProductData(data.products);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalProducts);
+      } else {
+        console.error("❌ API Error:", data.message);
       }
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+    console.log("✅ Updated productData:", productData);
+
+    if (showEditPopup) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
     };
-    
-    useEffect(() => {
-      fetchData()
-      console.log("✅ Updated productData:", productData);
-    }, []);
-    
-  
+  }, [showEditPopup]);
 
   return (
     <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
@@ -117,7 +135,8 @@ const ProductList = () => {
             className="bg-green-600 hover:bg-green-700 text-white font-semibold px-6 py-2 rounded flex items-center justify-center"
             onClick={exportToExcel}
           >
-            <Upload size={17} className='mr-2'/>Export to Excel
+            <Upload size={17} className="mr-2" />
+            Export to Excel
           </button>
 
           {/* ADD PRODUCT Button */}
@@ -130,6 +149,24 @@ const ProductList = () => {
           </button>
         </div>
       </div>
+      {/* Edit Product POPUP Begins */}
+      {showEditPopup && selectedProduct && (
+        <div className="backdrop-blur-md bg-black/60 fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center overflow-auto">
+          <div className="text-black rounded-lg w-[90%] max-w-fit max-h-[90vh] overflow-y-auto p-1 relative hide-scrollbar">
+            <button
+              className="rounded-lg mr-5 mt-5 p-2 bg-red absolute top-2 right-2 text-white hover:text-black"
+              onClick={() => setShowEditPopup(false)}
+            >
+              ✕
+            </button>
+            <EditProduct
+              productId={selectedProduct}
+              onClose={() => setShowEditPopup(false)}
+            />
+          </div>
+        </div>
+      )}
+      {/* Edit Product POPUP End */}
 
       <table className="w-full text-left border-collapse">
         <thead className="border-b">
@@ -195,9 +232,10 @@ const ProductList = () => {
                 </button>
                 <button
                   className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white"
-                  onClick={() =>
-                    router.push(`/admin/adminEditProduct/${product._id}`)
-                  }
+                  onClick={() => {
+                    setSelectedProduct(product._id);
+                    setShowEditPopup(true);
+                  }}
                 >
                   <Pencil size={16} />
                 </button>
@@ -209,7 +247,6 @@ const ProductList = () => {
           ))}
         </tbody>
       </table>
-
       {/* Pagination */}
       <div>
         {/* <div className="mt-4">

@@ -10,7 +10,7 @@ import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const EditProduct = ({ productId }: { productId: string }) => {
+const EditProduct = ({ productId }: { productId: string, onClose }) => {
   const [productCode, setProductCode] = useState("");
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
@@ -171,16 +171,8 @@ const EditProduct = ({ productId }: { productId: string }) => {
   };
 
   return (
-    <div className="m-4 p-6 bg-dark text-white rounded-lg">
+    <div className="m-4 p-6 bg-gray-800 border border-warmGray-500/50 text-white rounded-lg">
       <h2 className="text-2xl font-semibold">Edit Product</h2>
-      <div className="flex justify-end">
-        <button
-          className="rounded-2xl bg-reds-500 w-fit p-2 flex flex-end"
-          onClick={() => router.push("/admin/inventoryPage")}
-        >
-          <X />
-        </button>
-      </div>
       <form>
         <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
           {/* Left Column */}

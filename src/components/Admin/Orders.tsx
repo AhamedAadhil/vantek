@@ -138,17 +138,17 @@ const Orders = () => {
         <h2 className="text-lg font-bold">All Order List</h2>
         <div className="flex">
           <div className="flex items-center gap-4 mx-4">
-            <div className="">
+            <div className="flex items-center">
+              <Search
+                className="absolute ml-4 text-gray-400"
+                size={18}
+              />
               <input
                 type="text"
                 placeholder="Search orders..."
                 className="bg-gray-800 text-white border border-gray-600 px-4 py-2 rounded-lg pl-10 focus:outline-none"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-              />
-              <Search
-                className="absolute left-3 top-2 text-gray-400"
-                size={18}
               />
             </div>
             <div className="flex flex-row gap-4 items-center">

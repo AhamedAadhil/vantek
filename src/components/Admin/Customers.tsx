@@ -161,7 +161,7 @@ const Customers = () => {
 
       {/* PopUp Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm bg-black/60">
           <div className="bg-white rounded-lg p-6 w-80 text-center">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
               Are you sure?
