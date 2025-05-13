@@ -136,8 +136,7 @@ const EditProduct = ({ productId }: { productId: string, onClose }) => {
 
     const payload = {
       action: "updateDetails",
-      productId,
-      updatedData: {
+     id: productId,
         productCode,
         name: productName,
         description: productDescription,
@@ -149,20 +148,20 @@ const EditProduct = ({ productId }: { productId: string, onClose }) => {
         featuredProduct: featured,
         isVisible: visible,
         newImages: base64Images,
-        imagesToDelete: deletedImageUrls,
+        deletedImages: deletedImageUrls,
         variantAdds,
         variantUpdates,
         variantDeletes,
-      },
     };
 
-    const res = await fetch("/api/admin/products", {
+    const res = await fetch("/api/admin/product", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
 
     const result = await res.json();
+    console.log("update product results===",result);
     if (res.ok) {
       router.push("/admin/inventoryPage");
     } else {

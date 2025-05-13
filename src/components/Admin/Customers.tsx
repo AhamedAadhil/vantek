@@ -59,7 +59,7 @@ const Customers = () => {
   };
 
   if (loading) {
-    return <div className="m-4 p-6 bg-dark text-white rounded-lg">Loading...</div>;
+    return <div className="m-4 p-6 bg-[#202020] text-white rounded-lg">Loading...</div>;
   }
 
   //Export To Excel Function
@@ -82,7 +82,7 @@ const Customers = () => {
   
 
   return (
-    <div className="m-4 p-6 bg-dark text-white rounded-lg">
+    <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">All Customer List</h2>
         <div className="flex gap-5">
@@ -90,7 +90,7 @@ const Customers = () => {
             <input
               type="text"
               placeholder="Search customers..."
-              className="bg-dark text-white border border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
+              className="bg-[#202020] text-white border border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -107,7 +107,7 @@ const Customers = () => {
       </div>
 
       <table className="w-full text-left border-collapse">
-        <thead>
+        <thead className="border-b">
           <tr className="bg-gray-800 text-gray-300">
             <th className="p-3">Full Name</th>
             <th className="p-3">Joined Date</th>
@@ -121,18 +121,18 @@ const Customers = () => {
         </thead>
         <tbody>
           {currentUsers.map((user) => (
-            <tr key={user._id} className="border-b text-sm border-gray-700">
+            <tr key={user._id} className="border-b border-dashed text-sm border-gray-500">
               <td className="p-3 flex items-center space-x-3">
-                <Image
+                {/* <Image
                   src={user.avatar || "/images/users/default.jpg"}
                   alt={user.name}
                   width={40}
                   height={40}
                   className="rounded-full"
-                />
+                /> */}
                 <span>{user.name}</span>
               </td>
-              <td className="p-3">{user.joinedDate || "N/A"}</td>
+              <td className="p-3">{user.createdAt ? new Date(user.createdAt).toISOString().split('T')[0] : "N/A"}</td>
               <td className="p-3">{user.phone || "N/A"}</td>
               <td className="p-3">{user.country || "N/A"}</td>
               <td className="p-3">{user.totalPurchase || "N/A"}</td>

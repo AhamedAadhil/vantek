@@ -133,7 +133,7 @@ const Orders = () => {
   );
 
   return (
-    <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
+    <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-sm text-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">All Order List</h2>
         <div className="flex">
@@ -184,7 +184,7 @@ const Orders = () => {
       </div>
 
       <table className="w-full text-left border-collapse">
-        <thead>
+        <thead className="border-b">
           <tr className="bg-gray-800 text-gray-300 text-base">
             <th className="p-3">Customer</th>
             <th className="p-3">Purchase Date</th>

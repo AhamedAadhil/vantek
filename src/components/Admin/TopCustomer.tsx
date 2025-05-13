@@ -97,7 +97,7 @@ const TopCustomerTable = () => {
   ];
 
   return (
-    <div className="w-full bg-gray-7 text-white p-4 rounded-lg shadow-lg">
+    <div className="w-full bg-[#202020] border border-gray-600 text-white p-4 rounded-lg shadow-lg">
       <div className="flex justify-between items-center mb-4 border-b border-gray-5 pb-2">
         <h2 className="text-lg font-semibold border-l-4 border-l-blue-500 pl-2">
           Top Customers

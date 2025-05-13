@@ -14,10 +14,10 @@ import SalesByCatergoryChart from './SalesByCatChart';
 const Dashboard = () => {
   return (
     
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full bg-gray-900 p-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full bg-[#000000] p-4">
         <div className='h-fit' >
             
-            <div className="bg-gray-7 p-2 rounded-lg flex items-center space-x-4 shadow-md">
+            <div className="bg-[#202020] border border-gray-600 p-2 rounded-lg flex items-center space-x-4 shadow-md">
             <div className="p-3 bg-gray-6 rounded-full">
                 <DollarSign className="text-white" size={24} />
             </div>
@@ -40,7 +40,7 @@ const Dashboard = () => {
 
         <div className='h-fit'>
 
-            <div className="bg-gray-7 p-2 rounded-lg flex items-center space-x-4 shadow-md">
+            <div className="bg-[#202020] border border-gray-600 p-2 rounded-lg flex items-center space-x-4 shadow-md">
             <div className="p-3 bg-gray-6 rounded-full">
                 <ShoppingBag className="text-white" size={24} />
             </div>
@@ -62,7 +62,7 @@ const Dashboard = () => {
         </div>
 
         <div className='h-fit'>
-            <div className="bg-gray-7 p-2 rounded-lg flex items-center space-x-4 shadow-md">
+            <div className="bg-[#202020] border border-gray-600 p-2 rounded-lg flex items-center space-x-4 shadow-md">
                 <div className="p-3 bg-gray-6 rounded-full">
                     <User className="text-white" size={24} />
                 </div>
@@ -76,7 +76,7 @@ const Dashboard = () => {
                     <span 
                         className='text-xs text-green-light-2'
                     >
-                        2.25% increased this month
+                        2.2% increased this month
                     </span>
                 </div>
             </div>

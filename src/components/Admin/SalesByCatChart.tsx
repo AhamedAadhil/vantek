@@ -33,9 +33,9 @@ const SalesByCatergoryChart: React.FC = () => {
   };
 
   return (
-    <div className="bg-gray-7 rounded-lg overflow-hidden">
+    <div className="bg-[#202020] border border-gray-600 rounded-lg overflow-hidden">
       {/* Header */}
-      <div className="flex justify-between items-center p-4 border-b border-gray-800">
+      <div className="flex justify-between items-center p-4 border-b border-gray-500">
         <div className="flex items-center">
           <div className="w-1 h-5 bg-blue-500 mr-2"></div>
           <h2 className="text-white text-sm font-medium">Sales By Category</h2>
@@ -78,7 +78,7 @@ const SalesByCatergoryChart: React.FC = () => {
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-4 border-t border-gray-800">
+      <div className="grid grid-cols-4 border-t border-gray-500">
   {deviceData.map((device) => (
     <div
       key={device.name}
