@@ -5,6 +5,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import {fetchWishlistHelper} from '@/helper/getWishlistHelper'
 import { setWishlist } from "@/redux/features/wishlist-slice";
+import { fetchCartHelper } from "@/helper/getCartHelper";
+import { setCart } from "@/redux/features/cart-slice";
 
 
 
@@ -13,6 +15,7 @@ export default function HomePage() {
   const dispatch = useDispatch();
     useEffect(() => {
        fetchWishlistHelper(user,dispatch,setWishlist);
+       fetchCartHelper(user,dispatch,setCart)
     }, []);
 
   return (

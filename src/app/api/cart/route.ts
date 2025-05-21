@@ -18,6 +18,8 @@ export async function POST(req: NextRequest) {
     // const objectProductId = new mongoose.Types.ObjectId(productId);
     // const objectVariantId = new mongoose.Types.ObjectId(variantId);
 
+    console.log("userId=",userId,"prodId=",productId,"varia=",variantId,"quan=",quantity, "from add to cart")
+
     let cartUserId = userId;
 
     const product = await (Product as mongoose.Model<IProduct>).findById(
@@ -112,7 +114,7 @@ export async function POST(req: NextRequest) {
 
     await cart.save();
 
-    await cart.populate("items.product", "title image"); // Only populate fields you need
+    await cart.populate("items.product", "name image");
     await cart.populate("items.variantId", "actualPrice");
 
     return NextResponse.json(
@@ -131,14 +133,14 @@ export async function POST(req: NextRequest) {
 // PATCH /api/cart
 export async function PATCH(req: NextRequest) {
   const { action, userId, productId, variantId, quantity } = await req.json();
-
+console.log("act=",action,"userId=",userId,"prodId=",productId,"varia=",variantId,"quan=",quantity)
   try {
     await connectDB();
     if (action === "removeProduct") {
       // ✅ Fetch the cart first
       const cart = await (Cart as mongoose.Model<ICart>)
         .findOne({ user: userId })
-        .populate("items.product", "title variants");
+        .populate("items.product", "name variants");
 
       if (!cart) {
         return NextResponse.json(
@@ -180,7 +182,7 @@ export async function PATCH(req: NextRequest) {
       // ✅ Save the updated cart
       await cart.save();
 
-      await cart.populate("items.product", "title image");
+      await cart.populate("items.product", "name image");
       await cart.populate("items.variantId", "actualPrice");
 
       const cleanedCart = cleanCart(cart);
@@ -199,7 +201,7 @@ export async function PATCH(req: NextRequest) {
     else if (action === "updateQuantity") {
       const cart = await (Cart as mongoose.Model<ICart>)
         .findOne({ user: userId })
-        .populate("items.product", "title variants"); // also get variants now
+        .populate("items.product", "name variants"); // also get variants now
 
       if (!cart) {
         return NextResponse.json(
@@ -239,7 +241,7 @@ export async function PATCH(req: NextRequest) {
       // ✅ Save the updated cart
       await cart.save();
 
-      await cart.populate("items.product", "title image");
+      await cart.populate("items.product", "name image");
       await cart.populate("items.variantId", "actualPrice");
 
       const cleanedCart = cleanCart(cart);
