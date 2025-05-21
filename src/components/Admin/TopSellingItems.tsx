@@ -74,7 +74,7 @@ const TopSellingProductsTable = () => {
   ];
 
   return (
-    <div className="w-full h-full bg-gray-7 text-white text-sm p-4 rounded-lg shadow-lg">
+    <div className="w-full h-full bg-[#202020] border border-gray-600 7 text-white text-sm p-4 rounded-lg shadow-lg">
       <div className="mb-4 border-b border-gray-6 pb-2">
         <h2 className="text-lg font-semibold flex items-center">
         <div className="w-1 h-5 bg-blues-500 mr-2"></div>

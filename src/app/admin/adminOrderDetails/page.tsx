@@ -1,6 +1,5 @@
 import React from "react";
 import { Metadata } from "next";
-import Orders from "@/components/Admin/Orders";
 import AdminOrderDetails from "@/components/Admin/AdminOrderDetails";
 
 export const metadata: Metadata = {
@@ -11,7 +10,7 @@ export const metadata: Metadata = {
 
 const AdminOrdersDetailsPage = () => {
   return (
-    <div className="bg-gray-900 w-screen h-full">
+    <div className="bg-gray-900 w-screen h-full ">
       <AdminOrderDetails/>
     </div>
   );

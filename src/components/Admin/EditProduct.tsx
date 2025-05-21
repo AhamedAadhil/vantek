@@ -1,38 +1,37 @@
-'use client'
-import React, { useEffect, useState } from 'react';
-import { X, XIcon, Plus } from 'lucide-react';
-import ToggleSwitch from '@/components/Admin/ToggleSwitch';
-import { useRouter } from 'next/navigation';
+"use client";
+import React, { useEffect, useState } from "react";
+import { X, XIcon, Plus } from "lucide-react";
+import ToggleSwitch from "@/components/Admin/ToggleSwitch";
+import { useRouter } from "next/navigation";
 import { quillModules } from "@/lib/quillModule";
-import dynamic from 'next/dynamic';
+import dynamic from "next/dynamic";
 import vanPartsData from "@/data/van_parts_categories.json";
-import Image from 'next/image';
-
+import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-
-
-const EditProduct = ({ productId }: { productId: string }) => {
+const EditProduct = ({ productId }: { productId: string, onClose }) => {
   const [productCode, setProductCode] = useState("");
-    const [productName, setProductName] = useState("");
-    const [productDescription, setProductDescription] = useState("");
-    const [topSelling, setTopSelling] = useState(false);
-    const [error, setError] = useState("");
-    const [visible, setVisible] = useState(true);
-    const [featured, setFeatured] = useState(false);
-    const [mainCategory, setMainCategory] = useState("");
-    const [subCategory1, setSubCategory1] = useState("");
-    const [subCategory2, setSubCategory2] = useState("");
-    const [images, setImages] = useState<string[]>([]);
-    const [imageError, setImageError] = useState("");
-    const [base64Images, setBase64Images] = useState<string[]>([]);
-    const [tags, setTags] = useState<string[]>([]);
-    const [variants, setVariants] = useState([
-      { name: "", actualPrice: 0, labelPrice: 0, stock: 0 },
-    ]);
+  const [productName, setProductName] = useState("");
+  const [productDescription, setProductDescription] = useState("");
+  const [topSelling, setTopSelling] = useState(false);
+  const [error, setError] = useState("");
+  const [visible, setVisible] = useState(true);
+  const [featured, setFeatured] = useState(false);
+  const [mainCategory, setMainCategory] = useState("");
+  const [subCategory1, setSubCategory1] = useState("");
+  const [subCategory2, setSubCategory2] = useState("");
+  const [images, setImages] = useState<string[]>([]);
+  const [imageError, setImageError] = useState("");
+  const [base64Images, setBase64Images] = useState<string[]>([]);
+  const [tags, setTags] = useState<string[]>([]);
+  const [existingVariants, setExistingVariants] = useState([]);
+  const [deletedImageUrls, setDeletedImageUrls] = useState<string[]>([]);
+  const [variantDeletes, setVariantDeletes] = useState<string[]>([]);
+  const [variants, setVariants] = useState([
+    { name: "", actualPrice: 0, labelPrice: 0, stock: 0 },
+  ]);
   const router = useRouter();
-
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -50,17 +49,16 @@ const EditProduct = ({ productId }: { productId: string }) => {
         setSubCategory1(product.subCategory1);
         setSubCategory2(product.subCategory2);
         // setExistingImages(product.images);
-        setImages(product.images)
+        setImages(product.images);
         setTags(product.tags);
         setVariants(product.variants);
-        console.log(product)
+        setExistingVariants(product.variants);
+        console.log(product);
       }
     };
     if (productId) fetchProduct();
   }, [productId]);
 
- 
-  
   //Adding categories
   const mainCategories = Object.keys(vanPartsData);
   const subCategories1 = mainCategory
@@ -70,7 +68,6 @@ const EditProduct = ({ productId }: { productId: string }) => {
     mainCategory && subCategory1
       ? vanPartsData[mainCategory][subCategory1]
       : [];
-
 
   //Initializing Functions
 
@@ -92,11 +89,17 @@ const EditProduct = ({ productId }: { productId: string }) => {
   };
 
   const handleRemoveVariant = (index: number) => {
+    const removed = variants[index];
+    if (removed._id) {
+      setVariantDeletes((prev) => [...prev, removed._id]);
+    }
     const updated = variants.filter((_, i) => i !== index);
     setVariants(updated);
   };
 
   const removeImage = (index: number) => {
+    const removedImage = images[index];
+    setDeletedImageUrls((prev) => [...prev, removedImage]);
     setImages((prev) => prev.filter((_, i) => i !== index));
     setBase64Images((prev) => prev.filter((_, i) => i !== index));
   };
@@ -127,36 +130,48 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
   const handleSaveProduct = async (e) => {
     e.preventDefault();
-    const productData = {
-      productCode,
-      name: productName,
-      description: productDescription,
-      mainCategory: mainCategory as
-        | "VW-T5"
-        | "VW-T6.1"
-        | "VW-T7"
-        | "Universal Camper Parts",
-      subCategory1,
-      subCategory2,
-      tags,
-      images: base64Images,
-      variants,
-      topSellingProduct: topSelling,
-      featuredProduct: featured,
+
+    const variantAdds = variants.filter((v) => !v._id);
+    const variantUpdates = variants.filter((v) => v._id);
+
+    const payload = {
+      action: "updateDetails",
+     id: productId,
+        productCode,
+        name: productName,
+        description: productDescription,
+        mainCategory,
+        subCategory1,
+        subCategory2,
+        tags,
+        topSellingProduct: topSelling,
+        featuredProduct: featured,
+        isVisible: visible,
+        newImages: base64Images,
+        deletedImages: deletedImageUrls,
+        variantAdds,
+        variantUpdates,
+        variantDeletes,
     };
+
+    const res = await fetch("/api/admin/product", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const result = await res.json();
+    console.log("update product results===",result);
+    if (res.ok) {
+      router.push("/admin/inventoryPage");
+    } else {
+      console.error(result.error || "Update failed");
+    }
   };
 
   return (
-    <div className="m-4 p-6 bg-dark text-white rounded-lg">
+    <div className="m-4 p-6 bg-gray-800 border border-warmGray-500/50 text-white rounded-lg">
       <h2 className="text-2xl font-semibold">Edit Product</h2>
-      <div className="flex justify-end">
-        <button
-          className="rounded-2xl bg-reds-500 w-fit p-2 flex flex-end"
-          onClick={() => router.push("/admin/inventoryPage")}
-        >
-          <X />
-        </button>
-      </div>
       <form>
         <div className="bg-gray-800 p-6 rounded-lg mt-4 grid grid-cols-2 gap-6">
           {/* Left Column */}
@@ -171,6 +186,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
                 placeholder="Product Code"
                 maxLength={10}
                 value={productCode}
+                onChange={(e) => setProductCode(e.target.value)}
               />
               <small className="text-gray-400">
                 *Product Code should not exceed 10 characters
@@ -186,6 +202,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
                 placeholder="Product Name"
                 maxLength={100}
                 value={productName}
+                onChange={(e) => setProductName(e.target.value)}
               />
               <small className="text-gray-400">
                 *Product Name should not exceed 100 characters
@@ -196,6 +213,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
               <select
                 className="p-2 rounded bg-meta-2 text-white"
                 value={mainCategory}
+                onChange={(e) => setMainCategory(e.target.value)}
               >
                 <option value="">Select Main Category</option>
                 {mainCategories.map((cat) => (
@@ -208,6 +226,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
               <select
                 className="p-2 rounded bg-meta-2 text-white"
                 value={subCategory1}
+                onChange={(e) => setSubCategory1(e.target.value)}
                 disabled={!mainCategory}
               >
                 <option value="">Select Sub Category 1</option>
@@ -221,6 +240,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
               <select
                 className="p-2 rounded bg-meta-2 text-white"
                 value={subCategory2}
+                onChange={(e) => setSubCategory2(e.target.value)}
                 disabled={!subCategory1}
               >
                 <option value="">Select Sub Category 2</option>
@@ -233,7 +253,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
             </div>
             <small className="sm text-reds-500">{error}</small>
 
-              <label className="block mb-1">Product Description</label>
+            <label className="block mb-1">Product Description</label>
             <div className="bg-white p-1 rounded-md">
               <ReactQuill
                 theme="snow"
@@ -243,10 +263,11 @@ const EditProduct = ({ productId }: { productId: string }) => {
                 className="dark-quill text-gray-900"
               />
             </div>
-              <small className="text-gray-400">
-                *Add a rich description about the product (1500 characters max)
-              </small>
-            <div>
+            <small className="text-gray-400">
+              *Add a rich description about the product (1500 characters max)
+            </small>
+
+            {/* <div>
               <label className="block mb-1">Tags</label>
               <input
                 required
@@ -255,6 +276,45 @@ const EditProduct = ({ productId }: { productId: string }) => {
                 className="w-full p-2 rounded bg-meta-2 text-white"
                 placeholder="Comma-separated tags (e.g. camper,bumper,roof)"
                 maxLength={100}
+              />
+            </div> */}
+
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Tags</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-dark-3 text-white px-2 py-1 rounded-md flex items-center text-xs"
+                  >
+                    {tag}
+                    <X
+                      size={16}
+                      className="ml-2 cursor-pointer"
+                      onClick={() =>
+                        setTags(tags.filter((_, i) => i !== index))
+                      }
+                    />
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                className="w-full p-2 rounded bg-meta-2 text-white"
+                placeholder="Type a tag and press Enter or Comma"
+                onKeyDown={(e) => {
+                  if (
+                    (e.key === "Enter" || e.key === ",") &&
+                    e.currentTarget.value.trim()
+                  ) {
+                    e.preventDefault();
+                    const newTag = e.currentTarget.value.trim();
+                    if (!tags.includes(newTag)) {
+                      setTags([...tags, newTag]);
+                    }
+                    e.currentTarget.value = "";
+                  }
+                }}
               />
             </div>
           </div>
@@ -277,6 +337,9 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       className="p-2 rounded bg-meta-2 text-white w-35"
                       placeholder="Name"
                       value={v.name}
+                      onChange={(e) =>
+                        handleVariantChange(index, "name", e.target.value)
+                      }
                     />
                   </div>
 
@@ -287,6 +350,13 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       className="p-2 rounded bg-meta-2 text-white w-28"
                       placeholder="Actual Price"
                       value={v.actualPrice}
+                      onChange={(e) =>
+                        handleVariantChange(
+                          index,
+                          "actualPrice",
+                          Number(e.target.value)
+                        )
+                      }
                     />
                   </div>
 
@@ -297,6 +367,13 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       className="p-2 rounded bg-meta-2 text-white w-28"
                       placeholder="Label Price"
                       value={v.labelPrice}
+                      onChange={(e) =>
+                        handleVariantChange(
+                          index,
+                          "labelPrice",
+                          Number(e.target.value)
+                        )
+                      }
                     />
                   </div>
 
@@ -307,12 +384,20 @@ const EditProduct = ({ productId }: { productId: string }) => {
                       className="p-2 rounded bg-meta-2 text-white w-20"
                       placeholder="Stock"
                       value={v.stock}
+                      onChange={(e) =>
+                        handleVariantChange(
+                          index,
+                          "stock",
+                          Number(e.target.value)
+                        )
+                      }
                     />
                   </div>
 
                   <button
+                    type="button"
                     className="rounded-md p-2 hover:bg-red-600 text-white border border-dashed"
-                    
+                    onClick={() => handleRemoveVariant(index)}
                   >
                     <XIcon size={18} />
                   </button>
@@ -321,6 +406,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
               <div className="flex justify-end">
                 <button
+                  type="button"
                   className="text-gray-900 rounded-md bg-emerald-200 hover:bg-emerald-500 mx-2 px-2 mt-4"
                   onClick={handleAddVariant}
                 >
@@ -330,8 +416,9 @@ const EditProduct = ({ productId }: { productId: string }) => {
               </div>
             </div>
 
+            {/* FROM HERE MODIFICATION STOPED */}
             <div>
-              <label className="block mb-1">Product Images</label>
+              <label className="block mb-1 font-medium">Product Images</label>
               <div className="border-2 border-dashed p-6 text-center rounded bg-gray-700">
                 <input
                   className="py-1.5 h-full ps-0 w-full"
@@ -343,17 +430,15 @@ const EditProduct = ({ productId }: { productId: string }) => {
                     if (files) {
                       const fileArray = Array.from(files);
 
-                      // Convert files to preview URLs for UI
-                      const imageUrls = fileArray.map((file) =>
+                      // Convert to preview URLs
+                      const previewUrls = fileArray.map((file) =>
                         URL.createObjectURL(file)
                       );
-                      setImages((prev) => [...prev, ...imageUrls]);
+                      setImages((prev) => [...prev, ...previewUrls]);
 
-                      // Convert files to base64 strings
+                      // Convert to base64 strings
                       const base64Strings = await Promise.all(
-                        fileArray.map(
-                          async (file) => await convertToBase64(file)
-                        )
+                        fileArray.map((file) => convertToBase64(file))
                       );
                       setBase64Images((prev) => [...prev, ...base64Strings]);
                     }
@@ -372,14 +457,14 @@ const EditProduct = ({ productId }: { productId: string }) => {
                     <Image
                       className="rounded-lg bg-meta-5 bg-opacity-50"
                       src={src}
-                      alt={`product preview ${idx + 1}`}
+                      alt={`product image ${idx + 1}`}
                       width={100}
                       height={100}
                     />
                     <button
+                      type="button"
                       onClick={() => removeImage(idx)}
                       className="absolute top-0 right-0 bg-red-600 rounded-full p-1 hover:bg-red-700"
-                      type="button"
                     >
                       <X className="text-white" size={16} />
                     </button>
@@ -387,6 +472,7 @@ const EditProduct = ({ productId }: { productId: string }) => {
                 ))}
               </div>
             </div>
+
             <div className="grid grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <div></div>
@@ -424,19 +510,22 @@ const EditProduct = ({ productId }: { productId: string }) => {
 
         {/* Publish Details */}
 
-        <button
-          className="ml-6 mt-6 bg-green-light-3 hover:bg-blue-light-2 text-dark font-semibold px-6 py-2 border-hidden rounded"
-          type="submit"
-          onClick={handleSaveProduct}
-        >
-          UPDATE PRODUCT
-        </button>
-        <button
-          className="ml-6 mt-6 bg-red-light-3 hover:bg-red-dark text-dark hover:text-white font-semibold px-6 py-2 border-hidden rounded"
-          onClick={resetForm}
-        >
-          CLEAR
-        </button>
+        <div className="flex gap-4 mt-6">
+          <button
+            type="submit"
+            onClick={handleSaveProduct}
+            className="bg-green-500 hover:bg-green-600 text-white font-semibold px-6 py-2 rounded"
+          >
+            UPDATE PRODUCT
+          </button>
+          <button
+            type="button"
+            onClick={resetForm}
+            className="bg-red-500 hover:bg-red-600 text-white font-semibold px-6 py-2 rounded"
+          >
+            CLEAR
+          </button>
+        </div>
       </form>
     </div>
   );
