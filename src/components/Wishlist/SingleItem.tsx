@@ -87,12 +87,12 @@ const SingleItem = ({ item }) => {
             width={80}
             height={80}
             className="object-contain"
-            onClick={() => router.push(`/shop-details/${item?._id}`)}
+            onClick={() => router.push(`/product/${item?._id}`)}
           />
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-dark hover:text-blue" onClick={() => router.push(`/shop-details/${item?._id}`)}>
+          <h3 className="text-sm font-medium text-dark hover:text-blue" onClick={() => router.push(`/product/${item?._id}`)}>
             <a href="#">{item?.name}</a>
           </h3>
         </div>

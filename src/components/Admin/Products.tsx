@@ -237,7 +237,7 @@ const ProductList = () => {
                     <button
                       className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white"
                       onClick={() =>
-                        router.push(`/shop-details/${product._id}`)
+                        router.push(`/product/${product._id}`)
                       }
                     >
                       <Eye size={16} />

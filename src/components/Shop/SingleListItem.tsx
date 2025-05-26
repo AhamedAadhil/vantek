@@ -118,7 +118,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
             </button>
 
             <button
-              onClick={() => router.push(`/shop-details/${item._id}`)}
+              onClick={() => router.push(`/product/${item._id}`)}
               className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
             >
               View Product
@@ -143,7 +143,7 @@ const SingleListItem = ({ item }: { item: Product }) => {
         <div className="w-full flex flex-col gap-5 sm:flex-row sm:items-center justify-center sm:justify-between py-5 px-4 sm:px-7.5 lg:pl-11 lg:pr-12">
           <div>
             <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-              <Link href="/shop-details"> {item?.name} </Link>
+              <Link href="/product"> {item?.name} </Link>
             </h3>
 
             <span className="flex items-center gap-2 font-medium text-lg">

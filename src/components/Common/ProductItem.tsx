@@ -103,7 +103,7 @@ const ProductItem = ({ item }: { item: Product }) => {
           </button>
 
           <button
-            onClick={() => router.push(`/shop-details/${item?._id}`)}
+            onClick={() => router.push(`/product/${item?._id}`)}
             className="inline-flex font-medium text-custom-sm py-[7px] px-5 rounded-[5px] bg-blue text-white ease-out duration-200 hover:bg-blue-dark"
           >
             View Product
@@ -139,7 +139,7 @@ const ProductItem = ({ item }: { item: Product }) => {
         className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5"
         onClick={() => handleProductDetails()}
       >
-        <Link href={`/shop-details/${item._id}`}> {item.name} </Link>
+        <Link href={`/product/${item._id}`}> {item.name} </Link>
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">

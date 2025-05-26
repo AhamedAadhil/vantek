@@ -254,7 +254,7 @@ const QuickViewModal = () => {
                   disabled={quantity === 0 && true}
                   onClick={() => {
                     closeModal();
-                    router.push(`/shop-details/${product._id}`);
+                    router.push(`/product/${product._id}`);
                   }}
                   className={`inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark
                   `}

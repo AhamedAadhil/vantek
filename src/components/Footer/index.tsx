@@ -223,7 +223,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/shop-with-sidebar">
+                <a className="ease-out duration-200 hover:text-blue" href="/shop">
                   Shop
                 </a>
               </li>
