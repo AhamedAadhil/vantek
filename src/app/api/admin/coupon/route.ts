@@ -1,3 +1,3 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextApiRequest, NextApiResponse } from "next";
 
-// TODO: Implement the coupon API, Implement Coupon model
+export const POST = async (req: NextApiRequest, res: NextApiResponse) => {};
