@@ -277,6 +277,8 @@ const RecentOrdersTable: React.FC = () => {
                       {order.customer.avatar ? (
                         <Image
                           src="/api/placeholder/32/32"
+                          width={32}
+                          height={32}
                           alt={order.customer.name}
                           className="w-full h-full object-cover"
                         />

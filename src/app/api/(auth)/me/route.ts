@@ -1,6 +1,7 @@
 import connectDB from "@/lib/db";
 import { authMiddleware } from "@/lib/middleware";
-import User from "@/lib/models/user";
+import User, { IUser } from "@/lib/models/user";
+import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (req: NextRequest) => {
@@ -12,7 +13,9 @@ export const GET = async (req: NextRequest) => {
   try {
     await connectDB();
     const userId = req.headers.get("userId");
-    const userProfile = await User.findById(userId).exec();
+    const userProfile = await (User as mongoose.Model<IUser>)
+      .findById(userId)
+      .exec();
     if (!userProfile) {
       return NextResponse.json(
         { message: "User not found", success: false },
