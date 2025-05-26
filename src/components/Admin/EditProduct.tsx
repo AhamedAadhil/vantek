@@ -170,7 +170,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
     const result = await res.json();
     console.log("update product results===", result);
     if (res.ok) {
-      router.push("/admin/inventoryPage");
+      router.push("/admin/inventory");
     } else {
       console.error(result.error || "Update failed");
     }

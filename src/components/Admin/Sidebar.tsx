@@ -24,11 +24,11 @@ const Sidebar = () => {
 
   const menuItems = [
     { name: "Dashboard", icon: Layers, link: "/admin" },
-    { name: "Orders", icon: ShoppingCart, link: "/admin/adminOrders" },
-    { name: "Customers", icon: Users, link: "/admin/adminCustomers" },
+    { name: "Orders", icon: ShoppingCart, link: "/admin/orders" },
+    { name: "Customers", icon: Users, link: "/admin/customers" },
     { name: "Transactions", icon: FileText, link: "/adminTransactions" },
-    { name: "Inventory", icon: Package, link: "/admin/inventoryPage" },
-    { name: "Banner", icon: MessageSquare, link: "/admin/adminBanners" },
+    { name: "Inventory", icon: Package, link: "/admin/inventory" },
+    { name: "Banner", icon: MessageSquare, link: "/admin/banners" },
     { name: "Logout", icon: LogOut, link: "", onClick: () => handleLogout() },
   ];
 

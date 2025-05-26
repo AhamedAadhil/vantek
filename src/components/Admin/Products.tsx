@@ -146,7 +146,7 @@ const ProductList = () => {
           {/* ADD PRODUCT Button */}
           <button
             className="bg-blue-light hover:bg-blue-dark text-white font-semibold px-4 py-2 border-hidden rounded flex items-center justify-center"
-            onClick={() => router.push("/admin/adminAddProducts")}
+            onClick={() => router.push("/admin/add-product")}
           >
             <Plus className="mr-2" size={15} />
             Add Product

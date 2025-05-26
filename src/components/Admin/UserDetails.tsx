@@ -41,6 +41,8 @@ const UserDetails = () => {
           src={user.avatar}
           alt="User Avatar"
           className="w-12 h-12 rounded-full"
+          width={32}
+          height={32}
         />
         <div>
           <h3 className="text-md font-bold">{user.name}</h3>

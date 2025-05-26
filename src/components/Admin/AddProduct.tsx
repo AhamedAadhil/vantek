@@ -157,7 +157,7 @@ const AddProduct = () => {
       <div className="flex justify-end">
         <button
           className="rounded-2xl bg-reds-500 w-fit p-2 flex flex-end"
-          onClick={() => router.push("/admin/inventoryPage")}
+          onClick={() => router.push("/admin/inventory")}
         >
           <X />
         </button>
