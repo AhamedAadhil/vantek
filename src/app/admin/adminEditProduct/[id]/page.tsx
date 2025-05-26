@@ -14,7 +14,10 @@ const EditProductPage = () => {
   const { id } = useParams();
   return (
     <div className=" bg-gray-900 w-full">
-      <EditProducts productId={id} />
+      <EditProducts
+        productId={Array.isArray(id) ? id[0] : id}
+        onClose={undefined}
+      />
     </div>
   );
 };
