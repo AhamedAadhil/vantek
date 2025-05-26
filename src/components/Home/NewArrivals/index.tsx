@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,17 +8,17 @@ import { useDispatch } from "react-redux";
 import { setWishlist } from "@/redux/features/wishlist-slice";
 import { AppDispatch } from "@/redux/store";
 //TODO : Fetch only Featured Products
-// FEATURED PRODUCT 
+// FEATURED PRODUCT
 const NewArrival = () => {
-
-
-  const [products,setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
   const fetchData = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/products?featuredProduct=true&limit=10");
+      const res = await fetch(
+        "http://localhost:3000/api/products?featuredProduct=true&limit=10"
+      );
       const data = await res.json();
-  
+
       if (res.ok) {
         console.log("✅ Raw API Response:", data);
         setProducts(data.products);
@@ -30,11 +30,11 @@ const NewArrival = () => {
     } catch (error) {
       console.error("❌ Fetch error:", error);
     }
-  }
+  };
 
-  useEffect(()=>{
-    fetchData()
-  },[])
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <section className="overflow-hidden pt-15">
@@ -62,7 +62,7 @@ const NewArrival = () => {
                   strokeLinecap="round"
                 />
               </svg>
-              Vantek's
+              Vantek&apos;s
             </span>
             <h2 className="font-semibold text-xl xl:text-heading-5 text-dark">
               Featured Products

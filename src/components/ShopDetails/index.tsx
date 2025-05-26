@@ -18,13 +18,20 @@ import {
   ThumbsUp,
   Truck,
   Plus,
-  Minus
+  Minus,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { AppDispatch, RootState } from "@/redux/store";
-import { addItemToWishlist, removeItemFromWishlist } from "@/redux/features/wishlist-slice";
-import { addItemToCart,removeItemFromCart,removeAllItemsFromCart } from "@/redux/features/cart-slice";
+import {
+  addItemToWishlist,
+  removeItemFromWishlist,
+} from "@/redux/features/wishlist-slice";
+import {
+  addItemToCart,
+  removeItemFromCart,
+  removeAllItemsFromCart,
+} from "@/redux/features/cart-slice";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
@@ -39,7 +46,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeTab, setActiveTab] = useState<"description" | "reviews">(
     "description"
   );
-  
+
   const user = useSelector((state: RootState) => state.auth.user);
   const dispatch = useDispatch<AppDispatch>();
   const router = useRouter();
@@ -49,95 +56,103 @@ const ShopDetails = ({ productId }: { productId: string }) => {
   const maxStock = 10; // or dynamically fetched
   const currentStock = product?.variants[selectedVariantIndex]?.stock ?? 0;
   const stockPercentage = Math.min((currentStock / maxStock) * 100, 100); // Cap at 100%
-  const isInWishlist = wishlist.some((wishItem) => wishItem._id === product?._id);
-  const handleIncrement = () => setQuantity((prev) => prev<product?.variants?.[selectedVariantIndex].stock ? prev + 1:prev);
+  const isInWishlist = wishlist.some(
+    (wishItem) => wishItem._id === product?._id
+  );
+  const handleIncrement = () =>
+    setQuantity((prev) =>
+      prev < product?.variants?.[selectedVariantIndex].stock ? prev + 1 : prev
+    );
   const handleDecrement = () => {
     if (quantity > 1) setQuantity((prev) => prev - 1);
   };
-  
+
   const handlePreviewSlider = () => {
     openPreviewModal();
   };
 
   // TODO: toaster
   const handleAddToCart = async () => {
-  console.log(product?.variants?.[selectedVariantIndex]._id, "VARIANT ID IS THIS : ");
+    console.log(
+      product?.variants?.[selectedVariantIndex]._id,
+      "VARIANT ID IS THIS : "
+    );
 
-  if (!user) {
-    router.push('/signin');
-    return;
-  }
-  try {
-    const res = await fetch("http://localhost:3000/api/cart", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        productId: product._id,
-        userId: user?._id,
-        variantId: product?.variants?.[selectedVariantIndex]._id,
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+    try {
+      const res = await fetch("http://localhost:3000/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+          userId: user?._id,
+          variantId: product?.variants?.[selectedVariantIndex]._id,
+          quantity: quantity,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to add to cart!");
+      }
+
+      const payload = {
+        _id: product._id,
+        name: product.name,
+        actualPrice: product?.variants?.[selectedVariantIndex].actualPrice,
         quantity: quantity,
-      }),
-    });
+        images: product.images[0],
+        variantId: product?.variants?.[selectedVariantIndex]._id,
+      };
 
-    const data = await res.json();
+      console.log("Dispatching addItemToCart with payload:", payload); // <---- Log payload here
 
-    if (!res.ok) {
-      throw new Error(data.message || "Failed to add to cart!");
+      dispatch(addItemToCart(payload));
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
+  const handleItemToWishList = async () => {
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+    // Optimistically update the Redux state
+    const isInWishlist = wishlist.some(
+      (wishItem) => wishItem._id === product._id
+    );
+
+    if (isInWishlist) {
+      // Remove from wishlist if item already exists
+      dispatch(removeItemFromWishlist(product._id));
+    } else {
+      // Add to wishlist if item doesn't exist
+      dispatch(addItemToWishlist(product));
     }
 
-    const payload = {
-      _id: product._id,
-      name: product.name,
-      actualPrice: product?.variants?.[selectedVariantIndex].actualPrice,
-      quantity: quantity,
-      images: product.images[0],
-      variantId: product?.variants?.[selectedVariantIndex]._id,
-    };
+    try {
+      const res = await fetch("http://localhost:3000/api/products/wishlist", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: product._id,
+        }),
+      });
 
-    console.log("Dispatching addItemToCart with payload:", payload); // <---- Log payload here
+      const data = await res.json();
 
-    dispatch(addItemToCart(payload));
-  } catch (error: any) {
-    console.log(error.message);
-  }
-};
-
-  
-  const handleItemToWishList = async () => {
-      if (!user){
-        router.push('/signin')
-        return
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to toggle wishlist state!");
       }
-      // Optimistically update the Redux state
-      const isInWishlist = wishlist.some((wishItem) => wishItem._id === product._id);
-  
-      if (isInWishlist) {
-        // Remove from wishlist if item already exists
-        dispatch(removeItemFromWishlist(product._id));
-      } else {
-        // Add to wishlist if item doesn't exist
-        dispatch(addItemToWishlist(product));
-      }
-  
-      try {
-        const res = await fetch("http://localhost:3000/api/products/wishlist", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            productId: product._id,
-          }),
-        });
-  
-        const data = await res.json();
-  
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to toggle wishlist state!");
-        }
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
-  
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -241,7 +256,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                     setSelectedVariantIndex(
                       selectedIndex !== -1 ? selectedIndex : 0
                     );
-                    setQuantity(1)
+                    setQuantity(1);
                   }}
                 >
                   {product?.variants?.map((variant: any, index: number) => (
@@ -253,25 +268,27 @@ const ShopDetails = ({ productId }: { productId: string }) => {
               </div>
 
               <div className="mt-2">
-      <span className="block mb-1 text-sm text-gray-700 font-medium">
-      Select  Quantity
-      </span>
-      <div className="flex items-center space-x-3">
-        <button
-          onClick={handleDecrement}
-          className="p-1 rounded-full border border-gray-300 hover:bg-gray-100 transition"
-        >
-          <Minus className="w-4 h-4" />
-        </button>
-        <span className="text-base font-medium w-6 text-center">{quantity}</span>
-        <button
-          onClick={handleIncrement}
-          className="p-1 rounded-full border border-gray-300 hover:bg-gray-100 transition"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
+                <span className="block mb-1 text-sm text-gray-700 font-medium">
+                  Select Quantity
+                </span>
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={handleDecrement}
+                    className="p-1 rounded-full border border-gray-300 hover:bg-gray-100 transition"
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="text-base font-medium w-6 text-center">
+                    {quantity}
+                  </span>
+                  <button
+                    onClick={handleIncrement}
+                    className="p-1 rounded-full border border-gray-300 hover:bg-gray-100 transition"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
 
               <div className="w-full bg-gray-200 h-2 rounded-full mt-4">
                 <div
@@ -281,17 +298,24 @@ const ShopDetails = ({ productId }: { productId: string }) => {
               </div>
 
               <div className="text-sm text-gray-600">
-               Stock Available: {product?.variants[selectedVariantIndex]?.stock ?? 0}
+                Stock Available:{" "}
+                {product?.variants[selectedVariantIndex]?.stock ?? 0}
               </div>
 
               <div className="flex items-center mt-4 gap-2">
-                <button onClick={()=> handleAddToCart()} className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700">
+                <button
+                  onClick={() => handleAddToCart()}
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                >
                   Add To Cart
                 </button>
-                <button onClick={() => handleItemToWishList()} className="bg-blue-100 text-blue-500 border-hidden border-blue-500 px-4 py-2 rounded-md hover:bg-blue-700 hover:text-white" >
-                  <Heart 
-                  color={isInWishlist ? "red" : "#dbeafe"}
-                  fill={isInWishlist ? "red" : "white"}
+                <button
+                  onClick={() => handleItemToWishList()}
+                  className="bg-blue-100 text-blue-500 border-hidden border-blue-500 px-4 py-2 rounded-md hover:bg-blue-700 hover:text-white"
+                >
+                  <Heart
+                    color={isInWishlist ? "red" : "#dbeafe"}
+                    fill={isInWishlist ? "red" : "white"}
                   />
                 </button>
                 <button className="bg-amber-100 text-amber-500 border-hidden border-green-500 px-4 py-2 rounded-md hover:bg-amber-500 hover:text-white">
@@ -422,12 +446,12 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                     Customer Reviews
                   </h3>
                   <p className="text-gray-600 italic">
-                    "Very sturdy, fits perfectly in my T6. Easy to operate and
-                    super safe. Worth every penny!"
+                    &quot;Very sturdy, fits perfectly in my T6. Easy to operate
+                    and super safe. Worth every penny!&quot;
                   </p>
                   <p className="mt-4 text-gray-600 italic">
-                    "Absolutely love the quality. Installation was
-                    straightforward and the reclining feature is great."
+                    &quot;Absolutely love the quality. Installation was
+                    straightforward and the reclining feature is great.&quot;
                   </p>
                 </div>
               )}

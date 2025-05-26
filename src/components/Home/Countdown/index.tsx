@@ -36,7 +36,7 @@ const CounDown = () => {
             </span>
 
             <h2 className="font-bold text-dark text-xl lg:text-heading-4 xl:text-heading-3 mb-3">
-              UK's #1 VW Vans Parts Supplier
+              UK&apos;s #1 VW Vans Parts Supplier
             </h2>
 
             <p>Summer Sale Ends in</p>
@@ -53,7 +53,8 @@ const CounDown = () => {
                   className="min-w-[64px] h-14.5 font-semibold text-xl lg:text-3xl text-dark rounded-lg flex items-center justify-center bg-white shadow-2 px-4 mb-2"
                   x-text="days"
                 >
-                  {" "}7{" "}
+                  {" "}
+                  7{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Days
@@ -66,7 +67,8 @@ const CounDown = () => {
                   className="min-w-[64px] h-14.5 font-semibold text-xl lg:text-3xl text-dark rounded-lg flex items-center justify-center bg-white shadow-2 px-4 mb-2"
                   x-text="hours"
                 >
-                  {" "}18{" "}
+                  {" "}
+                  18{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Hours
