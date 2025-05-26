@@ -7,16 +7,13 @@ import Breadcrumb from "@/components/Common/Breadcrumb";
 import Link from "next/link";
 import { loginSuccess } from "@/redux/features/authSlice";
 
-
 const Signin = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  
+
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-
 
   // Handle input change
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,7 +99,9 @@ const Signin = () => {
                 />
               </div>
 
-              {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+              {error && (
+                <p className="text-red-500 text-center mb-4">{error}</p>
+              )}
 
               <button
                 type="submit"
@@ -112,12 +111,15 @@ const Signin = () => {
                 {loading ? "Signing in..." : "Sign in to account"}
               </button>
 
-              <a href="#" className="block text-center text-dark-4 mt-4 hover:text-dark">
+              <a
+                href="#"
+                className="block text-center text-dark-4 mt-4 hover:text-dark"
+              >
                 Forgot your password?
               </a>
 
               <p className="text-center mt-6">
-                Don't have an account?
+                Don&apos;t have an account?
                 <Link href="/signup" className="text-dark hover:text-blue pl-2">
                   Sign Up Now!
                 </Link>

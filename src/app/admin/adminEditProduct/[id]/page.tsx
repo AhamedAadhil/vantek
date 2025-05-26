@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import { Metadata } from "next";
 import { useParams } from "next/navigation";
@@ -10,13 +10,13 @@ import EditProducts from "@/components/Admin/EditProduct";
 //   // other metadata
 // };
 
-const editProductPage = () => {
+const EditProductPage = () => {
   const { id } = useParams();
   return (
     <div className=" bg-gray-900 w-full">
-         <EditProducts productId={id} />
+      <EditProducts productId={id} />
     </div>
   );
 };
 
-export default editProductPage;
+export default EditProductPage;

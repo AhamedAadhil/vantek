@@ -214,7 +214,7 @@ const BannerList = () => {
                         className="mt-1"
                       />
                       <label htmlFor="terms" className="text-sm text-gray-300">
-                        By submitting this form I'm creating a new Promo
+                        By submitting this form I&apos;m creating a new Promo
                       </label>
                     </div>
 

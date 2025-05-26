@@ -239,7 +239,7 @@ const AdminOrderDetails = () => {
           <hr className="mb-4" />
 
           <div className="flex items-center gap-3">
-            <img
+            <Image
               src={user.avatar}
               alt="User Avatar"
               className="w-12 h-12 rounded-full border-hidden border-gray-700"

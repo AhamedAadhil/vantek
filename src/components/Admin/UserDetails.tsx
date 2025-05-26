@@ -1,5 +1,6 @@
 import React from "react";
 import { Pencil, BadgeCheck } from "lucide-react";
+import Image from "next/image";
 
 const userData = [
   {
@@ -28,13 +29,15 @@ const UserDetails = () => {
     <div className="bg-dark text-white m-4 p-5 rounded-lg shadow-md max-w-md">
       {/* Header */}
       <h2 className="text-lg font-semibold mb-4 flex items-center">
-        <span className="border-l-4 border-l-purple-light-2 pl-2">User Details</span>
+        <span className="border-l-4 border-l-purple-light-2 pl-2">
+          User Details
+        </span>
       </h2>
       <hr className="mb-4" />
 
       {/* User Info */}
       <div className="flex items-center gap-3">
-        <img
+        <Image
           src={user.avatar}
           alt="User Avatar"
           className="w-12 h-12 rounded-full"
@@ -44,7 +47,9 @@ const UserDetails = () => {
           <p className="text-sm text-gray-400">{user.email}</p>
         </div>
         <BadgeCheck className="text-yellow ml-auto" />
-        <span className="text-xs bg-yellow-dark text-dark px-2 py-1 font-semibold rounded-lg">PRIME</span>
+        <span className="text-xs bg-yellow-dark text-dark px-2 py-1 font-semibold rounded-lg">
+          PRIME
+        </span>
       </div>
 
       {/* Delivery Address */}
@@ -54,12 +59,24 @@ const UserDetails = () => {
           <Pencil className="w-4 h-4 text-gray-300" />
         </button>
         <ul className="space-y-1 text-sm">
-          <li>Landmark: <span className="opacity-75">{user.landmark}</span></li>
-          <li>Street: <span className="opacity-75">{user.street}</span></li>
-          <li>City: <span className="opacity-75">{user.city}</span></li>
-          <li>State: <span className="opacity-75">{user.state}</span></li>
-          <li>Country: <span className="opacity-75">{user.country}</span></li>
-          <li>Zipcode: <span className="opacity-75">{user.zipCode}</span></li>
+          <li>
+            Landmark: <span className="opacity-75">{user.landmark}</span>
+          </li>
+          <li>
+            Street: <span className="opacity-75">{user.street}</span>
+          </li>
+          <li>
+            City: <span className="opacity-75">{user.city}</span>
+          </li>
+          <li>
+            State: <span className="opacity-75">{user.state}</span>
+          </li>
+          <li>
+            Country: <span className="opacity-75">{user.country}</span>
+          </li>
+          <li>
+            Zipcode: <span className="opacity-75">{user.zipCode}</span>
+          </li>
         </ul>
       </div>
 
@@ -67,8 +84,12 @@ const UserDetails = () => {
       <div className="mt-6 pt-4 border-t border-dashed border-gray-700">
         <h4 className="font-semibold mb-2">Send updates to:</h4>
         <ul className="space-y-1 text-sm">
-          <li>Phone: <span className="opacity-75">{user.phone}</span></li>
-          <li>Email: <span className="opacity-75">{user.email}</span></li>
+          <li>
+            Phone: <span className="opacity-75">{user.phone}</span>
+          </li>
+          <li>
+            Email: <span className="opacity-75">{user.email}</span>
+          </li>
         </ul>
       </div>
 
@@ -76,16 +97,29 @@ const UserDetails = () => {
       <div className="mt-6 pt-4 border-t border-dashed border-gray-700">
         <h4 className="font-semibold mb-2">Latest Order Summary</h4>
         <ul className="space-y-1 text-sm">
-          <li>Ordered Date: <span className="opacity-75">{user.lastOrderDate}</span></li>
-          <li>Ordered Time: <span className="opacity-75">{user.lastOrderTime}</span></li>
-          <li>Payment Interface: <span className="opacity-75">{user.lastPaymentMethod}</span></li>
+          <li>
+            Ordered Date:{" "}
+            <span className="opacity-75">{user.lastOrderDate}</span>
+          </li>
+          <li>
+            Ordered Time:{" "}
+            <span className="opacity-75">{user.lastOrderTime}</span>
+          </li>
+          <li>
+            Payment Interface:{" "}
+            <span className="opacity-75">{user.lastPaymentMethod}</span>
+          </li>
         </ul>
       </div>
 
       {/* Total Purchases */}
       <div className="mt-6 pt-4 border-t border-gray-700 text-center text-sm">
         <p>
-          Total <span className="text-green font-semibold">{user.totalPurchase} items</span> purchased up to now
+          Total{" "}
+          <span className="text-green font-semibold">
+            {user.totalPurchase} items
+          </span>{" "}
+          purchased up to now
         </p>
       </div>
     </div>

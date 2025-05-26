@@ -1,113 +1,114 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Search} from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useState } from "react";
+import { Search } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 const ordersData = [
   {
     id: 1,
-    name: 'Michael A. Miner',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Pending',
-    statusColor: 'bg-green-500',
+    name: "Michael A. Miner",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Pending",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Michael A. Miner',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Pending',
-    statusColor: 'bg-green-500',
+    name: "Michael A. Miner",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Pending",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Kabeeb',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Cancelled',
-    statusColor: 'bg-green-500',
+    name: "Kabeeb",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Cancelled",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Rafeek',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Cancelled',
-    statusColor: 'bg-green-500',
+    name: "Rafeek",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Cancelled",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Michael A. Miner',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Delivered',
-    statusColor: 'bg-green-500',
+    name: "Michael A. Miner",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Delivered",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Michael A. Miner',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Cancelled',
-    statusColor: 'bg-green-500',
+    name: "Michael A. Miner",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Cancelled",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Kabeeb',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Delivered',
-    statusColor: 'bg-green-500',
+    name: "Kabeeb",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Delivered",
+    statusColor: "bg-green-500",
   },
   {
     id: 1,
-    name: 'Rafeek',
-    date: '01/26/2025',
-    contact: '+231 06-75820711',
-    type: 'Residences',
-    amount: '$45,842',
-    property: '4604 , Philli Lane Kiowa',
-    status: 'Pending',
-    statusColor: 'bg-green-500',
+    name: "Rafeek",
+    date: "01/26/2025",
+    contact: "+231 06-75820711",
+    type: "Residences",
+    amount: "$45,842",
+    property: "4604 , Philli Lane Kiowa",
+    status: "Pending",
+    statusColor: "bg-green-500",
   },
 ];
 
-
-
-const userOrders = () => {
-  const [search, setSearch] = useState('');
+const UserOrders = () => {
+  const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  const filteredOrders = ordersData.filter(order =>
+  const filteredOrders = ordersData.filter((order) =>
     order.name.toLowerCase().includes(search.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
-  const currentOrders = filteredOrders.slice((currentPage - 1) * ordersPerPage, currentPage * ordersPerPage);
+  const currentOrders = filteredOrders.slice(
+    (currentPage - 1) * ordersPerPage,
+    currentPage * ordersPerPage
+  );
   const router = useRouter();
   return (
     <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
@@ -135,21 +136,25 @@ const userOrders = () => {
           </tr>
         </thead>
         <tbody>
-          {currentOrders.map(order => (
+          {currentOrders.map((order) => (
             <tr key={order.id} className="border-b border-gray-700">
               <td className="p-3">{order.date}</td>
               <td className="p-3">{order.type}</td>
               <td className="p-3">{order.amount}</td>
               <td className="p-3">
-                <span className={`px-3 py-1 text-xs font-bold rounded-full ${
-                                order.status === 'Delivered'
-                                ? 'text-green-light-2'
-                                : order.status === 'Cancelled'
-                                ? 'text-red-light'
-                                : order.status === 'Pending'
-                                ? 'text-yellow-light'
-                                : ''
-                                }`}>{order.status}</span>
+                <span
+                  className={`px-3 py-1 text-xs font-bold rounded-full ${
+                    order.status === "Delivered"
+                      ? "text-green-light-2"
+                      : order.status === "Cancelled"
+                      ? "text-red-light"
+                      : order.status === "Pending"
+                      ? "text-yellow-light"
+                      : ""
+                  }`}
+                >
+                  {order.status}
+                </span>
               </td>
             </tr>
           ))}
@@ -158,12 +163,26 @@ const userOrders = () => {
 
       {/* Pagination */}
       <div className="flex justify-end mt-4 space-x-2">
-        <button disabled={currentPage === 1} onClick={() => setCurrentPage(currentPage - 1)} className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50">Previous</button>
-        <span className="px-4 py-2 bg-gray-800 rounded-lg">{currentPage} / {totalPages}</span>
-        <button disabled={currentPage === totalPages} onClick={() => setCurrentPage(currentPage + 1)} className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50">Next</button>
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage(currentPage - 1)}
+          className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50"
+        >
+          Previous
+        </button>
+        <span className="px-4 py-2 bg-gray-800 rounded-lg">
+          {currentPage} / {totalPages}
+        </span>
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage(currentPage + 1)}
+          className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50"
+        >
+          Next
+        </button>
       </div>
     </div>
   );
 };
 
-export default userOrders;
+export default UserOrders;
