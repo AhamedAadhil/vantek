@@ -6,17 +6,16 @@ import SingleItem from "./SingleItem";
 import { RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import {fetchWishlistHelper} from '@/helper/getWishlistHelper'
+import { fetchWishlistHelper } from "@/helper/getWishlistHelper";
 import { setWishlist } from "@/redux/features/wishlist-slice";
-
 
 export const Wishlist = () => {
   const wishlistItems = useAppSelector((state) => state.wishlistReducer.items);
-   const user = useSelector((state: RootState) => state.auth.user); // ✅ Get user from Redux
-    const dispatch = useDispatch();
-     useEffect(() => {
-       fetchWishlistHelper(user,dispatch,setWishlist);
-    }, []);
+  const user = useSelector((state: RootState) => state.auth.user); // ✅ Get user from Redux
+  const dispatch = useDispatch();
+  useEffect(() => {
+    fetchWishlistHelper(user, dispatch, setWishlist);
+  }, [dispatch, user]);
 
   return (
     <>

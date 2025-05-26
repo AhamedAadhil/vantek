@@ -22,7 +22,7 @@ export const GET = async (req: NextRequest) => {
         { status: 404 }
       );
     }
-    const { password: _, ...rest } = userProfile._doc;
+    const { password: _, ...rest } = userProfile.toObject();
     return NextResponse.json({ user: rest }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json(

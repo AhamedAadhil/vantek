@@ -10,7 +10,7 @@ import Image from "next/image";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
-const EditProduct = ({ productId }: { productId: string, onClose }) => {
+const EditProduct = ({ productId }: { productId: string; onClose }) => {
   const [productCode, setProductCode] = useState("");
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
@@ -30,7 +30,14 @@ const EditProduct = ({ productId }: { productId: string, onClose }) => {
   const [variantDeletes, setVariantDeletes] = useState<string[]>([]);
   const [variants, setVariants] = useState([
     { name: "", actualPrice: 0, labelPrice: 0, stock: 0 },
-  ]);
+  ] as {
+    _id?: string;
+    name: string;
+    actualPrice: number;
+    labelPrice: number;
+    stock: number;
+  }[]);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -136,22 +143,22 @@ const EditProduct = ({ productId }: { productId: string, onClose }) => {
 
     const payload = {
       action: "updateDetails",
-     id: productId,
-        productCode,
-        name: productName,
-        description: productDescription,
-        mainCategory,
-        subCategory1,
-        subCategory2,
-        tags,
-        topSellingProduct: topSelling,
-        featuredProduct: featured,
-        isVisible: visible,
-        newImages: base64Images,
-        deletedImages: deletedImageUrls,
-        variantAdds,
-        variantUpdates,
-        variantDeletes,
+      id: productId,
+      productCode,
+      name: productName,
+      description: productDescription,
+      mainCategory,
+      subCategory1,
+      subCategory2,
+      tags,
+      topSellingProduct: topSelling,
+      featuredProduct: featured,
+      isVisible: visible,
+      newImages: base64Images,
+      deletedImages: deletedImageUrls,
+      variantAdds,
+      variantUpdates,
+      variantDeletes,
     };
 
     const res = await fetch("/api/admin/product", {
@@ -161,7 +168,7 @@ const EditProduct = ({ productId }: { productId: string, onClose }) => {
     });
 
     const result = await res.json();
-    console.log("update product results===",result);
+    console.log("update product results===", result);
     if (res.ok) {
       router.push("/admin/inventoryPage");
     } else {

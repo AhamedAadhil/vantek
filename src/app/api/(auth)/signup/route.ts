@@ -1,7 +1,8 @@
 import connectDB from "@/lib/db";
-import User from "@/lib/models/user";
+import User, { IUser } from "@/lib/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
@@ -19,7 +20,9 @@ export const POST = async (req: Request) => {
 
   try {
     await connectDB();
-    const isUserExist = await User.findOne({ email }).exec();
+    const isUserExist = await (User as mongoose.Model<IUser>)
+      .findOne({ email })
+      .exec();
     if (isUserExist) {
       return NextResponse.json(
         { message: "User already exists", success: false },

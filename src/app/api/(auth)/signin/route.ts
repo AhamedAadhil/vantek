@@ -53,7 +53,7 @@ export const POST = async (req: Request) => {
       { expiresIn: "7d" }
     );
 
-    const { password: _, ...rest } = user._doc;
+    const { password: _, ...rest } = user.toObject();
 
     // Set JWT in HTTP-only cookie
     const response = NextResponse.json(

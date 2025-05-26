@@ -10,11 +10,9 @@ const OrderSummary = () => {
   const totalPrice = useSelector(selectTotalPrice);
   const router = useRouter();
 
-const handleCheckout = () => {
-  router.push("/checkout");
-}
-
-
+  const handleCheckout = () => {
+    router.push("/checkout");
+  };
 
   return (
     <div className="lg:max-w-[455px] w-full">
@@ -37,13 +35,16 @@ const handleCheckout = () => {
 
           {/* <!-- product item --> */}
           {cartItems.map((item, key) => (
-            <div key={key} className="flex items-center justify-between py-5 border-b border-gray-3">
+            <div
+              key={key}
+              className="flex items-center justify-between py-5 border-b border-gray-3"
+            >
               <div>
                 <p className="text-dark">{item.name}</p>
               </div>
               <div>
                 <p className="text-dark text-right">
-                  ${item.discountedPrice * item.quantity}
+                  ${item.actualPrice * item.quantity}
                 </p>
               </div>
             </div>

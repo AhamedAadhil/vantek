@@ -114,7 +114,7 @@ const ProductList = () => {
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showEditPopup]);
+  }, [showEditPopup, productData]);
 
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-sm text-white rounded-lg">

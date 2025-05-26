@@ -17,15 +17,14 @@ import { fetchCartHelper } from "@/helper/getCartHelper";
 const CartSidebarModal = () => {
   const { isCartModalOpen, closeCartModal } = useCartModalContext();
   const cartItems = useAppSelector((state) => state.cartReducer.items);
-  console.log(cartItems,"These are CART ITEMS :")
-   const user = useSelector((state: RootState) => state.auth.user); // ✅ Get user from Redux
-    const dispatch = useDispatch();
+  console.log(cartItems, "These are CART ITEMS :");
+  const user = useSelector((state: RootState) => state.auth.user); // ✅ Get user from Redux
+  const dispatch = useDispatch();
 
   const totalPrice = useSelector(selectTotalPrice);
 
   useEffect(() => {
-
-    fetchCartHelper(user,dispatch,setCart)
+    fetchCartHelper(user, dispatch, setCart);
 
     // closing modal while clicking outside
     function handleClickOutside(event) {
@@ -41,7 +40,7 @@ const CartSidebarModal = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [isCartModalOpen, closeCartModal]);
+  }, [isCartModalOpen, closeCartModal, dispatch, user]);
 
   return (
     <div

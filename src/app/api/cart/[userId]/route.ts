@@ -39,23 +39,25 @@ export async function GET(
       );
     }
 
-    // Enhance items with actualPrice from variant
-    const updatedItems = await Promise.all(
-      cart.items.map(async (item) => {
+    const cartObj = cart.toObject();
+
+    cartObj.items = await Promise.all(
+      cartObj.items.map(async (item) => {
         const product: any = item.product;
         const variantId = item.variantId;
 
         if (!product || !variantId) return item;
 
-        // Fetch full product (to get variants)
-        const fullProduct = await (Product as mongoose.Model<IProduct>).findById(product._id).select("variants");
+        const fullProduct = await (Product as mongoose.Model<IProduct>)
+          .findById(product._id)
+          .select("variants");
 
         const variant = fullProduct?.variants.find(
           (v: any) => v._id.toString() === variantId.toString()
         );
 
         return {
-          ...item.toObject(),
+          ...item,
           variantActualPrice: variant?.actualPrice,
         };
       })
@@ -63,10 +65,7 @@ export async function GET(
 
     return NextResponse.json(
       {
-        data: {
-          ...cart.toObject(),
-          items: updatedItems,
-        },
+        data: cartObj,
         success: true,
       },
       { status: 200 }

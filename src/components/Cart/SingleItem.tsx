@@ -19,13 +19,25 @@ const SingleItem = ({ item }) => {
 
   const handleIncreaseQuantity = () => {
     setQuantity(quantity + 1);
-    dispatch(updateCartItemQuantity({ id: item.id, quantity: quantity + 1 }));
+    dispatch(
+      updateCartItemQuantity({
+        id: item.id,
+        quantity: quantity + 1,
+        variantId: 0,
+      })
+    );
   };
 
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
-      dispatch(updateCartItemQuantity({ id: item.id, quantity: quantity - 1 }));
+      dispatch(
+        updateCartItemQuantity({
+          id: item.id,
+          quantity: quantity - 1,
+          variantId: 0,
+        })
+      );
     } else {
       return;
     }
@@ -37,7 +49,12 @@ const SingleItem = ({ item }) => {
         <div className="flex items-center justify-between gap-5">
           <div className="w-full flex items-center gap-5.5">
             <div className="flex items-center justify-center rounded-[5px] bg-gray-2 max-w-[80px] w-full h-17.5">
-              <Image width={200} height={200} src={item.imgs?.thumbnails[0]} alt="product" />
+              <Image
+                width={200}
+                height={200}
+                src={item.imgs?.thumbnails[0]}
+                alt="product"
+              />
             </div>
 
             <div>

@@ -62,12 +62,10 @@
 // } = wishlist.actions;
 // export default wishlist.reducer;
 
-
-
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 type Variant = {
-  _id: string;
+  _id?: string;
   name: string;
   labelPrice: number;
   actualPrice: number;
@@ -90,8 +88,8 @@ type WishListProduct = {
   isVisible: boolean;
   overAllRating: number;
   reviews: any[]; // If you want you can type this more strongly
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 type InitialState = {

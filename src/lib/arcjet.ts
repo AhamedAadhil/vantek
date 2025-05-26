@@ -1,5 +1,11 @@
 // lib/arcjet.ts
-import arcjet, { detectBot, shield, tokenBucket } from "@arcjet/next";
+import arcjet, {
+  ArcjetBotCategory,
+  detectBot,
+  shield,
+  tokenBucket,
+  ArcjetWellKnownBot,
+} from "@arcjet/next";
 
 const aj = arcjet({
   key: process.env.ARCJET_KEY!,
@@ -9,8 +15,10 @@ const aj = arcjet({
     detectBot({
       mode: process.env.NODE_ENV === "development" ? "DRY_RUN" : "LIVE",
       allow: [
-        "CATEGORY:SEARCH_ENGINE",
-        ...(process.env.NODE_ENV === "development" ? ["POSTMAN"] : []),
+        "CATEGORY:SEARCH_ENGINE" as ArcjetBotCategory,
+        ...(process.env.NODE_ENV === "development"
+          ? ["POSTMAN" as ArcjetWellKnownBot]
+          : []),
       ],
     }),
 
