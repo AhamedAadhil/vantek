@@ -12,9 +12,10 @@ export async function GET(req: Request) {
     const page: number = parseInt(searchParams.get("page")) || 1;
     const limit: number = parseInt(searchParams.get("limit")) || 10;
     const search: string = searchParams.get("search") || "";
-    const category: string = searchParams.get("category") || "";
-    const subcategory1: string = searchParams.get("subcategory1") || "";
-    const subcategory2: string = searchParams.get("subcategory2") || "";
+    const mainCategory: string = searchParams.get("mainCategory") || "";
+    const subCategory1: string = searchParams.get("subCategory1") || "";
+    // const subCategory2: string = searchParams.get("subCategory2") || "";
+    const subCategory2: string[] = searchParams.get("subcategory2")?.split(",") || [];
     const featured: boolean = searchParams.get("featuredProduct") === "true";
     const topSelling: boolean = searchParams.get("topSellingProduct") ==="true";
     const minPrice: number = parseFloat(searchParams.get("minPrice")) || 0;
@@ -33,10 +34,12 @@ export async function GET(req: Request) {
         { description: { $regex: search, $options: "i" } },
       ];
     }
-
-    if (category) query.mainCategory = category;
-    if (subcategory1) query.subcategory1 = subcategory1;
-    if (subcategory2) query.subcategory2 = subcategory2;
+    if (subCategory2.length > 0) {
+      query.subCategory2 = { $in: subCategory2 };
+    }
+    if (mainCategory) query.mainCategory = mainCategory;
+    if (subCategory1) query.subCategory1 = subCategory1;
+    // if (subCategory2) query.subCategory2 = subCategory2;
     if (featured) query.featuredProduct = true;
     if (topSelling) query.topSellingProduct = true;
     if (minPrice || maxPrice)

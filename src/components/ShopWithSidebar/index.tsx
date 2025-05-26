@@ -17,33 +17,64 @@ const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [selected, setSelected] = useState<Record<string, string[]>>({});
+
   
   //Fetching all Products
   const [products,setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   
-    const fetchData = async (page=1) => {
-      try {
-        const res = await fetch(`http://localhost:3000/api/products?page=${page}`);
-        const data = await res.json();
+    // const fetchData = async (page=1) => {
+    //   try {
+    //     const res = await fetch(`http://localhost:3000/api/products?page=${page}`);
+    //     const data = await res.json();
     
-        if (res.ok) {
-          console.log("✅ Raw API Response:", data);
-          setProducts(data.products);
-          setCurrentPage(data.currentPage)
-          setTotalPages(data.totalPages)
-        } else {
-          console.error("❌ API Error:", data.message);
-        }
-      } catch (error) {
-        console.error("❌ Fetch error:", error);
-      }
+    //     if (res.ok) {
+    //       console.log("✅ Raw API Response:", data);
+    //       setProducts(data.products);
+    //       setCurrentPage(data.currentPage)
+    //       setTotalPages(data.totalPages)
+    //     } else {
+    //       console.error("❌ API Error:", data.message);
+    //     }
+    //   } catch (error) {
+    //     console.error("❌ Fetch error:", error);
+    //   }
+    // }
+    const fetchData = async (page = 1) => {
+  try {
+    const searchParams = new URLSearchParams({ page: String(page) });
+
+    // Parse category filters
+    Object.entries(selected).forEach(([key, values]) => {
+  const [main, sub] = key.split("--");
+  if (values.length > 0) {
+    searchParams.set("mainCategory", main);
+    searchParams.set("subCategory1", sub);
+    searchParams.set("subCategory2", values.join(",")); // comma-separated
+  }
+});
+
+    const res = await fetch(`/api/products?${searchParams.toString()}`);
+    const data = await res.json();
+
+    if (res.ok) {
+      setProducts(data.products);
+      setCurrentPage(data.currentPage);
+      setTotalPages(data.totalPages);
+    } else {
+      console.error("❌ API Error:", data.message);
     }
+  } catch (error) {
+    console.error("❌ Fetch error:", error);
+  }
+};
+
   
     useEffect(()=>{
       fetchData(currentPage)
-    },[currentPage])
+    },[selected])
 
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
@@ -116,7 +147,7 @@ const ShopWithSidebar = () => {
                       <button className="text-blue">Clean All</button>
                     </div>
                   </div>
-                  <SidebarShop/>
+                  <SidebarShop selected={selected} setSelected={setSelected} />
                 </div>
               </form>
             </div>
