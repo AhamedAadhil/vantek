@@ -15,18 +15,22 @@ const Checkout = () => {
       <Breadcrumb title={"Checkout"} pages={["checkout"]} />
       <section className="overflow-hidden py-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
+          <h2 className="font-medium text-dark text-xl sm:text-2xl mb-5.5">
+        Billing details
+      </h2>
           <form>
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
               {/* <!-- checkout left --> */}
               <div className="lg:max-w-[670px] w-full">
                 {/* <!-- login box --> */}
-                <Login />
+                {/* <Login /> */}
+                
 
                 {/* <!-- billing details --> */}
                 <Billing />
 
                 {/* <!-- address box two --> */}
-                <Shipping />
+                {/* <Shipping /> */}
 
                 {/* <!-- others note box --> */}
                 <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5 mt-7.5">
@@ -48,8 +52,15 @@ const Checkout = () => {
 
               {/* // <!-- checkout right --> */}
               <div className="max-w-[455px] w-full">
+                
+                {/* <!-- shipping box --> */}
+                <ShippingMethod />
+
+                {/* <!-- payment box --> */}
+                {/* <PaymentMethod /> */}
+
                 {/* <!-- order list box --> */}
-                <div className="bg-white shadow-1 rounded-[10px]">
+                <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
                   <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
                     <h3 className="font-medium text-xl text-dark">
                       Your Order
@@ -127,20 +138,18 @@ const Checkout = () => {
                 {/* <!-- coupon box --> */}
                 <Coupon />
 
-                {/* <!-- shipping box --> */}
-                <ShippingMethod />
-
-                {/* <!-- payment box --> */}
-                <PaymentMethod />
-
                 {/* <!-- checkout button --> */}
                 <button
                   type="submit"
                   className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
                 >
-                  Process to Checkout
+                  Pay with Paypal
                 </button>
               </div>
+
+              
+
+
             </div>
           </form>
         </div>

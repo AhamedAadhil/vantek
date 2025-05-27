@@ -2,16 +2,16 @@ import React, { useState } from "react";
 import Image from "next/image";
 
 const ShippingMethod = () => {
-  const [shippingMethod, setShippingMethod] = useState("free");
+  const [shippingMethod, setShippingMethod] = useState("dhl");
   return (
-    <div className="bg-white shadow-1 rounded-[10px] mt-7.5">
+    <div className="bg-white shadow-1 rounded-[10px]">
       <div className="border-b border-gray-3 py-5 px-4 sm:px-8.5">
         <h3 className="font-medium text-xl text-dark">Shipping Method</h3>
       </div>
 
       <div className="p-4 sm:p-8.5">
         <div className="flex flex-col gap-4">
-          <label
+          {/* <label
             htmlFor="free"
             className="flex cursor-pointer select-none items-center gap-3.5"
           >
@@ -23,7 +23,7 @@ const ShippingMethod = () => {
                 className="sr-only"
                 onChange={() => setShippingMethod("free")}
               />
-              {/* selectShipping === 'free' ? 'border-4 border-blue' : 'border border-gray-4' */}
+              
               <div
                 className={`flex h-4 w-4 items-center justify-center rounded-full ${
                   shippingMethod === "free"
@@ -33,7 +33,7 @@ const ShippingMethod = () => {
               ></div>
             </div>
             Free Shipping
-          </label>
+          </label> */}
 
           <label
             htmlFor="fedex"
