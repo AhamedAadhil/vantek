@@ -19,62 +19,62 @@ const ShopWithSidebar = () => {
   const [stickyMenu, setStickyMenu] = useState(false);
   const [selected, setSelected] = useState<Record<string, string[]>>({});
 
-  
   //Fetching all Products
-  const [products,setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  
-    // const fetchData = async (page=1) => {
-    //   try {
-    //     const res = await fetch(`http://localhost:3000/api/products?page=${page}`);
-    //     const data = await res.json();
-    
-    //     if (res.ok) {
-    //       console.log("✅ Raw API Response:", data);
-    //       setProducts(data.products);
-    //       setCurrentPage(data.currentPage)
-    //       setTotalPages(data.totalPages)
-    //     } else {
-    //       console.error("❌ API Error:", data.message);
-    //     }
-    //   } catch (error) {
-    //     console.error("❌ Fetch error:", error);
-    //   }
-    // }
-    const fetchData = async (page = 1) => {
-  try {
-    const searchParams = new URLSearchParams({ page: String(page) });
+  const [totalProducts, setTotalProducts] = useState(0);
 
-    // Parse category filters
-    Object.entries(selected).forEach(([key, values]) => {
-  const [main, sub] = key.split("--");
-  if (values.length > 0) {
-    searchParams.set("mainCategory", main);
-    searchParams.set("subCategory1", sub);
-    searchParams.set("subCategory2", values.join(",")); // comma-separated
-  }
-});
+  // const fetchData = async (page=1) => {
+  //   try {
+  //     const res = await fetch(`http://localhost:3000/api/products?page=${page}`);
+  //     const data = await res.json();
 
-    const res = await fetch(`/api/products?${searchParams.toString()}`);
-    const data = await res.json();
+  //     if (res.ok) {
+  //       console.log("✅ Raw API Response:", data);
+  //       setProducts(data.products);
+  //       setCurrentPage(data.currentPage)
+  //       setTotalPages(data.totalPages)
+  //     } else {
+  //       console.error("❌ API Error:", data.message);
+  //     }
+  //   } catch (error) {
+  //     console.error("❌ Fetch error:", error);
+  //   }
+  // }
+  const fetchData = async (page = 1) => {
+    try {
+      const searchParams = new URLSearchParams({ page: String(page) });
 
-    if (res.ok) {
-      setProducts(data.products);
-      setCurrentPage(data.currentPage);
-      setTotalPages(data.totalPages);
-    } else {
-      console.error("❌ API Error:", data.message);
+      // Parse category filters
+      Object.entries(selected).forEach(([key, values]) => {
+        const [main, sub] = key.split("--");
+        if (values.length > 0) {
+          searchParams.set("mainCategory", main);
+          searchParams.set("subCategory1", sub);
+          searchParams.set("subCategory2", values.join(",")); // comma-separated
+        }
+      });
+
+      const res = await fetch(`/api/products?${searchParams.toString()}`);
+      const data = await res.json();
+
+      if (res.ok) {
+        setProducts(data.products);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPages);
+        setTotalProducts(data.totalProducts);
+      } else {
+        console.error("❌ API Error:", data.message);
+      }
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
     }
-  } catch (error) {
-    console.error("❌ Fetch error:", error);
-  }
-};
+  };
 
-  
-    useEffect(()=>{
-      fetchData(currentPage)
-    },[selected])
+  useEffect(() => {
+    fetchData(currentPage);
+  }, [selected, currentPage]);
 
   const handleStickyMenu = () => {
     if (window.scrollY >= 80) {
@@ -162,7 +162,10 @@ const ShopWithSidebar = () => {
                     <CustomSelect options={options} />
 
                     <p>
-                      Showing <span className="text-dark">9 of 50</span>{" "}
+                      Showing{" "}
+                      <span className="text-dark">
+                        {products.length} of {totalProducts}
+                      </span>{" "}
                       Products
                     </p>
                   </div>
@@ -216,45 +219,52 @@ const ShopWithSidebar = () => {
 
               {/* <!-- Products Pagination Start --> */}
               <div className="flex justify-center mt-15">
-  <div className="bg-white shadow-1 rounded-md p-2">
-    <ul className="flex items-center">
-      <li>
-        <button
-          onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] disabled:text-gray-4"
-        >
-          <ChevronLeft />
-        </button>
-      </li>
+                <div className="bg-white shadow-1 rounded-md p-2">
+                  <ul className="flex items-center">
+                    <li>
+                      <button
+                        onClick={() =>
+                          currentPage > 1 && setCurrentPage(currentPage - 1)
+                        }
+                        disabled={currentPage === 1}
+                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] disabled:text-gray-4"
+                      >
+                        <ChevronLeft />
+                      </button>
+                    </li>
 
-      {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-        <li key={page}>
-          <button
-            onClick={() => setCurrentPage(page)}
-            className={`flex py-1.5 px-3.5 duration-200 rounded-[3px] ${
-              page === currentPage
-                ? "bg-blue text-white"
-                : "hover:text-white hover:bg-blue"
-            }`}
-          >
-            {page}
-          </button>
-        </li>
-      ))}
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <li key={page}>
+                          <button
+                            onClick={() => setCurrentPage(page)}
+                            className={`flex py-1.5 px-3.5 duration-200 rounded-[3px] ${
+                              page === currentPage
+                                ? "bg-blue text-white"
+                                : "hover:text-white hover:bg-blue"
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        </li>
+                      )
+                    )}
 
-      <li>
-        <button
-          onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4"
-        >
-          <ChevronRight />
-        </button>
-      </li>
-    </ul>
-  </div>
-</div>
+                    <li>
+                      <button
+                        onClick={() =>
+                          currentPage < totalPages &&
+                          setCurrentPage(currentPage + 1)
+                        }
+                        disabled={currentPage === totalPages}
+                        className="flex items-center justify-center w-8 h-9 ease-out duration-200 rounded-[3px] hover:text-white hover:bg-blue disabled:text-gray-4"
+                      >
+                        <ChevronRight />
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
 
               {/* <!-- Products Pagination End --> */}
             </div>

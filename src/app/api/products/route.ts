@@ -15,9 +15,11 @@ export async function GET(req: Request) {
     const mainCategory: string = searchParams.get("mainCategory") || "";
     const subCategory1: string = searchParams.get("subCategory1") || "";
     // const subCategory2: string = searchParams.get("subCategory2") || "";
-    const subCategory2: string[] = searchParams.get("subcategory2")?.split(",") || [];
+    const subCategory2: string[] =
+      searchParams.get("subCategory2")?.split(",") || [];
     const featured: boolean = searchParams.get("featuredProduct") === "true";
-    const topSelling: boolean = searchParams.get("topSellingProduct") ==="true";
+    const topSelling: boolean =
+      searchParams.get("topSellingProduct") === "true";
     const minPrice: number = parseFloat(searchParams.get("minPrice")) || 0;
     const maxPrice: number =
       parseFloat(searchParams.get("maxPrice")) || Number.MAX_VALUE;
