@@ -39,6 +39,28 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         { status: 400 }
       );
     }
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+      return NextResponse.json(
+        { success: false, message: "Invalid startDate or endDate" },
+        { status: 400 }
+      );
+    }
+
+    if (start >= end) {
+      return NextResponse.json(
+        { success: false, message: "startDate must be before endDate" },
+        { status: 400 }
+      );
+    }
+    if (percentage < 0 || percentage > 100) {
+      return NextResponse.json(
+        { success: false, message: "Percentage must be between 0 and 100" },
+        { status: 400 }
+      );
+    }
     let imageUrl = "";
     if (image) {
       const response = await cloudinary.uploader.upload(image, {
@@ -46,7 +68,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         resource_type: "auto",
         transformation: [
           {
-            width: 1600,
+            width: 600,
             height: 600,
             crop: "fill",
             gravity: "auto",
@@ -95,8 +117,28 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     const carouselItems = await (CarouselItem as mongoose.Model<ICarouselItem>)
       .find({})
       .sort({ createdAt: -1 });
+    const now = new Date();
+
+    // For any active promo past its endDate, mark inactive
+    const updates = carouselItems.map(async (item) => {
+      if (item.isActive && item.endDate < now) {
+        item.isActive = false;
+        await item.save();
+      }
+    });
+    await Promise.all(updates);
+
+    // Refetch after updates (optional, but safer to send fresh data)
+    const updatedCarouselItems = await (
+      CarouselItem as mongoose.Model<ICarouselItem>
+    )
+      .find({})
+      .sort({
+        createdAt: -1,
+      });
+
     return NextResponse.json(
-      { success: true, data: carouselItems },
+      { success: true, data: updatedCarouselItems },
       { status: 200 }
     );
   } catch (error: any) {
