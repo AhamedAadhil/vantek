@@ -1,171 +1,242 @@
+import { RootState, AppDispatch } from "@/redux/store";
 import { ChevronDown } from "lucide-react";
-import React from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 
-const Billing = () => {
+const Billing = ({
+  formValues,
+  setFormValues,
+  isUk,
+  setIsUk,
+}: {
+  formValues: any;
+  setFormValues: (data: any) => void;
+  isUk: boolean;
+  setIsUk: (val: boolean) => void;
+}) => {
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+
+    if (name === "countryName") {
+      setIsUk(value !== "OutsideUK");
+    }
+  };
+
+  // You can initialize isUk from formValues.countryName
+  // useEffect(() => {
+  //   setIsUk(formValues.countryName !== "OutsideUK");
+  // }, [formValues.countryName,setIsUk]);
+
+  useEffect(() => {
+    if (user) {
+      setFormValues((prev) => ({
+        ...prev,
+        firstName: user.name || "",
+        email: user.email || "",
+      }));
+    }
+  }, [user]);
+
   return (
-    <div className="">
-      <div className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">
-        <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
-          <div className="w-full">
-            <label htmlFor="firstName" className="block mb-2.5">
-              First Name <span className="text-red">*</span>
-            </label>
-
-            <input
-              type="text"
-              name="firstName"
-              id="firstName"
-              placeholder="Jhon"
-              className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-            />
-          </div>
-
-          <div className="w-full">
-            <div className="">
-              <label htmlFor="countryName" className="block mb-2.5">
-                Country/ Region
-                <span className="text-red">*</span>
-              </label>
-
-              <div className="relative">
-                <select className="w-full bg-gray-1 rounded-md border border-gray-3 text-dark-4 py-3 pl-5 pr-9 duration-200 appearance-none outline-none focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20">
-                  <option value="0">Australia</option>
-                  <option value="1">America</option>
-                  <option value="2">England</option>
-                </select>
-
-                <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-4">
-                  <ChevronDown/>
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="mb-5">
-          <label htmlFor="email" className="block mb-2.5">
-            Email Address<span className="text-red">*</span>
+    <form className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">
+      <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
+        {/* Full Name */}
+        <div className="w-full">
+          <label htmlFor="firstName" className="block mb-2.5">
+            Full Name <span className="text-red">*</span>
           </label>
-
           <input
             type="text"
-            name="email"
-            id="email"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+            id="firstName"
+            name="firstName"
+            required
+            readOnly
+            value={user.name}
+            onChange={handleChange}
+            placeholder="John"
+            className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
           />
         </div>
 
-        {/* <div className="mb-5">
+        {/* Country / Region (UK selector) */}
+        <div className="w-full">
           <label htmlFor="countryName" className="block mb-2.5">
-            Country/ Region
-            <span className="text-red">*</span>
+            Country / Region <span className="text-red">*</span>
           </label>
-
           <div className="relative">
-            <select className="w-full bg-gray-1 rounded-md border border-gray-3 text-dark-4 py-3 pl-5 pr-9 duration-200 appearance-none outline-none focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20">
-              <option value="0">Australia</option>
-              <option value="1">America</option>
-              <option value="2">England</option>
+            <select
+              required
+              id="countryName"
+              name="countryName"
+              value={formValues.countryName}
+              onChange={handleChange}
+              className="w-full appearance-none rounded-md border border-gray-3 bg-gray-1 px-5 py-3 pr-9"
+            >
+              <option value="England">England</option>
+              <option value="Scotland">Scotland</option>
+              <option value="Wales">Wales</option>
+              <option value="Northern Ireland">Northern Ireland</option>
+              <option value="OutsideUK">Outside the UK</option>
             </select>
-
-            <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-4">
-              <svg
-                className="fill-current"
-                width="16"
-                height="16"
-                viewBox="0 0 16 16"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M2.41469 5.03569L2.41467 5.03571L2.41749 5.03846L7.76749 10.2635L8.0015 10.492L8.23442 10.2623L13.5844 4.98735L13.5844 4.98735L13.5861 4.98569C13.6809 4.89086 13.8199 4.89087 13.9147 4.98569C14.0092 5.08024 14.0095 5.21864 13.9155 5.31345C13.9152 5.31373 13.915 5.31401 13.9147 5.31429L8.16676 10.9622L8.16676 10.9622L8.16469 10.9643C8.06838 11.0606 8.02352 11.0667 8.00039 11.0667C7.94147 11.0667 7.89042 11.0522 7.82064 10.9991L2.08526 5.36345C1.99127 5.26865 1.99154 5.13024 2.08609 5.03569C2.18092 4.94086 2.31986 4.94086 2.41469 5.03569Z"
-                  fill=""
-                  stroke=""
-                  stroke-width="0.666667"
-                />
-              </svg>
+            <span className="absolute right-4 top-1/2 -translate-y-1/2">
+              <ChevronDown />
             </span>
           </div>
-        </div> */}
-
-        <div className="mb-5">
-          <label htmlFor="address" className="block mb-2.5">
-            Street Address
-            <span className="text-red">*</span>
-          </label>
-
-          <input
-            type="text"
-            name="address"
-            id="address"
-            placeholder="House number and street name"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-          />
-
-          <div className="mt-5">
-            <input
-              type="text"
-              name="address"
-              id="addressTwo"
-              placeholder="Apartment, suite, unit, etc. (optional)"
-              className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-            />
-          </div>
         </div>
+      </div>
 
-        <div className="mb-5">
-          <label htmlFor="town" className="block mb-2.5">
-            Town/ City <span className="text-red">*</span>
-          </label>
+      {/* Email */}
+      <div className="mb-5">
+        <label htmlFor="email" className="block mb-2.5">
+          Email Address <span className="text-red">*</span>
+        </label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          required
+          readOnly
+          value={user.email}
+          onChange={handleChange}
+          placeholder="you@example.com"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+      </div>
 
-          <input
-            type="text"
-            name="town"
-            id="town"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-          />
-        </div>
+      {/* Street Address */}
+      <div className="mb-5">
+        <label htmlFor="address" className="block mb-2.5">
+          Street Address <span className="text-red">*</span>
+        </label>
+        <input
+          type="text"
+          id="address"
+          name="address"
+          required
+          value={formValues.address}
+          onChange={handleChange}
+          placeholder="House number and street name"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+        <input
+          type="text"
+          id="addressTwo"
+          name="addressTwo"
+          value={formValues.addressTwo}
+          onChange={handleChange}
+          placeholder="Apartment, suite, unit, etc. (optional)"
+          className="mt-5 w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+      </div>
 
+      {/* House Number */}
+      <div className="mb-5">
+        <label htmlFor="houseNumber" className="block mb-2.5">
+          House Number <span className="text-red">*</span>
+        </label>
+        <input
+          type="text"
+          id="houseNumber"
+          name="houseNumber"
+          required
+          value={formValues.houseNumber || ""}
+          onChange={handleChange}
+          placeholder="e.g., 79"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5 outline-none duration-200 placeholder:text-dark-5 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+        />
+      </div>
+
+      {/* Town / City */}
+      <div className="mb-5">
+        <label htmlFor="town" className="block mb-2.5">
+          Town / City <span className="text-red">*</span>
+        </label>
+        <input
+          type="text"
+          id="town"
+          name="town"
+          required
+          value={formValues.town}
+          onChange={handleChange}
+          placeholder="Your city"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+      </div>
+
+      {/* Country (only when non-UK) */}
+      {!isUk && (
         <div className="mb-5">
           <label htmlFor="country" className="block mb-2.5">
-            Country
+            Country Name <span className="text-red">*</span>
           </label>
-
           <input
             type="text"
-            name="country"
             id="country"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+            name="country"
+            required
+            value={formValues.country}
+            onChange={handleChange}
+            placeholder="Your country"
+            className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
           />
         </div>
+      )}
 
-        <div className="mb-5">
-          <label htmlFor="phone" className="block mb-2.5">
-            Phone <span className="text-red">*</span>
-          </label>
-
-          <input
-            type="text"
-            name="phone"
-            id="phone"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-          />
-        </div>
-
-        {/* <div className="mb-5.5">
-          <label htmlFor="email" className="block mb-2.5">
-            Email Address <span className="text-red">*</span>
-          </label>
-
-          <input
-            type="email"
-            name="email"
-            id="email"
-            className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
-          />
-        </div> */}
+      {/* Phone */}
+      <div className="mb-5">
+        <label htmlFor="phone" className="block mb-2.5">
+          Phone <span className="text-red">*</span>
+        </label>
+        <input
+          type="tel"
+          id="phone"
+          name="phone"
+          required
+          value={formValues.phone}
+          onChange={handleChange}
+          placeholder="+1 234 567 890"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
       </div>
-    </div>
+
+      {/* ZIP Code */}
+      <div className="mb-5">
+        <label htmlFor="zipCode" className="block mb-2.5">
+          Postcode / ZIP <span className="text-red">*</span>
+        </label>
+        <input
+          type="text"
+          id="zipCode"
+          name="zipCode"
+          required
+          value={formValues.zipCode}
+          onChange={handleChange}
+          placeholder="BS1 2AA"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+      </div>
+
+      {/* Province */}
+      <div className="mb-5">
+        <label htmlFor="province" className="block mb-2.5">
+          Province <span className="text-red">*</span>
+        </label>
+        <input
+          type="text"
+          id="province"
+          name="province"
+          required
+          value={formValues.province}
+          onChange={handleChange}
+          placeholder="Avon"
+          className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
+        />
+      </div>
+    </form>
   );
 };
 

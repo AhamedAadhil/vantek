@@ -1,7 +1,6 @@
 // GET ALL CAROUSEL ITEMS
 // GET /api/carousel
 import connectDB from "@/lib/db";
-import { isAdmin } from "@/lib/middleware";
 import CarouselItem, { ICarouselItem } from "@/lib/models/carousel";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
@@ -23,7 +22,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     });
     await Promise.all(updates);
 
-    // Refetch after updates (optional, but safer to send fresh data)
+    // Refetch after updates
     const updatedCarouselItems = await (
       CarouselItem as mongoose.Model<ICarouselItem>
     )

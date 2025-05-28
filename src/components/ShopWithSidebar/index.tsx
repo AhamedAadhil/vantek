@@ -25,24 +25,36 @@ const ShopWithSidebar = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // const fetchData = async (page=1) => {
-  //   try {
-  //     const res = await fetch(`http://localhost:3000/api/products?page=${page}`);
-  //     const data = await res.json();
+  // LocalStorage
+  const CACHE_EXPIRY_MS = 1000 * 60 * 30; // 30 minutes cache (1000 ms * 60 sec * 30 min)
 
-  //     if (res.ok) {
-  //       console.log("✅ Raw API Response:", data);
-  //       setProducts(data.products);
-  //       setCurrentPage(data.currentPage)
-  //       setTotalPages(data.totalPages)
-  //     } else {
-  //       console.error("❌ API Error:", data.message);
-  //     }
-  //   } catch (error) {
-  //     console.error("❌ Fetch error:", error);
-  //   }
-  // }
+  const buildCacheKey = (page: number, filters: Record<string, string[]>) => {
+    // Include page and filters in cache key for uniqueness
+    const filterKey = JSON.stringify(filters);
+    return `products_cache_page_${page}_filters_${filterKey}`;
+  };
   const fetchData = async (page = 1) => {
+    const cacheKey = buildCacheKey(page, selected);
+
+    // Try reading from cache
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+      try {
+        const { timestamp, data } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_EXPIRY_MS) {
+          setProducts(data.products);
+          setCurrentPage(data.currentPage);
+          setTotalPages(data.totalPages);
+          setTotalProducts(data.totalProducts);
+          return; // Use cached data, skip fetch
+        }
+      } catch (e) {
+        // If parsing error, ignore cache and fetch fresh
+        console.warn("Invalid cache, fetching fresh data");
+      }
+    }
+
+    // No valid cache, fetch from API
     try {
       const searchParams = new URLSearchParams({ page: String(page) });
 
@@ -64,6 +76,15 @@ const ShopWithSidebar = () => {
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPages);
         setTotalProducts(data.totalProducts);
+
+        // Cache the response with timestamp
+        localStorage.setItem(
+          cacheKey,
+          JSON.stringify({
+            timestamp: Date.now(),
+            data,
+          })
+        );
       } else {
         console.error("❌ API Error:", data.message);
       }

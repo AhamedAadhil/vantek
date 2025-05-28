@@ -16,14 +16,14 @@ export interface IOrder extends Document {
   items: IOrderItem[];
   totalAmount: number;
   isUK: boolean;
-  couponCode: string;
-  trackingId: string;
-  trackingUrl: string;
+  couponCode?: string;
+  trackingId?: string;
+  trackingUrl?: string;
   status: "pending" | "shipped" | "delivered" | "cancelled";
   paymentMethod: "creditCard" | "paypal" | "cod";
   paymentStatus: "paid" | "unpaid";
   shippingMethod: "standard" | "express";
-  deliveryNote: string;
+  deliveryNote?: string;
   shippingAddress: mongoose.Types.ObjectId | IAddress;
   createdAt: Date;
   updatedAt: Date;

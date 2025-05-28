@@ -3,10 +3,11 @@ import mongoose, { model, models, Schema, Document } from "mongoose";
 // Define Address Type
 export interface IAddress {
   phone?: string;
+  apartment?: string;
   houseNumber?: string;
   street?: string;
   city?: string;
-  district?: string;
+  province?: string;
   zipCode?: string;
   country?: string;
 }

@@ -11,9 +11,19 @@ import { useEffect, useState } from "react";
 
 const HeroCarousal = () => {
   const [banners, setBanners] = useState([]);
+  const CACHE_KEY = "carousel_banners";
+  const CACHE_EXPIRY_MS = 1000 * 60 * 60; // 1 hour cache (1000 ms * 60 sec * 60 min)
 
   const fetchBanners = async () => {
     try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { timestamp, data } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_EXPIRY_MS) {
+          setBanners(data);
+          return;
+        }
+      }
       const res = await fetch("/api/carousel");
       if (!res.ok) {
         throw new Error("Failed to fetch banners.");
@@ -28,6 +38,10 @@ const HeroCarousal = () => {
         );
       });
       setBanners(activeBanners);
+      localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({ timestamp: Date.now(), data: activeBanners })
+      );
     } catch (error) {
       console.error("Error fetching banners:", error);
     }

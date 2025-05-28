@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Login from "./Login";
 import Shipping from "./Shipping";
@@ -8,26 +8,70 @@ import PaymentMethod from "./PaymentMethod";
 import Coupon from "./Coupon";
 import Billing from "./Billing";
 import Image from "next/image";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const Checkout = () => {
+  const cart = useSelector((state: RootState) => state.cartReducer);
+  const [shippingMethod, setShippingMethod] = useState("standard");
+  const [isUk, setIsUk] = useState(true); // Assume true by default (UK shipping)
+  const [shippingFee, setShippingFee] = useState(0);
+  const totalAmount = cart.totalPrice;
+  const [billingData, setBillingData] = useState({
+    firstName: "",
+    email: "",
+    houseNumber: "",
+    address: "",
+    addressTwo: "",
+    town: "",
+    countryName: "England",
+    country: "",
+    phone: "",
+    zipCode: "",
+    province: "",
+  });
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("Submitting all data:", billingData);
+
+    // You can now submit billingData along with other checkout data here
+  };
+
+  useEffect(() => {
+    let fee = 0;
+    if (isUk && totalAmount < 150000) {
+      if (shippingMethod === "express") {
+        fee = 8.5;
+      } else if (shippingMethod === "standard") {
+        fee = 4.5;
+      }
+    }
+    setShippingFee(fee);
+  }, [shippingMethod, isUk, totalAmount]);
+
   return (
     <>
       <Breadcrumb title={"Checkout"} pages={["checkout"]} />
       <section className="overflow-hidden py-20 bg-gray-2">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <h2 className="font-medium text-dark text-xl sm:text-2xl mb-5.5">
-        Billing details
-      </h2>
-          <form>
+            Billing details
+          </h2>
+          <form onSubmit={handleSubmit}>
             <div className="flex flex-col lg:flex-row gap-7.5 xl:gap-11">
               {/* <!-- checkout left --> */}
               <div className="lg:max-w-[670px] w-full">
                 {/* <!-- login box --> */}
                 {/* <Login /> */}
-                
 
                 {/* <!-- billing details --> */}
-                <Billing />
+                <Billing
+                  formValues={billingData}
+                  setFormValues={setBillingData}
+                  isUk={isUk}
+                  setIsUk={setIsUk}
+                />
 
                 {/* <!-- address box two --> */}
                 {/* <Shipping /> */}
@@ -52,9 +96,12 @@ const Checkout = () => {
 
               {/* // <!-- checkout right --> */}
               <div className="max-w-[455px] w-full">
-                
                 {/* <!-- shipping box --> */}
-                <ShippingMethod />
+                <ShippingMethod
+                  isUk={isUk}
+                  shippingMethod={shippingMethod}
+                  setShippingMethod={setShippingMethod}
+                />
 
                 {/* <!-- payment box --> */}
                 {/* <PaymentMethod /> */}
@@ -80,44 +127,48 @@ const Checkout = () => {
                       </div>
                     </div>
 
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">iPhone 14 Plus , 6/128GB</p>
+                    {/* <!-- product items dynamically --> */}
+                    {cart.items.map((item) => (
+                      <div
+                        key={`${item._id}-${item.variantId}`}
+                        className="flex items-center justify-between py-5 border-b border-gray-3"
+                      >
+                        <div className="flex items-start gap-2">
+                          {item.images && (
+                            <Image
+                              src={item.images}
+                              alt={item.name}
+                              width={40}
+                              height={40}
+                              className="rounded"
+                            />
+                          )}
+                          <div className="flex flex-col">
+                            <p className="text-dark line-clamp-2 text-sm sm:text-base">
+                              {item.name}
+                            </p>
+                            <span className="text-dark-5 text-xs">
+                              Qty: {item.quantity}
+                            </span>
+                          </div>
+                        </div>
+                        <div>
+                          <p className="text-dark text-right text-sm sm:text-base">
+                            ${item.actualPrice * item.quantity}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <p className="text-dark text-right">$899.00</p>
-                      </div>
-                    </div>
+                    ))}
 
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div >
-                        
-                        <p className="text-dark">Asus RT Dual Band Router </p>
-                      </div>
-                      <div>
-                        <p className="text-dark text-right">$129.00</p>
-                      </div>
-                    </div>
-
-                    {/* <!-- product item --> */}
-                    <div className="flex items-center justify-between py-5 border-b border-gray-3">
-                      <div>
-                        <p className="text-dark">Havit HV-G69 USB Gamepad</p>
-                      </div>
-                      <div>
-                        <p className="text-dark text-right">$29.00</p>
-                      </div>
-                    </div>
-
-                    {/* <!-- product item --> */}
+                    {/* <!-- shipping fee --> */}
                     <div className="flex items-center justify-between py-5 border-b border-gray-3">
                       <div>
                         <p className="text-dark">Shipping Fee</p>
                       </div>
                       <div>
-                        <p className="text-dark text-right">$15.00</p>
+                        <p className="text-dark text-right">
+                          ${shippingFee.toFixed(2)}
+                        </p>
                       </div>
                     </div>
 
@@ -128,7 +179,7 @@ const Checkout = () => {
                       </div>
                       <div>
                         <p className="font-medium text-lg text-dark text-right">
-                          $1072.00
+                          ${(totalAmount + shippingFee).toFixed(2)}
                         </p>
                       </div>
                     </div>
@@ -146,10 +197,6 @@ const Checkout = () => {
                   Pay with Paypal
                 </button>
               </div>
-
-              
-
-
             </div>
           </form>
         </div>
