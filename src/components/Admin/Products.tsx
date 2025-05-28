@@ -101,20 +101,31 @@ const ProductList = () => {
     }
   };
 
+  // useEffect(() => {
+  //   fetchData();
+  //   console.log("✅ Updated productData:", productData);
+
+  //   if (showEditPopup) {
+  //     document.body.style.overflow = "hidden";
+  //   } else {
+  //     document.body.style.overflow = "";
+  //   }
+
+  //   return () => {
+  //     document.body.style.overflow = "";
+  //   };
+  // }, [showEditPopup, productData]);
+
   useEffect(() => {
     fetchData();
-    console.log("✅ Updated productData:", productData);
+  }, []); // fetch only once
 
-    if (showEditPopup) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-
+  useEffect(() => {
+    document.body.style.overflow = showEditPopup ? "hidden" : "";
     return () => {
       document.body.style.overflow = "";
     };
-  }, [showEditPopup, productData]);
+  }, [showEditPopup]); // handle body scroll lock separately
 
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-sm text-white rounded-lg">
