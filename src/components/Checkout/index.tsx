@@ -10,11 +10,17 @@ import Billing from "./Billing";
 import Image from "next/image";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 
 const Checkout = () => {
+  const dispatch = useDispatch();
   const cart = useSelector((state: RootState) => state.cartReducer);
+  console.log(cart);
+  const user = useSelector((state: RootState) => state.auth.user);
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [isUk, setIsUk] = useState(true); // Assume true by default (UK shipping)
+  const [couponCode, setCouponCode] = useState("");
+  const [deliveryNote, setDeliveryNote] = useState("");
   const [shippingFee, setShippingFee] = useState(0);
   const totalAmount = cart.totalPrice;
   const [billingData, setBillingData] = useState({
@@ -31,16 +37,87 @@ const Checkout = () => {
     province: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("Submitting all data:", billingData);
+  const handleCouponApply = (code) => {
+    setCouponCode(code);
+    console.log("Coupon code applied:", code);
+  };
 
-    // You can now submit billingData along with other checkout data here
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const userId = user?._id || "guest"; // Use guest ID if not logged in
+      const country_final =
+        billingData.countryName === "OutsideUK"
+          ? billingData.country
+          : billingData.countryName;
+
+      const payload = {
+        userId,
+        items: {
+          ...cart,
+          items: cart.items.map((item) => ({
+            product: item._id,
+            variant: item.variantId,
+            quantity: item.quantity,
+            price: item.actualPrice,
+          })),
+        },
+        isUk,
+        couponCode: couponCode || null,
+        shippingMethod,
+        deliveryNote: deliveryNote || "",
+        // shippingAddress: {
+        //   fullName: user.name,
+        //   address: billingData,
+        //   phone: billingData.phone,
+        //   apartment: billingData.addressTwo,
+        //   houseNumber: billingData.houseNumber,
+        //   street: billingData.address,
+        //   city: billingData.town,
+        //   province: billingData.province,
+        //   zipCode: billingData.zipCode,
+        //   country: country_final,
+        // },
+
+        shippingAddress: {
+          phone: billingData.phone,
+          apartment: billingData.addressTwo,
+          houseNumber: billingData.houseNumber,
+          street: billingData.address,
+          city: billingData.town,
+          province: billingData.province,
+          zipCode: billingData.zipCode,
+          country: country_final,
+        },
+      };
+
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        dispatch(removeAllItemsFromCart());
+        console.log("✅ Order Placed:", data);
+        // redirect to thank you / order summary page
+      } else {
+        console.error("❌ Order Failed:", data.message);
+        // show error to user
+      }
+    } catch (error) {
+      console.error("❌ Something went wrong:", error);
+    }
   };
 
   useEffect(() => {
     let fee = 0;
-    if (isUk && totalAmount < 150000) {
+    if (isUk && totalAmount < 150) {
       if (shippingMethod === "express") {
         fee = 8.5;
       } else if (shippingMethod === "standard") {
@@ -86,6 +163,8 @@ const Checkout = () => {
                     <textarea
                       name="notes"
                       id="notes"
+                      value={deliveryNote}
+                      onChange={(e) => setDeliveryNote(e.target.value)}
                       rows={5}
                       placeholder="Notes about your order, e.g. speacial notes for delivery."
                       className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full p-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
@@ -99,6 +178,7 @@ const Checkout = () => {
                 {/* <!-- shipping box --> */}
                 <ShippingMethod
                   isUk={isUk}
+                  totalAmount={totalAmount}
                   shippingMethod={shippingMethod}
                   setShippingMethod={setShippingMethod}
                 />
@@ -187,7 +267,7 @@ const Checkout = () => {
                 </div>
 
                 {/* <!-- coupon box --> */}
-                <Coupon />
+                <Coupon onApplyCoupon={handleCouponApply} />
 
                 {/* <!-- checkout button --> */}
                 <button

@@ -1,6 +1,7 @@
 import generateUniqueOrderId from "@/helper/generateOrderId";
 import connectDB from "@/lib/db";
 import { authMiddleware } from "@/lib/middleware";
+import Cart, { ICart } from "@/lib/models/cart";
 import Order, { IOrder } from "@/lib/models/order";
 import Product, { IProduct } from "@/lib/models/product";
 import User, { IUser } from "@/lib/models/user";
@@ -62,11 +63,18 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     // Normalize items to always be an array
     const itemsArray = Array.isArray(items) ? items : [items];
 
+    // console.log("Items Array:", itemsArray);
+    // console.log("items==:", items);
+
     // STEP1 - calculate the total Amount
     let totalAmount = 0;
     const processedItems = [];
 
-    for (const item of itemsArray) {
+    // If itemsArray looks like [{ items: [...] }], then:
+    const rawItems = itemsArray[0]?.items || [];
+    // console.log("rawItems:", rawItems);
+
+    for (const item of rawItems) {
       const { product: productId, variant: variantId, quantity } = item;
 
       // Find product by ID
@@ -158,6 +166,16 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     });
 
     await order.save();
+
+    // STEP6- clear cart of user
+    const user = await (User as mongoose.Model<IUser>).findById(userId);
+    const cartId = user?.cart;
+    if (cartId) {
+      await (Cart as mongoose.Model<ICart>).findByIdAndDelete(cartId);
+    }
+    await (User as mongoose.Model<IUser>).findByIdAndUpdate(userId, {
+      $set: { cart: null },
+    });
 
     return NextResponse.json({
       message: "Order validated and placed successfully",

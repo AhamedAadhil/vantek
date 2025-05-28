@@ -35,7 +35,7 @@ const Billing = ({
     if (user) {
       setFormValues((prev) => ({
         ...prev,
-        firstName: user.name || "",
+        name: user.name || "",
         email: user.email || "",
       }));
     }
@@ -46,13 +46,13 @@ const Billing = ({
       <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
         {/* Full Name */}
         <div className="w-full">
-          <label htmlFor="firstName" className="block mb-2.5">
+          <label htmlFor="name" className="block mb-2.5">
             Full Name <span className="text-red">*</span>
           </label>
           <input
             type="text"
-            id="firstName"
-            name="firstName"
+            id="name"
+            name="name"
             required
             readOnly
             value={user.name}

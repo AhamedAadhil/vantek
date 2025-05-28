@@ -24,7 +24,7 @@ export interface IOrder extends Document {
   paymentStatus: "paid" | "unpaid";
   shippingMethod: "standard" | "express";
   deliveryNote?: string;
-  shippingAddress: mongoose.Types.ObjectId | IAddress;
+  shippingAddress: IAddress;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -90,10 +90,16 @@ const orderSchema = new Schema<IOrder>(
       default: "standard",
     },
     shippingAddress: {
-      type: mongoose.Types.ObjectId,
-      ref: "User",
-      required: true,
+      phone: { type: String, required: true },
+      apartment: { type: String },
+      houseNumber: { type: String, required: true },
+      street: { type: String, required: true },
+      city: { type: String, required: true },
+      province: { type: String },
+      zipCode: { type: String, required: true },
+      country: { type: String, required: true },
     },
+
     deliveryNote: {
       type: String,
     },

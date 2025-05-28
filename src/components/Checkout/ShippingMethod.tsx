@@ -5,12 +5,15 @@ const ShippingMethod = ({
   isUk,
   shippingMethod,
   setShippingMethod,
+  totalAmount,
 }: {
   isUk: boolean;
   shippingMethod: string;
   setShippingMethod: (method: string) => void;
+  totalAmount: number;
 }) => {
-  if (!isUk) return null; // Hide for non-UK users
+  if (!isUk || totalAmount > 150) return null; // Hide for non-UK and above EUR150 users
+  // if (totalAmount > 150) return null; // Hide for orders above EUR150
 
   return (
     <div className="bg-white shadow-1 rounded-[10px]">
