@@ -219,6 +219,31 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       $set: { cart: null },
     });
 
+    // STEP7- add order to user's orders
+    await (User as mongoose.Model<IUser>).findByIdAndUpdate(userId, {
+      $push: { orders: order._id },
+    });
+
+    // STEP8- reduce the stock of each products
+    for (const item of processedItems) {
+      const { product: productId, variant: variantId, quantity } = item;
+
+      await (Product as mongoose.Model<IProduct>).findByIdAndUpdate(
+        productId,
+        {
+          $inc: { "variants.$[elem].stock": -quantity },
+        },
+        {
+          arrayFilters: [{ "elem._id": variantId }],
+          new: true,
+        }
+      );
+    }
+
+    // STEP9- add the total to user's totalSpent
+    user.totalSpent += totalAmount;
+    await user.save();
+
     return NextResponse.json({
       message: "Order validated and placed successfully",
       success: true,

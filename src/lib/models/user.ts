@@ -19,6 +19,7 @@ export interface IUser extends Document {
   name: string;
   role: "user" | "admin";
   isActive: boolean;
+  totalSpent?: number;
   address: IAddress[];
   cart: mongoose.Types.ObjectId;
   wishlist: mongoose.Types.ObjectId;
@@ -54,6 +55,10 @@ const userSchema = new Schema<IUser>(
     isActive: {
       type: Boolean,
       default: true,
+    },
+    totalSpent: {
+      type: Number,
+      default: 0,
     },
     address: [
       {
