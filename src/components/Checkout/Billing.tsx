@@ -17,11 +17,14 @@ const Billing = ({
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormValues((prev) => ({ ...prev, [name]: value }));
 
     if (name === "countryName") {
+      console.log("Country selected:", value);
       setIsUk(value !== "OutsideUK");
     }
   };
@@ -35,11 +38,15 @@ const Billing = ({
     if (user) {
       setFormValues((prev) => ({
         ...prev,
-        name: user.name || "",
-        email: user.email || "",
+        name: user?.name || "",
+        email: user?.email || "",
       }));
     }
   }, [user]);
+
+  useEffect(() => {
+    console.log("isUk changed to:", isUk);
+  }, [isUk]);
 
   return (
     <form className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">
@@ -55,7 +62,7 @@ const Billing = ({
             name="name"
             required
             readOnly
-            value={user.name}
+            value={user?.name}
             onChange={handleChange}
             placeholder="John"
             className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
@@ -100,7 +107,7 @@ const Billing = ({
           name="email"
           required
           readOnly
-          value={user.email}
+          value={user?.email}
           onChange={handleChange}
           placeholder="you@example.com"
           className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"

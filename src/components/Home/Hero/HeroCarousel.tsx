@@ -19,17 +19,25 @@ const HeroCarousal = () => {
       const cached = localStorage.getItem(CACHE_KEY);
       if (cached) {
         const { timestamp, data } = JSON.parse(cached);
-        if (Date.now() - timestamp < CACHE_EXPIRY_MS) {
+        const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
+        const isDataValid = Array.isArray(data) && data.length > 0;
+
+        console.log("isCacheValid", isCacheValid);
+        console.log("isDataValid", isDataValid);
+
+        if (isCacheValid && isDataValid) {
           setBanners(data);
           return;
         }
       }
+
       const res = await fetch("/api/carousel");
       if (!res.ok) {
         throw new Error("Failed to fetch banners.");
       }
-      const data = await res.json();
-      const activeBanners = data.data.filter((banner: any) => {
+
+      const result = await res.json();
+      const activeBanners = result.data.filter((banner: any) => {
         const now = new Date();
         return (
           banner.isActive &&
@@ -37,11 +45,19 @@ const HeroCarousal = () => {
           new Date(banner.endDate) >= now
         );
       });
+
       setBanners(activeBanners);
-      localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({ timestamp: Date.now(), data: activeBanners })
-      );
+      console.log(activeBanners, "activeBanners");
+
+      // Only cache if data is non-empty
+      if (activeBanners.length > 0) {
+        console.log("Caching activeBanners");
+
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({ timestamp: Date.now(), data: activeBanners })
+        );
+      }
     } catch (error) {
       console.error("Error fetching banners:", error);
     }

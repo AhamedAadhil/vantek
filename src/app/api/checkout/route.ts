@@ -49,6 +49,48 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       shippingAddress,
     } = await req.json();
 
+    // validate inputs and exists
+    if (!userId) {
+      return NextResponse.json(
+        {
+          message: "User ID is required",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!items) {
+      return NextResponse.json(
+        {
+          message: "Items are required",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!shippingAddress) {
+      return NextResponse.json(
+        {
+          message: "Shipping address is required",
+          success: false,
+        },
+        { status: 400 }
+      );
+    }
+
+    // makesure user is authenticated
+    if (role !== "user") {
+      return NextResponse.json(
+        {
+          message: "Admin can't checkout",
+          success: false,
+        },
+        { status: 401 }
+      );
+    }
+
     // makesure user is authenticated
     if (currentUserId !== userId) {
       return NextResponse.json(
@@ -153,7 +195,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       user: userId,
       items: processedItems,
       totalAmount,
-      isUk,
+      isUK: isUk,
       couponCode,
       shippingMethod,
       deliveryNote,
@@ -181,6 +223,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       message: "Order validated and placed successfully",
       success: true,
       order,
+      orderId: order.orderId,
       shippingFee,
       totalAmount,
       items: processedItems,

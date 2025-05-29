@@ -12,6 +12,7 @@ interface IOrderItem {
 
 export interface IOrder extends Document {
   orderId: string;
+  paypalOrderId?: string;
   user: mongoose.Types.ObjectId | IUser;
   items: IOrderItem[];
   totalAmount: number;
@@ -35,6 +36,11 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       required: true,
       unique: true,
+    },
+    paypalOrderId: {
+      type: String,
+      unique: true, // Ensure uniqueness for PayPal order ID
+      sparse: true, // Allow this field to be optional
     },
     user: {
       type: mongoose.Types.ObjectId,
