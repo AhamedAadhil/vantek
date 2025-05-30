@@ -22,9 +22,6 @@ const HeroCarousal = () => {
         const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
         const isDataValid = Array.isArray(data) && data.length > 0;
 
-        console.log("isCacheValid", isCacheValid);
-        console.log("isDataValid", isDataValid);
-
         if (isCacheValid && isDataValid) {
           setBanners(data);
           return;
@@ -47,12 +44,9 @@ const HeroCarousal = () => {
       });
 
       setBanners(activeBanners);
-      console.log(activeBanners, "activeBanners");
 
       // Only cache if data is non-empty
       if (activeBanners.length > 0) {
-        console.log("Caching activeBanners");
-
         localStorage.setItem(
           CACHE_KEY,
           JSON.stringify({ timestamp: Date.now(), data: activeBanners })

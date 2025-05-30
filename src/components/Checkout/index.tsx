@@ -45,10 +45,11 @@ const Checkout = () => {
 
   const handleCouponApply = (code) => {
     setCouponCode(code);
-    console.log("Coupon code applied:", code);
   };
 
-  const afterSuccessfullPurchase = async () => {};
+  const isBillingDataValid = Object.values(billingData).every(
+    (value) => value && value.trim() !== ""
+  );
 
   useEffect(() => {
     let fee = 0;
@@ -61,6 +62,30 @@ const Checkout = () => {
     }
     setShippingFee(fee);
   }, [shippingMethod, isUk, totalAmount]);
+
+  useEffect(() => {
+    if (user && user.address && user.address.length > 0) {
+      setBillingData({
+        firstName: user.name,
+        email: user.email,
+        houseNumber: user.address[0].houseNumber,
+        address: user.address[0].street,
+        addressTwo: user.address[0].apartment,
+        town: user.address[0].city,
+        countryName: user.address[0].country,
+        country: user.address[0].country,
+        phone: user.address[0].phone,
+        zipCode: user.address[0].zipCode,
+        province: user.address[0].province,
+      });
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (!user) {
+      router.replace("/signin");
+    }
+  }, [user, router]);
 
   return (
     <PayPalScriptProvider
@@ -214,7 +239,7 @@ const Checkout = () => {
                   <div className="mt-7.5">
                     <PayPalButtons
                       style={{ layout: "vertical" }}
-                      disabled={cart.items.length === 0}
+                      disabled={cart.items.length === 0 || !isBillingDataValid}
                       createOrder={async () => {
                         let totalAmount = 0;
 
@@ -249,7 +274,6 @@ const Checkout = () => {
                                   : billingData.countryName,
                             },
                           };
-
                           const orderRes = await fetch("/api/checkout", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },

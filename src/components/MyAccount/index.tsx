@@ -7,7 +7,7 @@ import Orders from "../Orders";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
-import { logout } from "@/redux/features/authSlice";
+import { logout, updateUserName } from "@/redux/features/authSlice";
 import { removeAllItemsFromWishlist } from "@/redux/features/wishlist-slice";
 import {
   ChevronDown,
@@ -22,14 +22,28 @@ import {
   User,
   User2,
 } from "lucide-react";
+import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+import { formatDateTime } from "@/helper/formatDateTime";
 
 const MyAccount = () => {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user, "user");
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("account-details");
   const [addressModal, setAddressModal] = useState(false);
+  const [formData, setFormData] = useState({
+    name: user.name,
+    email: user.email,
+    updatedAt: user.updatedAt,
+    role: user.role,
+    isActive: user.isActive,
+    totalSpent: user.totalSpent,
+  });
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const openAddressModal = () => {
     setAddressModal(true);
@@ -40,16 +54,42 @@ const MyAccount = () => {
   };
 
   const handleLogout = async () => {
-    const res = await fetch("http://localhost:3000/api/logout");
+    const res = await fetch(
+      `${
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_BASEURL
+          : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+      }/logout`
+    );
     const data = await res.json();
-    console.log(data);
     if (res.ok) {
       dispatch(logout());
       dispatch(removeAllItemsFromWishlist());
+      dispatch(removeAllItemsFromCart());
       router.replace("/");
     }
     // TODO: implement Toaster to show errors ....
-    console.log("Logout failed");
+  };
+
+  const handleUpdateName = async (name: string) => {
+    const res = await fetch(
+      `${
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_BASEURL
+          : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+      }/me/update-name`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      }
+    );
+    const data = await res.json();
+    if (res.ok) {
+      dispatch(updateUserName(data.name));
+    }
+    // TODO: implement Toaster to show errors ....
+    console.log("Logout failed", data.message);
   };
 
   return (
@@ -82,20 +122,6 @@ const MyAccount = () => {
 
                 <div className="p-4 sm:p-7.5 xl:p-9">
                   <div className="flex flex-wrap xl:flex-nowrap xl:flex-col gap-4">
-                    {/* <button
-                      onClick={() => setActiveTab("dashboard")}
-                      className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
-                        activeTab === "dashboard"
-                          ? "text-white bg-blue"
-                          : "text-dark-2 bg-gray-1"
-                      }`}
-                    >
-                      <LayoutDashboard
-                      size={19}
-                      />
-                      Dashboard
-                    </button> */}
-
                     <button
                       onClick={() => setActiveTab("account-details")}
                       className={`flex items-center rounded-md gap-2.5 py-3 px-4.5 ease-out duration-200 hover:bg-blue hover:text-white ${
@@ -148,34 +174,6 @@ const MyAccount = () => {
               </div>
             </div>
             {/* <!--== user dashboard menu end ==-->
-
-            
-          <!--== user dashboard content start ==--> */}
-            {/* <!-- dashboard tab content start --> */}
-
-            <div
-              className={`xl:max-w-[770px] w-full bg-white rounded-xl shadow-1 py-9.5 px-4 sm:px-7.5 xl:px-10 ${
-                activeTab === "dashboard" ? "block" : "hidden"
-              }`}
-            >
-              <p className="text-dark">
-                Hello Annie (not Annie?
-                <a
-                  href="#"
-                  className="text-red ease-out duration-200 hover:underline"
-                >
-                  Log Out
-                </a>
-                )
-              </p>
-
-              <p className="text-custom-sm mt-4">
-                From your account dashboard you can view your recent orders,
-                manage your shipping and billing addresses, and edit your
-                password and account details.
-              </p>
-            </div>
-            {/* <!-- dashboard tab content end -->
 
           <!-- orders tab content start --> */}
             <div
@@ -239,9 +237,14 @@ const MyAccount = () => {
                       Address:{" "}
                       {user?.address?.length > 0 ? (
                         <>
-                          {user.address[0].houseNumber},{" "}
-                          {user.address[0].street}, {user.address[0].city},{" "}
-                          {user.address[0].zipCode}, {user.address[0].country}
+                          {user?.address?.[0].houseNumber},{" "}
+                          {user?.address?.[0].street},{" "}
+                          {user?.address?.[0].apartment &&
+                            `${user?.address?.[0].apartment}, `}
+                          {user?.address?.[0].city},{" "}
+                          {user?.address?.[0].province},{" "}
+                          {user?.address?.[0].zipCode},{" "}
+                          {user?.address?.[0].country}
                         </>
                       ) : (
                         "Not provided"
@@ -263,59 +266,83 @@ const MyAccount = () => {
                 <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
                   <div className="flex flex-col lg:flex-row gap-5 sm:gap-8 mb-5">
                     <div className="w-full">
-                      <label htmlFor="firstName" className="block mb-2.5">
-                        First Name <span className="text-red">*</span>
+                      <label htmlFor="fullName" className="block mb-2.5">
+                        Full Name <span className="text-red">*</span>
                       </label>
-
                       <input
                         type="text"
-                        name="firstName"
-                        id="firstName"
-                        placeholder="Jhon"
-                        value="Jhon"
+                        name="name"
+                        id="fullName"
+                        placeholder="Enter your full name"
+                        value={formData.name}
+                        maxLength={15}
+                        onChange={handleChange}
                         className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
                       />
                     </div>
 
                     <div className="w-full">
-                      <label htmlFor="lastName" className="block mb-2.5">
-                        Last Name <span className="text-red">*</span>
-                      </label>
-
+                      <label className="block mb-2.5">Email</label>
                       <input
                         type="text"
-                        name="lastName"
-                        id="lastName"
-                        placeholder="Deo"
-                        value="Deo"
-                        className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                        value={formData.email}
+                        disabled
+                        className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
                       />
                     </div>
                   </div>
 
-                  <div className="mb-5">
-                    <label htmlFor="countryName" className="block mb-2.5">
-                      Country/ Region <span className="text-red">*</span>
-                    </label>
+                  <div className="flex flex-col sm:flex-row gap-5 sm:gap-8 mb-5">
+                    <div className="w-full">
+                      <label className="block mb-2.5">Last Update</label>
+                      <input
+                        type="text"
+                        value={formatDateTime(formData.updatedAt)}
+                        disabled
+                        className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
+                      />
+                    </div>
 
-                    <div className="relative">
-                      <select className="w-full bg-gray-1 rounded-md border border-gray-3 text-dark-4 py-3 pl-5 pr-9 duration-200 appearance-none outline-none focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20">
-                        <option value="0">Australia</option>
-                        <option value="1">America</option>
-                        <option value="2">England</option>
-                      </select>
+                    <div className="w-full">
+                      <label className="block mb-2.5">Role</label>
+                      <input
+                        type="text"
+                        value={formData.role}
+                        disabled
+                        className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
+                      />
+                    </div>
 
-                      <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-4">
-                        <ChevronDown size={18} />
-                      </span>
+                    <div className="w-full">
+                      <label className="block mb-2.5">Status</label>
+                      <input
+                        type="text"
+                        value={formData.isActive ? "Active" : "Inactive"}
+                        disabled
+                        className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
+                      />
                     </div>
                   </div>
 
+                  {formData.totalSpent > 0 && (
+                    <div className="mb-5">
+                      <label className="block mb-2.5">Total Spent</label>
+                      <input
+                        type="text"
+                        value={formatToEuro(formData.totalSpent.toFixed(2))}
+                        disabled
+                        className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
+                      />
+                    </div>
+                  )}
+
                   <button
-                    type="submit"
+                    type="button"
+                    onClick={() => handleUpdateName(formData.name)}
+                    disabled={!formData.name || formData.name === user.name}
                     className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
                   >
-                    Save Changes
+                    Update Name
                   </button>
                 </div>
 

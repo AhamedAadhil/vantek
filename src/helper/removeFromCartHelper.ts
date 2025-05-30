@@ -7,22 +7,28 @@ export const removeFromCartHelper = async (
 ) => {
   if (user && item) {
     try {
-      const res = await fetch(`http://localhost:3000/api/cart`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          action: "removeProduct",
-          userId: user._id,
-          productId: item._id,
-          variantId: item.variantId,
-          quantity: item.quantity,
-        }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/cart`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            action: "removeProduct",
+            userId: user._id,
+            productId: item._id,
+            variantId: item.variantId,
+            quantity: item.quantity,
+          }),
+        }
+      );
 
       const data = await res.json();
-      console.log("Cart after removal:", data);
 
       if (res.ok && data.success && data.data) {
         dispatch(

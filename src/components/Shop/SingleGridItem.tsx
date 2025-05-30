@@ -4,7 +4,10 @@ import { Product } from "@/types/product";
 import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { updateQuickView } from "@/redux/features/quickView-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
-import { addItemToWishlist, removeItemFromWishlist } from "@/redux/features/wishlist-slice";
+import {
+  addItemToWishlist,
+  removeItemFromWishlist,
+} from "@/redux/features/wishlist-slice";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import Link from "next/link";
@@ -19,64 +22,57 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
   const user = useSelector((state: RootState) => state.auth.user);
   const wishlist = useSelector(
-      (state: RootState) => state.wishlistReducer.items
-    );
-  
+    (state: RootState) => state.wishlistReducer.items
+  );
+
+  const isInWishlist = wishlist.some((wishItem) => wishItem._id === item._id);
+
+  // update the QuickView state
+  const handleQuickViewUpdate = () => {
+    dispatch(updateQuickView({ ...item }));
+  };
+
+  const handleItemToWishList = async () => {
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+    // Optimistically update the Redux state
     const isInWishlist = wishlist.some((wishItem) => wishItem._id === item._id);
-  
-    // console.log("wishlist========",wishlist)
-  
-    // update the QuickView state
-    const handleQuickViewUpdate = () => {
-      dispatch(updateQuickView({ ...item }));
-    };
-  
-    // add to cart
-    // const handleAddToCart = () => {
-    //   dispatch(
-    //     addItemToCart({
-    //       ...item,
-    //       quantity: 1,
-    //     })
-    //   );
-    // };
-  
-    const handleItemToWishList = async () => {
-      if (!user){
-        router.push('/signin')
-        return
-      }
-      // Optimistically update the Redux state
-      const isInWishlist = wishlist.some((wishItem) => wishItem._id === item._id);
-  
-      if (isInWishlist) {
-        // Remove from wishlist if item already exists
-        dispatch(removeItemFromWishlist(item._id));
-      } else {
-        // Add to wishlist if item doesn't exist
-        dispatch(addItemToWishlist(item));
-      }
-  
-      try {
-        const res = await fetch("http://localhost:3000/api/products/wishlist", {
+
+    if (isInWishlist) {
+      // Remove from wishlist if item already exists
+      dispatch(removeItemFromWishlist(item._id));
+    } else {
+      // Add to wishlist if item doesn't exist
+      dispatch(addItemToWishlist(item));
+    }
+
+    try {
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             productId: item._id,
           }),
-        });
-  
-        const data = await res.json();
-  
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to toggle product state!");
         }
-      } catch (error: any) {
-        console.log(error.message);
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to toggle product state!");
       }
-    };
-
-
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <div className="group">
@@ -141,21 +137,18 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
       <div className="flex items-center gap-2.5 mb-2">
         <div className="flex items-center gap-1">
-          
           {/* <Image
             src="/images/icons/icon-star.svg"
             alt="star icon"
             width={15}
             height={15}
           /> */}
-          <Star
-              size={15}
-              color="gold"
-              fill="gold"
-              />
+          <Star size={15} color="gold" fill="gold" />
         </div>
 
-        <p className="text-custom-sm">{item?.overAllRating} ({item?.reviews?.length})</p>
+        <p className="text-custom-sm">
+          {item?.overAllRating} ({item?.reviews?.length})
+        </p>
       </div>
 
       <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
@@ -164,7 +157,9 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
       <span className="flex items-center gap-2 font-medium text-lg">
         <span className="text-dark">${item?.variants[0]?.actualPrice}</span>
-        <span className="text-dark-4 line-through">${item?.variants[0]?.labelPrice}</span>
+        <span className="text-dark-4 line-through">
+          ${item?.variants[0]?.labelPrice}
+        </span>
       </span>
     </div>
   );

@@ -142,8 +142,6 @@ export const PATCH = async (req: NextRequest) => {
       featuredProduct,
       action,
     } = await req.json();
-    console.log("topSellingProduct", topSellingProduct);
-    console.log("featuredProduct", featuredProduct);
     const product = await (Product as mongoose.Model<IProduct>).findById(id);
     if (!product) {
       return NextResponse.json(

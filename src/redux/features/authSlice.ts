@@ -2,6 +2,9 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 type User = {
+  updatedAt: any;
+  totalSpent: any;
+  isActive: any;
   address: any;
   _id: any;
   role: string;
@@ -42,13 +45,19 @@ export const authSlice = createSlice({
     },
     updateUserAddress: (state, action: PayloadAction<any>) => {
       if (state.user) {
-        state.user.address = action.payload;
+        state.user.address[0] = action.payload;
+      }
+    },
+    updateUserName: (state, action: PayloadAction<string>) => {
+      if (state.user) {
+        state.user.name = action.payload;
       }
     },
   },
 });
 
-export const { loginSuccess, logout, updateUserAddress } = authSlice.actions;
+export const { loginSuccess, logout, updateUserAddress, updateUserName } =
+  authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 

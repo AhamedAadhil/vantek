@@ -23,13 +23,12 @@ const Billing = ({
     setFormValues((prev) => ({ ...prev, [name]: value }));
 
     if (name === "countryName") {
-      console.log("Country selected:", value);
       setIsUk(value !== "OutsideUK");
     }
   };
 
   // If address exists and is an array with at least one address
-  const userAddress = Array.isArray(user.address) ? user?.address?.[0] : null;
+  const userAddress = Array.isArray(user?.address) ? user?.address?.[0] : null;
 
   useEffect(() => {
     if (user) {

@@ -3,7 +3,10 @@ import { AppDispatch, RootState } from "@/redux/store";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 
-import { addItemToWishlist, removeItemFromWishlist } from "@/redux/features/wishlist-slice";
+import {
+  addItemToWishlist,
+  removeItemFromWishlist,
+} from "@/redux/features/wishlist-slice";
 
 import { addItemToCart } from "@/redux/features/cart-slice";
 
@@ -21,40 +24,49 @@ const SingleItem = ({ item }) => {
   //   dispatch(removeItemFromWishlist(item._id));
   // };
 
-    const handleRemoveFromWishlist = async () => {
-        if (!user){
-          router.push('/signin')
-          return
+  const handleRemoveFromWishlist = async () => {
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+    // Optimistically update the Redux state
+    const isInWishlist = wishlist.some(
+      (wishItem) => wishItem._id === item?._id
+    );
+
+    if (isInWishlist) {
+      // Remove from wishlist if item already exists
+      dispatch(removeItemFromWishlist(item?._id));
+    } else {
+      // Add to wishlist if item doesn't exist
+      dispatch(addItemToWishlist(item));
+    }
+
+    try {
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: item?._id,
+          }),
         }
-        // Optimistically update the Redux state
-        const isInWishlist = wishlist.some((wishItem) => wishItem._id === item?._id);
-    
-        if (isInWishlist) {
-          // Remove from wishlist if item already exists
-          dispatch(removeItemFromWishlist(item?._id));
-        } else {
-          // Add to wishlist if item doesn't exist
-          dispatch(addItemToWishlist(item));
-        }
-    
-        try {
-          const res = await fetch("http://localhost:3000/api/products/wishlist", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              productId: item?._id,
-            }),
-          });
-    
-          const data = await res.json();
-    
-          if (!res.ok) {
-            throw new Error(data.message || "Failed to toggle product state!");
-          }
-        } catch (error: any) {
-          console.log(error.message);
-        }
-      };
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to toggle product state!");
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const handleAddToCart = () => {
     dispatch(
@@ -79,7 +91,7 @@ const SingleItem = ({ item }) => {
       </div>
 
       {/* Product Info */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-1/2" >
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-1/2">
         <div className="w-20 h-20 ml-4 bg-gray-2 rounded-md flex items-center justify-center overflow-hidden hover:cursor-pointer">
           <Image
             src={item?.images?.[0]}
@@ -92,7 +104,10 @@ const SingleItem = ({ item }) => {
         </div>
 
         <div>
-          <h3 className="text-sm font-medium text-dark hover:text-blue" onClick={() => router.push(`/product/${item?._id}`)}>
+          <h3
+            className="text-sm font-medium text-dark hover:text-blue"
+            onClick={() => router.push(`/product/${item?._id}`)}
+          >
             <a href="#">{item?.name}</a>
           </h3>
         </div>

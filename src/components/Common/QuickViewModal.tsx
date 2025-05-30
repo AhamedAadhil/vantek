@@ -11,7 +11,10 @@ import { resetQuickView } from "@/redux/features/quickView-slice";
 import { updateproductDetails } from "@/redux/features/product-details";
 import { CheckCircle, Heart, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { addItemToWishlist, removeItemFromWishlist } from "@/redux/features/wishlist-slice";
+import {
+  addItemToWishlist,
+  removeItemFromWishlist,
+} from "@/redux/features/wishlist-slice";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
@@ -22,48 +25,57 @@ const QuickViewModal = () => {
   const router = useRouter();
   const user = useSelector((state: RootState) => state.auth.user);
   const wishlist = useSelector(
-      (state: RootState) => state.wishlistReducer.items
-    );
-    // get the product data
+    (state: RootState) => state.wishlistReducer.items
+  );
+  // get the product data
   const product = useAppSelector((state) => state.quickViewReducer.value);
-   const isInWishlist = wishlist.some((wishItem) => wishItem._id === product._id);
+  const isInWishlist = wishlist.some(
+    (wishItem) => wishItem._id === product._id
+  );
 
-   const handleItemToWishList = async () => {
-      if (!user){
-        router.push('/signin')
-        return
-      }
-      // Optimistically update the Redux state
-      const isInWishlist = wishlist.some((wishItem) => wishItem._id === product._id);
-  
-      if (isInWishlist) {
-        // Remove from wishlist if item already exists
-        dispatch(removeItemFromWishlist(product._id));
-      } else {
-        // Add to wishlist if item doesn't exist
-        dispatch(addItemToWishlist(product));
-      }
-  
-      try {
-        const res = await fetch("http://localhost:3000/api/products/wishlist", {
+  const handleItemToWishList = async () => {
+    if (!user) {
+      router.push("/signin");
+      return;
+    }
+    // Optimistically update the Redux state
+    const isInWishlist = wishlist.some(
+      (wishItem) => wishItem._id === product._id
+    );
+
+    if (isInWishlist) {
+      // Remove from wishlist if item already exists
+      dispatch(removeItemFromWishlist(product._id));
+    } else {
+      // Add to wishlist if item doesn't exist
+      dispatch(addItemToWishlist(product));
+    }
+
+    try {
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
+        {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             productId: product._id,
           }),
-        });
-  
-        const data = await res.json();
-  
-        if (!res.ok) {
-          throw new Error(data.message || "Failed to toggle product state!");
         }
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    };
+      );
 
-  
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to toggle product state!");
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
 
   const [activePreview, setActivePreview] = useState(0);
 
@@ -271,7 +283,7 @@ const QuickViewModal = () => {
                     color={isInWishlist ? "red" : "white"}
                     fill={isInWishlist ? "red" : "white"}
                   />
-                 {isInWishlist? "Remove from Wishlist":"Add to Wishlist"}
+                  {isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
               </div>
             </div>

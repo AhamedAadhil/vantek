@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import SingleItem from "./SingleItem";
 import Image from "next/image";
@@ -6,33 +6,36 @@ import Link from "next/link";
 import shopData from "@/components/Shop/shopData";
 import ProductItem from "@/components/Common/ProductItem";
 
-
 //TODO : Fetch only best selling
 const BestSeller = () => {
+  const [products, setProducts] = useState([]);
 
-  const [products,setProducts] = useState([]); 
-  
-    const fetchData = async () => {
-      try {
-        const res = await fetch("http://localhost:3000/api/products?topSellingProduct=true&limit=10");
-        const data = await res.json();
-    
-        if (res.ok) {
-          console.log("✅ Raw API Response:", data);
-          setProducts(data.products);
-          // setCurrentPage(data.currentPage)
-          // setTotalPages(data.totalProducts)
-        } else {
-          console.error("❌ API Error:", data.message);
-        }
-      } catch (error) {
-        console.error("❌ Fetch error:", error);
+  const fetchData = async () => {
+    try {
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products?topSellingProduct=true&limit=10`
+      );
+      const data = await res.json();
+
+      if (res.ok) {
+        setProducts(data.products);
+        // setCurrentPage(data.currentPage)
+        // setTotalPages(data.totalProducts)
+      } else {
+        console.error("❌ API Error:", data.message);
       }
+    } catch (error) {
+      console.error("❌ Fetch error:", error);
     }
-  
-    useEffect(()=>{
-      fetchData()
-    },[])
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   return (
     <section className="overflow-hidden">
@@ -59,7 +62,7 @@ const BestSeller = () => {
           {/* <!-- Best Sellers item --> */}
           {products.slice(1, 7).map((item, key) => (
             // <SingleItem item={item} key={key} />
-            <ProductItem item = {item} key = {key}/>
+            <ProductItem item={item} key={key} />
           ))}
         </div>
 

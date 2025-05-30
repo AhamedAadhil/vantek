@@ -11,7 +11,6 @@ import { Trash } from "lucide-react";
 import { removeFromCartHelper } from "@/helper/removeFromCartHelper";
 
 const SingleItem = ({ item }) => {
-  console.log("SingleItem", item);
   const dispatch = useDispatch<AppDispatch>();
   const user = useSelector((state: RootState) => state.auth.user);
   const [quantity, setQuantity] = useState(item.quantity);

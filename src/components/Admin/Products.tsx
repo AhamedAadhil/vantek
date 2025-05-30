@@ -83,11 +83,16 @@ const ProductList = () => {
   const fetchData = async () => {
     try {
       setIsLoading(true); // Start spinner
-      const res = await fetch("http://localhost:3000/api/products");
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products`
+      );
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Raw API Response:", data);
         setProductData(data.products);
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalProducts);
@@ -100,21 +105,6 @@ const ProductList = () => {
       setIsLoading(false); // Stop spinner
     }
   };
-
-  // useEffect(() => {
-  //   fetchData();
-  //   console.log("✅ Updated productData:", productData);
-
-  //   if (showEditPopup) {
-  //     document.body.style.overflow = "hidden";
-  //   } else {
-  //     document.body.style.overflow = "";
-  //   }
-
-  //   return () => {
-  //     document.body.style.overflow = "";
-  //   };
-  // }, [showEditPopup, productData]);
 
   useEffect(() => {
     fetchData();

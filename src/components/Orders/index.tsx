@@ -6,9 +6,14 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/me/orders");
+      const response = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/me/orders`
+      );
       const data = await response.json();
-      console.log("data== order", data);
       setOrders(data.orders);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -18,8 +23,6 @@ const Orders = () => {
   useEffect(() => {
     fetchOrders();
   }, []);
-
-  console.log("myorders==", orders);
 
   return (
     <>

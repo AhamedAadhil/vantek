@@ -2,8 +2,6 @@
 import React, { useEffect, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
 import Image from "next/image";
-import Newsletter from "../Common/Newsletter";
-import RecentlyViewdItems from "./RecentlyViewd";
 import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import {
   CreditCard,
@@ -15,7 +13,6 @@ import {
   Share2,
   ShieldCheck,
   Store,
-  ThumbsUp,
   Truck,
   Plus,
   Minus,
@@ -27,11 +24,7 @@ import {
   addItemToWishlist,
   removeItemFromWishlist,
 } from "@/redux/features/wishlist-slice";
-import {
-  addItemToCart,
-  removeItemFromCart,
-  removeAllItemsFromCart,
-} from "@/redux/features/cart-slice";
+import { addItemToCart } from "@/redux/features/cart-slice";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
@@ -73,26 +66,28 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
   // TODO: toaster
   const handleAddToCart = async () => {
-    console.log(
-      product?.variants?.[selectedVariantIndex]._id,
-      "VARIANT ID IS THIS : "
-    );
-
     if (!user) {
       router.push("/signin");
       return;
     }
     try {
-      const res = await fetch("http://localhost:3000/api/cart", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product._id,
-          userId: user?._id,
-          variantId: product?.variants?.[selectedVariantIndex]._id,
-          quantity: quantity,
-        }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/cart`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: product._id,
+            userId: user?._id,
+            variantId: product?.variants?.[selectedVariantIndex]._id,
+            quantity: quantity,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -108,8 +103,6 @@ const ShopDetails = ({ productId }: { productId: string }) => {
         images: product.images[0],
         variantId: product?.variants?.[selectedVariantIndex]._id,
       };
-
-      console.log("Dispatching addItemToCart with payload:", payload); // <---- Log payload here
 
       dispatch(addItemToCart(payload));
     } catch (error: any) {
@@ -136,13 +129,20 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/products/wishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product._id,
-        }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: product._id,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -174,8 +174,6 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
     fetchProduct();
   }, [productId]);
-
-  console.log(product);
 
   return (
     <>
@@ -304,11 +302,19 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
               <div className="flex items-center mt-4 gap-2">
                 <button
-                  onClick={() => handleAddToCart()}
-                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-700"
+                  onClick={handleAddToCart}
+                  disabled={product?.variants[selectedVariantIndex]?.stock <= 0}
+                  className={`px-4 py-2 rounded-md text-white transition duration-200 ${
+                    product?.variants[selectedVariantIndex]?.stock > 0
+                      ? "bg-green-500 hover:bg-green-700"
+                      : "bg-gray-400 cursor-not-allowed"
+                  }`}
                 >
-                  Add To Cart
+                  {product?.variants[selectedVariantIndex]?.stock > 0
+                    ? "Add to Cart"
+                    : "Out of Stock"}
                 </button>
+
                 <button
                   onClick={() => handleItemToWishList()}
                   className="bg-blue-100 text-blue-500 border-hidden border-blue-500 px-4 py-2 rounded-md hover:bg-blue-700 hover:text-white"

@@ -57,7 +57,7 @@ const OrderDetails = ({ orderItem }: any) => {
                       )}
                     </div>
                   </td>
-                  <td className="p-3 text-purple-400">N/A</td>{" "}
+                  <td className="p-3 text-purple-400">N/A</td>
                   {/* If you don't have tracking */}
                   <td className="p-3 font-bold">{item.price}</td>
                   <td className="p-3">{item.quantity}</td>
@@ -88,8 +88,13 @@ const OrderDetails = ({ orderItem }: any) => {
           <div className="flex justify-between mb-2">
             <span>Delivery Fees:</span>
             <span className="text-red-400">
-              {orderItem.shippingMethod === "standard" ? " 4.50" : "8.50"}
-            </span>{" "}
+              {!orderItem.isUK
+                ? "Shipping charges will be confirmed with you by Vantek."
+                : orderItem.shippingMethod === "standard"
+                ? "4.50"
+                : "8.50"}
+            </span>
+
             {/* if not given */}
           </div>
           {/* <div className="flex justify-between mb-2">

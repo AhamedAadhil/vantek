@@ -51,6 +51,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       shippingAddress,
     } = await req.json();
 
+    console.log("shippingAddress in backend:", shippingAddress);
+
     // validate inputs and exists
     if (!userId) {
       return NextResponse.json(
@@ -137,6 +139,17 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         return NextResponse.json(
           {
             message: `Variant with id ${variantId} not found in product ${productId}`,
+            success: false,
+          },
+          { status: 400 }
+        );
+      }
+
+      // ✅ Check if variant has enough stock
+      if (variant.stock < quantity) {
+        return NextResponse.json(
+          {
+            message: `Not enough stock for variant "${variant.name}" of product "${product.name}". Requested: ${quantity}, Available: ${variant.stock}`,
             success: false,
           },
           { status: 400 }

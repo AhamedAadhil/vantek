@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Search, Eye, Trash2, Upload } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { utils, writeFile } from "xlsx"; 
+import { utils, writeFile } from "xlsx";
 
 const Customers = () => {
   const router = useRouter();
@@ -53,13 +53,16 @@ const Customers = () => {
 
   const confirmDelete = () => {
     // Implement delete logic here using selectedId
-    console.log("Deleted user with ID:", selectedId);
     setShowModal(false);
     setSelectedId(null);
   };
 
   if (loading) {
-    return <div className="m-4 p-6 bg-[#202020] text-white rounded-lg">Loading...</div>;
+    return (
+      <div className="m-4 p-6 bg-[#202020] text-white rounded-lg">
+        Loading...
+      </div>
+    );
   }
 
   //Export To Excel Function
@@ -73,13 +76,12 @@ const Customers = () => {
       "Billing Address": user.property || "N/A",
       "Recent Order": user.status || "N/A",
     }));
-  
+
     const worksheet = utils.json_to_sheet(exportData);
     const workbook = utils.book_new();
     utils.book_append_sheet(workbook, worksheet, "Customers");
     writeFile(workbook, "Customer_List.xlsx");
   };
-  
 
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-white rounded-lg">
@@ -121,7 +123,10 @@ const Customers = () => {
         </thead>
         <tbody>
           {currentUsers.map((user) => (
-            <tr key={user._id} className="border-b border-dashed text-sm border-gray-500">
+            <tr
+              key={user._id}
+              className="border-b border-dashed text-sm border-gray-500"
+            >
               <td className="p-3 flex items-center space-x-3">
                 {/* <Image
                   src={user.avatar || "/images/users/default.jpg"}
@@ -132,7 +137,11 @@ const Customers = () => {
                 /> */}
                 <span>{user.name}</span>
               </td>
-              <td className="p-3">{user.createdAt ? new Date(user.createdAt).toISOString().split('T')[0] : "N/A"}</td>
+              <td className="p-3">
+                {user.createdAt
+                  ? new Date(user.createdAt).toISOString().split("T")[0]
+                  : "N/A"}
+              </td>
               <td className="p-3">{user.phone || "N/A"}</td>
               <td className="p-3">{user.country || "N/A"}</td>
               <td className="p-3">{user.totalPurchase || "N/A"}</td>

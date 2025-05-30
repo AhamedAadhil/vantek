@@ -33,9 +33,14 @@ const Sidebar = () => {
   ];
 
   const handleLogout = async () => {
-    const res = await fetch("http://localhost:3000/api/logout");
+    const res = await fetch(
+      `${
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_BASEURL
+          : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+      }/logout`
+    );
     const data = await res.json();
-    console.log(data);
     if (res.ok) {
       dispatch(logout());
       router.replace("/");

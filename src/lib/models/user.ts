@@ -64,6 +64,8 @@ const userSchema = new Schema<IUser>(
       {
         phone: { type: String, sparse: true },
         houseNumber: { type: String },
+        apartment: { type: String },
+        province: { type: String },
         street: { type: String },
         city: { type: String },
         state: { type: String },

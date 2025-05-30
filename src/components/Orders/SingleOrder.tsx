@@ -4,7 +4,6 @@ import OrderModal from "./OrderModal";
 import { formatDateTime } from "@/helper/formatDateTime";
 
 const SingleOrder = ({ orderItem, smallView }: any) => {
-  console.log(orderItem, "orderItem");
   const [showDetails, setShowDetails] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 

@@ -130,6 +130,8 @@ export const POST = async (req: NextRequest) => {
         );
       }
 
+      console.log("user address before returning==", user?.address);
+
       return NextResponse.json({
         message: "Payment captured and order updated successfully.",
         success: true,

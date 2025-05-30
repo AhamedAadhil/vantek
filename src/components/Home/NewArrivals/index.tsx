@@ -15,12 +15,15 @@ const NewArrival = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        "http://localhost:3000/api/products?featuredProduct=true&limit=10"
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products?featuredProduct=true&limit=10`
       );
       const data = await res.json();
 
       if (res.ok) {
-        console.log("✅ Raw API Response:", data);
         setProducts(data.products);
         // setCurrentPage(data.currentPage)
         // setTotalPages(data.totalProducts)

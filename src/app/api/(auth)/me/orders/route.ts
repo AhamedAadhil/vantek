@@ -24,7 +24,8 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
 
     const orders = await (Order as mongoose.Model<IOrder>)
       .find({ user: userId })
-      .populate("items.product");
+      .populate("items.product")
+      .sort({ createdAt: -1 });
     return NextResponse.json({ orders, success: true }, { status: 200 });
   } catch (error) {
     return NextResponse.json(

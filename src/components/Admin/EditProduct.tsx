@@ -60,7 +60,6 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
         setTags(product.tags);
         setVariants(product.variants);
         setExistingVariants(product.variants);
-        console.log(product);
       }
     };
     if (productId) fetchProduct();
@@ -168,7 +167,6 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
     });
 
     const result = await res.json();
-    console.log("update product results===", result);
     if (res.ok) {
       router.push("/admin/inventory");
     } else {

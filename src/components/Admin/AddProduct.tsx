@@ -102,16 +102,23 @@ const AddProduct = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/api/admin/product", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/product`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(productData),
+        }
+      );
 
       const data = await res.json();
 
       if (res.ok) {
-        console.log(data);
+        // TODO: do something
       }
 
       if (!res.ok) {
@@ -138,8 +145,6 @@ const AddProduct = () => {
       setImageError("Please upload atleast 1 product Image");
       return;
     }
-
-    console.log("🚀 Product Data:", productData);
   };
 
   const mainCategories = Object.keys(vanPartsData);
@@ -250,7 +255,7 @@ const AddProduct = () => {
             </div>
             <small className="sm text-reds-500">{error}</small>
 
-              <label className="block mb-1">Product Description</label>
+            <label className="block mb-1">Product Description</label>
             <div className="bg-white p-1 rounded-md">
               <ReactQuill
                 theme="snow"
@@ -260,9 +265,9 @@ const AddProduct = () => {
                 className="dark-quill text-gray-900"
               />
             </div>
-              <small className="text-gray-400">
-                *Add a rich description about the product (1500 characters max)
-              </small>
+            <small className="text-gray-400">
+              *Add a rich description about the product (1500 characters max)
+            </small>
             <div>
               <label className="block mb-1">Tags</label>
               <input

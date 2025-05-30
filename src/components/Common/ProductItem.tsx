@@ -16,7 +16,6 @@ import Link from "next/link";
 import { Eye, Heart, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 
-
 const ProductItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
   const user = useSelector((state: RootState) => state.auth.user);
@@ -27,8 +26,6 @@ const ProductItem = ({ item }: { item: Product }) => {
   );
 
   const isInWishlist = wishlist.some((wishItem) => wishItem._id === item._id);
-
-  // console.log("wishlist========",wishlist)
 
   // update the QuickView state
   const handleQuickViewUpdate = () => {
@@ -46,9 +43,9 @@ const ProductItem = ({ item }: { item: Product }) => {
   // };
 
   const handleItemToWishList = async () => {
-    if (!user){
-      router.push('/signin')
-      return
+    if (!user) {
+      router.push("/signin");
+      return;
     }
     // Optimistically update the Redux state
     const isInWishlist = wishlist.some((wishItem) => wishItem._id === item._id);
@@ -62,13 +59,20 @@ const ProductItem = ({ item }: { item: Product }) => {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/products/wishlist", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: item._id,
-        }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productId: item._id,
+          }),
+        }
+      );
 
       const data = await res.json();
 
@@ -87,7 +91,12 @@ const ProductItem = ({ item }: { item: Product }) => {
   return (
     <div className="group">
       <div className="relative overflow-hidden flex items-center justify-center rounded-lg bg-[#F6F7FB] min-h-[270px] mb-4 shadow-3">
-        <Image src={item?.images[0]} alt="" width={250} height={250} />
+        <Image
+          src={item?.images[0]}
+          alt="product image"
+          width={250}
+          height={250}
+        />
 
         <div className="absolute left-0 bottom-0 translate-y-full w-full flex items-center justify-center gap-2.5 pb-5 ease-linear duration-200 group-hover:translate-y-0">
           <button
