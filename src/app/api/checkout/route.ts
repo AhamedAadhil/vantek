@@ -19,6 +19,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     // get current user id and role and verify with response data
     const currentUserId = req.headers.get("userId");
     const role = req.headers.get("role");
+
     if (!currentUserId) {
       return NextResponse.json(
         {
@@ -28,6 +29,7 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         { status: 401 }
       );
     }
+
     if (role !== "user") {
       return NextResponse.json(
         {
@@ -57,6 +59,17 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
           success: false,
         },
         { status: 400 }
+      );
+    }
+
+    // makesure user is authenticated
+    if (currentUserId !== userId) {
+      return NextResponse.json(
+        {
+          message: "Illegal Attempt",
+          success: false,
+        },
+        { status: 401 }
       );
     }
 
@@ -91,22 +104,8 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       );
     }
 
-    // makesure user is authenticated
-    if (currentUserId !== userId) {
-      return NextResponse.json(
-        {
-          message: "User not authenticated",
-          success: false,
-        },
-        { status: 401 }
-      );
-    }
-
     // Normalize items to always be an array
     const itemsArray = Array.isArray(items) ? items : [items];
-
-    // console.log("Items Array:", itemsArray);
-    // console.log("items==:", items);
 
     // STEP1 - calculate the total Amount
     let totalAmount = 0;
@@ -209,45 +208,12 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
 
     await order.save();
 
-    // STEP6- clear cart of user
-    const user = await (User as mongoose.Model<IUser>).findById(userId);
-    const cartId = user?.cart;
-    if (cartId) {
-      await (Cart as mongoose.Model<ICart>).findByIdAndDelete(cartId);
-    }
-    await (User as mongoose.Model<IUser>).findByIdAndUpdate(userId, {
-      $set: { cart: null },
-    });
-
-    // STEP7- add order to user's orders
-    await (User as mongoose.Model<IUser>).findByIdAndUpdate(userId, {
-      $push: { orders: order._id },
-    });
-
-    // STEP8- reduce the stock of each products
-    for (const item of processedItems) {
-      const { product: productId, variant: variantId, quantity } = item;
-
-      await (Product as mongoose.Model<IProduct>).findByIdAndUpdate(
-        productId,
-        {
-          $inc: { "variants.$[elem].stock": -quantity },
-        },
-        {
-          arrayFilters: [{ "elem._id": variantId }],
-          new: true,
-        }
-      );
-    }
-
-    // STEP9- add the total to user's totalSpent
-    user.totalSpent += totalAmount;
-    await user.save();
-
+    // STEP6- return the order details
     return NextResponse.json({
       message: "Order validated and placed successfully",
       success: true,
       order,
+      userId,
       orderId: order.orderId,
       shippingFee,
       totalAmount,

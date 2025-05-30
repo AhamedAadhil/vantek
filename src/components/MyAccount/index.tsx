@@ -5,15 +5,28 @@ import Image from "next/image";
 import AddressModal from "./AddressModal";
 import Orders from "../Orders";
 import { useRouter } from "next/navigation";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from "@/redux/features/authSlice";
 import { removeAllItemsFromWishlist } from "@/redux/features/wishlist-slice";
-import { ChevronDown, Edit, House, LayoutDashboard, LogOut, Mail, MapPin, Phone, ShoppingBasket, User, User2 } from "lucide-react";
+import {
+  ChevronDown,
+  Edit,
+  House,
+  LayoutDashboard,
+  LogOut,
+  Mail,
+  MapPin,
+  Phone,
+  ShoppingBasket,
+  User,
+  User2,
+} from "lucide-react";
 
 const MyAccount = () => {
-  const router = useRouter()
-  const user = useSelector((state:RootState)=>state.auth.user)
+  const router = useRouter();
+  const user = useSelector((state: RootState) => state.auth.user);
+  console.log(user, "user");
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("account-details");
   const [addressModal, setAddressModal] = useState(false);
@@ -26,18 +39,18 @@ const MyAccount = () => {
     setAddressModal(false);
   };
 
-  const handleLogout = async()=>{
-  const res =  await fetch("http://localhost:3000/api/logout")
-    const data = await res.json()
-    console.log(data)
-  if(res.ok){
-    dispatch(logout())
-    dispatch(removeAllItemsFromWishlist())
-    router.replace("/")
-  }
-  // TODO: implement Toaster to show errors ....
-  console.log("Logout failed");
-  }
+  const handleLogout = async () => {
+    const res = await fetch("http://localhost:3000/api/logout");
+    const data = await res.json();
+    console.log(data);
+    if (res.ok) {
+      dispatch(logout());
+      dispatch(removeAllItemsFromWishlist());
+      router.replace("/");
+    }
+    // TODO: implement Toaster to show errors ....
+    console.log("Logout failed");
+  };
 
   return (
     <>
@@ -60,10 +73,10 @@ const MyAccount = () => {
                   </div>
 
                   <div>
-                    <p className="font-medium text-dark mb-0.5">
-                      {user?.name}
+                    <p className="font-medium text-dark mb-0.5">{user?.name}</p>
+                    <p className="text-custom-xs">
+                      `Member Since {user?.createdAt.split("T")[0]}`
                     </p>
-                    <p className="text-custom-xs">`Member Since {user?.createdAt.split("T")[0]}`</p>
                   </div>
                 </div>
 
@@ -91,12 +104,9 @@ const MyAccount = () => {
                           : "text-dark-2 bg-gray-1"
                       }`}
                     >
-                      <User
-                      size={19}
-                      />
+                      <User size={19} />
                       Account Details
                     </button>
-
 
                     <button
                       onClick={() => setActiveTab("orders")}
@@ -106,9 +116,7 @@ const MyAccount = () => {
                           : "text-dark-2 bg-gray-1"
                       }`}
                     >
-                      <ShoppingBasket
-                      size={19}
-                      />
+                      <ShoppingBasket size={19} />
                       Orders
                     </button>
 
@@ -120,9 +128,7 @@ const MyAccount = () => {
                           : "text-dark-2 bg-gray-1"
                       }`}
                     >
-                      <House
-                      size={19}
-                      />
+                      <House size={19} />
                       Addresses
                     </button>
 
@@ -134,9 +140,7 @@ const MyAccount = () => {
                           : "text-dark-2 bg-gray-1"
                       }`}
                     >
-                      <LogOut
-                      size={19}
-                      />
+                      <LogOut size={19} />
                       Logout
                     </button>
                   </div>
@@ -209,40 +213,39 @@ const MyAccount = () => {
                     className="text-dark ease-out duration-200 hover:text-blue"
                     onClick={openAddressModal}
                   >
-                    <Edit
-                    size={18}
-                    />
+                    <Edit size={18} />
                   </button>
                 </div>
 
                 <div className="p-4 sm:p-7.5">
                   <div className="flex flex-col gap-4">
                     <p className="flex items-center gap-2.5 text-custom-sm">
-                      <User2
-                      size={18}
-                      />
-                      Name: James Septimus
+                      <User2 size={18} />
+                      Name: {user?.name}
                     </p>
 
                     <p className="flex items-center gap-2.5 text-custom-sm">
-                      <Mail
-                      size={18}
-                      />
-                      Email: jamse@example.com
+                      <Mail size={18} />
+                      Email: {user?.email}
                     </p>
 
                     <p className="flex items-center gap-2.5 text-custom-sm">
-                      <Phone
-                      size={18}
-                      />
-                      Phone: 1234 567890
+                      <Phone size={18} />
+                      Phone: {user?.address?.[0]?.phone || "Not provided"}
                     </p>
 
                     <p className="flex gap-2.5 text-custom-sm">
-                      <MapPin
-                      size={18}
-                      />
-                      Address: 7398 Smoke Ranch RoadLas Vegas, Nevada 89128
+                      <MapPin size={18} />
+                      Address:{" "}
+                      {user?.address?.length > 0 ? (
+                        <>
+                          {user.address[0].houseNumber},{" "}
+                          {user.address[0].street}, {user.address[0].city},{" "}
+                          {user.address[0].zipCode}, {user.address[0].country}
+                        </>
+                      ) : (
+                        "Not provided"
+                      )}
                     </p>
                   </div>
                 </div>
@@ -303,9 +306,7 @@ const MyAccount = () => {
                       </select>
 
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-dark-4">
-                        <ChevronDown
-                      size={18}
-                      />
+                        <ChevronDown size={18} />
                       </span>
                     </div>
                   </div>

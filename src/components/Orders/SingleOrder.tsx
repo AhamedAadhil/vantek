@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import OrderActions from "./OrderActions";
 import OrderModal from "./OrderModal";
+import { formatDateTime } from "@/helper/formatDateTime";
 
 const SingleOrder = ({ orderItem, smallView }: any) => {
+  console.log(orderItem, "orderItem");
   const [showDetails, setShowDetails] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
@@ -29,7 +31,9 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
             </p>
           </div>
           <div className="min-w-[175px]">
-            <p className="text-custom-sm text-dark">{orderItem.createdAt}</p>
+            <p className="text-custom-sm text-dark">
+              {formatDateTime(orderItem.createdAt)}
+            </p>
           </div>
 
           <div className="min-w-[128px]">
@@ -39,7 +43,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
                   ? "text-green bg-green-light-6"
                   : orderItem.status === "on-hold"
                   ? "text-red bg-red-light-6"
-                  : orderItem.status === "processing"
+                  : orderItem.status === "pending"
                   ? "text-yellow bg-yellow-light-4"
                   : "Unknown Status"
               }`}
@@ -49,7 +53,9 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
           </div>
 
           <div className="min-w-[113px]">
-            <p className="text-custom-sm text-dark">{orderItem.total}</p>
+            <p className="text-custom-sm text-dark">
+              &euro; {orderItem.totalAmount.toFixed(2)}
+            </p>
           </div>
 
           <div className="flex gap-5 items-center">
@@ -73,7 +79,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
             <div className="">
               <p className="text-custom-sm text-dark">
                 <span className="font-bold pr-2">Date:</span>{" "}
-                {orderItem.createdAt}
+                {formatDateTime(orderItem.createdAt)}
               </p>
             </div>
 
@@ -86,7 +92,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
                       ? "text-green bg-green-light-6"
                       : orderItem.status === "on-hold"
                       ? "text-red bg-red-light-6"
-                      : orderItem.status === "processing"
+                      : orderItem.status === "pending"
                       ? "text-yellow bg-yellow-light-4"
                       : "Unknown Status"
                   }`}
@@ -98,8 +104,8 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
 
             <div className="">
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Total:</span> $
-                {orderItem.total}
+                <span className="font-bold pr-2">Total:</span> $ &euro;{" "}
+                {orderItem.totalAmount.toFixed(2)}
               </p>
             </div>
 

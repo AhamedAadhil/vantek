@@ -1,8 +1,7 @@
 import { RootState, AppDispatch } from "@/redux/store";
 import { ChevronDown } from "lucide-react";
-import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 const Billing = ({
   formValues,
@@ -29,24 +28,53 @@ const Billing = ({
     }
   };
 
-  // You can initialize isUk from formValues.countryName
-  // useEffect(() => {
-  //   setIsUk(formValues.countryName !== "OutsideUK");
-  // }, [formValues.countryName,setIsUk]);
+  // If address exists and is an array with at least one address
+  const userAddress = Array.isArray(user.address) ? user?.address?.[0] : null;
 
   useEffect(() => {
     if (user) {
-      setFormValues((prev) => ({
-        ...prev,
+      // Base form values with user name/email
+      let initialForm: any = {
         name: user?.name || "",
         email: user?.email || "",
+      };
+
+      if (userAddress) {
+        initialForm = {
+          ...initialForm,
+          phone: userAddress.phone || "",
+          address: userAddress.street || "",
+          addressTwo: userAddress.apartment || "",
+          houseNumber: userAddress.houseNumber || "",
+          town: userAddress.city || "",
+          province: userAddress.province || "",
+          zipCode: userAddress.zipCode || "",
+          countryName:
+            userAddress.country === "England" ||
+            userAddress.country === "Scotland" ||
+            userAddress.country === "Wales" ||
+            userAddress.country === "Northern Ireland"
+              ? userAddress.country
+              : "OutsideUK",
+          country:
+            userAddress.country !== "England" &&
+            userAddress.country !== "Scotland" &&
+            userAddress.country !== "Wales" &&
+            userAddress.country !== "Northern Ireland"
+              ? userAddress.country
+              : "",
+        };
+
+        // Set initial UK status based on country
+        setIsUk(initialForm.countryName !== "OutsideUK");
+      }
+
+      setFormValues((prev: any) => ({
+        ...initialForm,
+        ...prev,
       }));
     }
   }, [user]);
-
-  useEffect(() => {
-    console.log("isUk changed to:", isUk);
-  }, [isUk]);
 
   return (
     <form className="bg-white shadow-1 rounded-[10px] p-4 sm:p-8.5">

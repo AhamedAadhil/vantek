@@ -1,4 +1,5 @@
 import connectDB from "@/lib/db";
+import { authMiddleware } from "@/lib/middleware";
 import User, { IUser } from "@/lib/models/user";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
@@ -39,33 +40,36 @@ export const POST = async (req: Request) => {
     });
 
     // gen jwt
-    const token = jwt.sign(
-      {
-        email: newUser.email,
-        id: newUser._id,
-        role: newUser.role,
-      },
-      process.env.JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // const token = jwt.sign(
+    //   {
+    //     email: newUser.email,
+    //     id: newUser._id,
+    //     role: newUser.role,
+    //   },
+    //   process.env.JWT_SECRET,
+    //   { expiresIn: "7d" }
+    // );
 
     await newUser.save();
     const { password: _, ...user } = newUser._doc;
 
-    const response = NextResponse.json(
-      { message: "Account created", user, token, success: true },
+    return NextResponse.json(
+      { message: "Account created", user, success: true },
       { status: 201 }
     );
 
     // set cookie
-    response.cookies.set("token", token, {
-      httpOnly: true, // Prevents client-side access
-      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict", // Prevents CSRF attacks
-      maxAge: 7 * 24 * 60 * 60, // 7 days expiration
-    });
+    // response.cookies.set("token", token, {
+    //   httpOnly: true, // Prevents client-side access
+    //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+    //   sameSite: "strict", // Prevents CSRF attacks
+    //   maxAge: 7 * 24 * 60 * 60, // 7 days expiration
+    // });
 
-    return response;
+    // ✅ Manually attach user details to request headers
+    // req.headers.set("userId", newUser.userId);
+    // req.headers.set("email", newUser.email);
+    // req.headers.set("role", newUser.role);
   } catch (error) {
     return NextResponse.json(
       {

@@ -3,11 +3,12 @@
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { loginSuccess } from "@/redux/features/authSlice";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 
 const Signup = () => {
-  const dispatch = useDispatch();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -29,7 +30,7 @@ const Signup = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
-   
+
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
@@ -49,15 +50,15 @@ const Signup = () => {
 
       const data = await res.json();
       if (res.ok) {
-        dispatch(loginSuccess({ user: data.user, token: data.token }))
-      } 
+        // dispatch(loginSuccess({ user: data.user, token: data.token }))
+        setTimeout(() => (window.location.href = "/signin"), 2000);
+      }
 
       if (!res.ok) {
         throw new Error(data.message || "Signup failed!");
       }
 
       setSuccess("Account created successfully!");
-      setTimeout(() => (window.location.href = "/"), 2000);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -147,7 +148,9 @@ const Signup = () => {
                   type="submit"
                   disabled={loading}
                   className={`w-full flex justify-center font-medium text-white py-3 px-6 rounded-lg duration-200 ${
-                    loading ? "bg-gray-400 cursor-not-allowed" : "bg-dark hover:bg-blue"
+                    loading
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-dark hover:bg-blue"
                   }`}
                 >
                   {loading ? "Creating Account..." : "Create Account"}
@@ -155,7 +158,10 @@ const Signup = () => {
 
                 <p className="text-center mt-6">
                   Already have an account?
-                  <Link href="/signin" className="text-dark hover:text-blue pl-2">
+                  <Link
+                    href="/signin"
+                    className="text-dark hover:text-blue pl-2"
+                  >
                     Sign in Now
                   </Link>
                 </p>

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "../store";
 
 type User = {
+  address: any;
   _id: any;
   role: string;
   createdAt: any;
@@ -26,7 +27,10 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginSuccess: (state, action: PayloadAction<{ user: User; token: string }>) => {
+    loginSuccess: (
+      state,
+      action: PayloadAction<{ user: User; token: string }>
+    ) => {
       state.user = action.payload.user;
       state.token = action.payload.token;
       state.isAuthenticated = true;
@@ -36,10 +40,15 @@ export const authSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
     },
+    updateUserAddress: (state, action: PayloadAction<any>) => {
+      if (state.user) {
+        state.user.address = action.payload;
+      }
+    },
   },
 });
 
-export const { loginSuccess, logout } = authSlice.actions;
+export const { loginSuccess, logout, updateUserAddress } = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 

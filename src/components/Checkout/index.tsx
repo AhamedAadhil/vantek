@@ -14,11 +14,13 @@ import { RootState } from "@/redux/store";
 import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+import { updateUserAddress } from "@/redux/features/authSlice";
 
 const Checkout = () => {
   const dispatch = useDispatch();
   const router = useRouter();
   const internalOrderIdRef = useRef("");
+  const orderDataRef = useRef(null);
   const cart = useSelector((state: RootState) => state.cartReducer);
   const user = useSelector((state: RootState) => state.auth.user);
   const [shippingMethod, setShippingMethod] = useState("standard");
@@ -46,68 +48,7 @@ const Checkout = () => {
     console.log("Coupon code applied:", code);
   };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   try {
-  //     const userId = user?._id || "guest"; // Use guest ID if not logged in
-  //     const country_final =
-  //       billingData.countryName === "OutsideUK"
-  //         ? billingData.country
-  //         : billingData.countryName;
-
-  //     const payload = {
-  //       userId,
-  //       items: {
-  //         ...cart,
-  //         items: cart.items.map((item) => ({
-  //           product: item._id,
-  //           variant: item.variantId,
-  //           quantity: item.quantity,
-  //           price: item.actualPrice,
-  //         })),
-  //       },
-  //       isUk,
-  //       couponCode: couponCode || null,
-  //       shippingMethod,
-  //       deliveryNote: deliveryNote || "",
-
-  //       shippingAddress: {
-  //         phone: billingData.phone,
-  //         apartment: billingData.addressTwo,
-  //         houseNumber: billingData.houseNumber,
-  //         street: billingData.address,
-  //         city: billingData.town,
-  //         province: billingData.province,
-  //         zipCode: billingData.zipCode,
-  //         country: country_final,
-  //       },
-  //     };
-
-  //     const res = await fetch("/api/checkout", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (res.ok) {
-  //       dispatch(removeAllItemsFromCart());
-  //       console.log("✅ Order Placed:", data);
-  //       // redirect to thank you / order summary page
-  //       return data;
-  //     } else {
-  //       console.error("❌ Order Failed:", data.message);
-  //       // show error to user
-  //       throw new Error(data.message || "Order failed");
-  //     }
-  //   } catch (error) {
-  //     console.error("❌ Something went wrong:", error);
-  //   }
-  // };
+  const afterSuccessfullPurchase = async () => {};
 
   useEffect(() => {
     let fee = 0;
@@ -270,152 +211,162 @@ const Checkout = () => {
                   <Coupon onApplyCoupon={handleCouponApply} />
 
                   {/* <!-- checkout button --> */}
-                  {/* <button
-                    type="submit"
-                    className="w-full flex justify-center font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
-                  >
-                    Pay with Paypal
-                  </button> */}
+                  <div className="mt-7.5">
+                    <PayPalButtons
+                      style={{ layout: "vertical" }}
+                      disabled={cart.items.length === 0}
+                      createOrder={async () => {
+                        let totalAmount = 0;
 
-                  <PayPalButtons
-                    style={{ layout: "vertical" }}
-                    disabled={cart.items.length === 0}
-                    createOrder={async () => {
-                      let totalAmount = 0;
+                        // Step 1: Create internal order
+                        try {
+                          const orderPayload = {
+                            userId: user?._id || "guest",
+                            items: {
+                              ...cart,
+                              items: cart.items.map((item) => ({
+                                product: item._id,
+                                variant: item.variantId,
+                                quantity: item.quantity,
+                                price: item.actualPrice,
+                              })),
+                            },
+                            isUk,
+                            couponCode: couponCode || null,
+                            shippingMethod,
+                            deliveryNote: deliveryNote || "",
+                            shippingAddress: {
+                              phone: billingData.phone,
+                              apartment: billingData.addressTwo,
+                              houseNumber: billingData.houseNumber,
+                              street: billingData.address,
+                              city: billingData.town,
+                              province: billingData.province,
+                              zipCode: billingData.zipCode,
+                              country:
+                                billingData.countryName === "OutsideUK"
+                                  ? billingData.country
+                                  : billingData.countryName,
+                            },
+                          };
 
-                      // Step 1: Create internal order
-                      try {
-                        const orderPayload = {
-                          userId: user?._id || "guest",
-                          items: {
-                            ...cart,
-                            items: cart.items.map((item) => ({
-                              product: item._id,
-                              variant: item.variantId,
-                              quantity: item.quantity,
-                              price: item.actualPrice,
-                            })),
-                          },
-                          isUk,
-                          couponCode: couponCode || null,
-                          shippingMethod,
-                          deliveryNote: deliveryNote || "",
-                          shippingAddress: {
-                            phone: billingData.phone,
-                            apartment: billingData.addressTwo,
-                            houseNumber: billingData.houseNumber,
-                            street: billingData.address,
-                            city: billingData.town,
-                            province: billingData.province,
-                            zipCode: billingData.zipCode,
-                            country:
-                              billingData.countryName === "OutsideUK"
-                                ? billingData.country
-                                : billingData.countryName,
-                          },
-                        };
-
-                        const orderRes = await fetch("/api/checkout", {
-                          method: "POST",
-                          headers: { "Content-Type": "application/json" },
-                          body: JSON.stringify(orderPayload),
-                        });
-
-                        if (!orderRes.ok) {
-                          const errorData = await orderRes.json();
-                          throw new Error(
-                            errorData.error || "Failed to create order"
-                          );
-                        }
-
-                        const orderData = await orderRes.json();
-                        internalOrderIdRef.current = orderData.orderId;
-                        totalAmount = orderData.totalAmount;
-                      } catch (err) {
-                        console.error("❌ Error creating internal order:", err);
-                        alert(err.message);
-                        throw err;
-                      }
-
-                      // Step 2: Create PayPal order
-                      try {
-                        const paypalRes = await fetch(
-                          "/api/paypal/create-order",
-                          {
+                          const orderRes = await fetch("/api/checkout", {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              amount: totalAmount.toFixed(2), // from backend only
-                              orderId: internalOrderIdRef.current,
-                            }),
-                          }
-                        );
+                            body: JSON.stringify(orderPayload),
+                          });
 
-                        if (!paypalRes.ok) {
-                          const errorData = await paypalRes.json();
-                          throw new Error(
-                            errorData.message || "Failed to create PayPal order"
+                          if (!orderRes.ok) {
+                            const errorData = await orderRes.json();
+                            throw new Error(
+                              errorData.error || "Failed to create order"
+                            );
+                          }
+
+                          const orderData = await orderRes.json();
+                          internalOrderIdRef.current = orderData.orderId;
+                          orderDataRef.current = orderData;
+                          totalAmount = orderData.totalAmount;
+                        } catch (err) {
+                          console.error(
+                            "❌ Error creating internal order:",
+                            err
                           );
+                          alert(err.message);
+                          throw err;
                         }
 
-                        const { paypalOrderId } = await paypalRes.json();
-                        return paypalOrderId;
-                      } catch (err) {
-                        console.error("❌ Error creating PayPal order:", err);
-                        alert(
-                          "Unable to start PayPal checkout. Please try again later."
-                        );
-                        throw err;
-                      }
-                    }}
-                    onApprove={async (data) => {
-                      // Step 3: Capture PayPal payment
-                      try {
-                        const captureRes = await fetch(
-                          "/api/paypal/capture-order",
-                          {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify({
-                              paypalOrderId: data.orderID,
-                              orderId: internalOrderIdRef.current,
-                            }),
-                          }
-                        );
-
-                        if (!captureRes.ok) {
-                          const errorData = await captureRes.json();
-                          throw new Error(
-                            errorData.message || "Failed to capture payment"
+                        // Step 2: Create PayPal order
+                        try {
+                          const paypalRes = await fetch(
+                            "/api/paypal/create-order",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                amount: totalAmount.toFixed(2), // from backend only
+                                orderId: internalOrderIdRef.current,
+                              }),
+                            }
                           );
-                        }
 
-                        const captureData = await captureRes.json();
+                          if (!paypalRes.ok) {
+                            const errorData = await paypalRes.json();
+                            throw new Error(
+                              errorData.message ||
+                                "Failed to create PayPal order"
+                            );
+                          }
 
-                        if (captureData.success) {
-                          dispatch(removeAllItemsFromCart());
-                          router.push("/order-success");
-                          alert("✅ Payment successful!");
-                        } else {
+                          const { paypalOrderId } = await paypalRes.json();
+                          return paypalOrderId;
+                        } catch (err) {
+                          console.error("❌ Error creating PayPal order:", err);
                           alert(
-                            "❌ Payment was not successful. Please try again."
+                            "Unable to start PayPal checkout. Please try again later."
+                          );
+                          throw err;
+                        }
+                      }}
+                      onApprove={async (data) => {
+                        // Step 3: Capture PayPal payment
+                        try {
+                          const captureRes = await fetch(
+                            "/api/paypal/capture-order",
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify({
+                                paypalOrderId: data.orderID,
+                                orderId: internalOrderIdRef.current,
+                                userId: orderDataRef.current?.userId,
+                                processedItems: orderDataRef.current?.items,
+                                totalAmount: orderDataRef.current?.totalAmount,
+                              }),
+                            }
+                          );
+
+                          if (!captureRes.ok) {
+                            const errorData = await captureRes.json();
+                            throw new Error(
+                              errorData.message || "Failed to capture payment"
+                            );
+                          }
+
+                          const captureData = await captureRes.json();
+
+                          if (captureData.success) {
+                            dispatch(removeAllItemsFromCart());
+                            // ✅ Update user address in Redux
+                            if (captureData.userAddress) {
+                              dispatch(
+                                updateUserAddress(captureData.userAddress)
+                              );
+                            }
+
+                            router.push("/order-success");
+                            alert("✅ Payment successful!");
+                          } else {
+                            alert(
+                              "❌ Payment was not successful. Please try again."
+                            );
+                          }
+                        } catch (err) {
+                          console.error(
+                            "❌ Error capturing PayPal payment:",
+                            err
+                          );
+                          alert(
+                            "Something went wrong while capturing your payment. Please try again."
                           );
                         }
-                      } catch (err) {
-                        console.error(
-                          "❌ Error capturing PayPal payment:",
-                          err
-                        );
-                        alert(
-                          "Something went wrong while capturing your payment. Please try again."
-                        );
-                      }
-                    }}
-                    onError={(err) => {
-                      console.error("❌ PayPal Error:", err);
-                      alert("A PayPal error occurred. Please try again.");
-                    }}
-                  />
+                      }}
+                      onError={(err) => {
+                        console.error("❌ PayPal Error:", err);
+                        alert("A PayPal error occurred. Please try again.");
+                      }}
+                    />
+                  </div>
                 </div>
               </div>
             </form>
