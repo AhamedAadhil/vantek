@@ -2,7 +2,7 @@ import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
 import { RootState } from "@/redux/store";
-import { Euro, Printer, Share } from "lucide-react";
+import { Euro, ExternalLink, Link, Printer, Share } from "lucide-react";
 import Image from "next/image";
 import React from "react";
 import { useSelector } from "react-redux";
@@ -18,7 +18,23 @@ const OrderDetails = ({ orderItem }: any) => {
             <h2 className="border-l-4 border-l-blue-600 pl-2 text-lg font-bold">
               Order No -{" "}
               <span className="text-green-light-3">#{orderItem.orderId}</span>
+              <br />
+              <span
+                className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs font-semibold 
+      ${
+        orderItem.status === "delivered"
+          ? "bg-green-100 text-green-700"
+          : orderItem.status === "pending"
+          ? "bg-yellow-100 text-yellow-700"
+          : orderItem.status === "cancelled"
+          ? "bg-red-100 text-red-700"
+          : "bg-gray-100 text-gray-700"
+      }`}
+              >
+                {orderItem.status}
+              </span>
             </h2>
+
             <div className="text-right">
               <span className="block text-sm bg-purple-300 text-green-900 px-3 py-1 rounded mb-1">
                 Estimated delivery: {getEstimatedDelivery(orderItem.createdAt)}
@@ -43,19 +59,28 @@ const OrderDetails = ({ orderItem }: any) => {
           {/* ✅ New: Shipping Address block */}
           {orderItem.shippingAddress && (
             <div className="mt-4 bg-gray-800 rounded-md p-4 text-sm">
-              <h3 className="text-gray-300 font-semibold mb-2">
-                Delivery Address
-              </h3>
+              <div className="flex justify-between items-center mb-2">
+                <h3 className="text-gray-300 font-semibold">
+                  Delivery Address
+                </h3>
+                {orderItem.trackingId && orderItem.trackingUrl && (
+                  <a
+                    href={orderItem.trackingUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs bg-blue-200 text-blue-800 px-2 py-0.5 rounded-full hover:bg-blue-300 transition"
+                  >
+                    <ExternalLink size={16} className="mr-1 w-3 h-3" />
+                    Tracking ID: {orderItem.trackingId}
+                  </a>
+                )}
+              </div>
               <p className="text-gray-400">
                 {user?.name}
                 <br />
                 {orderItem.shippingAddress.houseNumber},{" "}
                 {orderItem.shippingAddress.street}
                 <br />
-                {/* {orderItem.shippingAddress.phone
-                ? `, ${orderItem.shippingAddress.phone}`
-                : ""}
-              <br /> */}
                 {orderItem.shippingAddress.city},{" "}
                 {orderItem.shippingAddress.zipCode}
                 <br />
@@ -67,6 +92,7 @@ const OrderDetails = ({ orderItem }: any) => {
                 <br />
                 {user?.email && <>Email: {user?.email}</>}
               </p>
+
               {orderItem.deliveryNote && (
                 <div className="mt-4 bg-gray-800 rounded-md p-4">
                   <h3 className="text-gray-300 font-semibold mb-2">
@@ -89,7 +115,7 @@ const OrderDetails = ({ orderItem }: any) => {
               <thead>
                 <tr className="bg-gray-800 text-gray-300">
                   <th className="p-3">Items</th>
-                  <th className="p-3">Tracking No</th>
+
                   <th className="p-3">Price</th>
                   <th className="p-3">Qty</th>
                   <th className="p-3">Total Price</th>
@@ -120,8 +146,7 @@ const OrderDetails = ({ orderItem }: any) => {
                         )}
                       </div>
                     </td>
-                    <td className="p-3 text-purple-400">N/A</td>
-                    {/* If you don't have tracking */}
+
                     <td className="p-3 font-bold">{item.price}</td>
                     <td className="p-3">{item.quantity}</td>
                     <td className="p-3 font-bold">
