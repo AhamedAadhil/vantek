@@ -2,129 +2,60 @@
 
 import { useEffect, useState } from "react";
 import { Search, Eye, Pencil, Trash2, Upload } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-const ordersData = [
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Kabeeb",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Rafeek",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Delivered",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Kabeeb",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Delivered",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-  {
-    id: 1,
-    name: "Rafeek",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    orderID: "VTK-68547512",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-    avatar: "/images/users/cus1.jpg",
-  },
-];
-
 const Orders = () => {
+  const [orders, setOrders] = useState([]);
+  const [filteredOrders, setFilteredOrders] = useState([]);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const ordersPerPage = 10;
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const ordersPerPage = 10;
   const router = useRouter();
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const res = await fetch("/api/admin/order");
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data.data || []);
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
+  console.log(orders);
 
   useEffect(() => {
     setCurrentPage(1);
   }, [search, fromDate, toDate]);
 
-  const filteredOrders = ordersData.filter((order) => {
-    const matchesSearch = order.name
-      .toLowerCase()
-      .includes(search.toLowerCase());
-    const orderDate = new Date(order.date);
-    const isAfterFromDate = fromDate ? orderDate >= new Date(fromDate) : true;
-    const isBeforeToDate = toDate ? orderDate <= new Date(toDate) : true;
-    return matchesSearch && isAfterFromDate && isBeforeToDate;
-  });
+  useEffect(() => {
+    const filtered = orders.filter((order) => {
+      const orderId = order.orderId || "Unknown";
+      console.log(orderId, "orderid");
+      const matchesSearch = orderId
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
+      const orderDate = new Date(order.createdAt);
+      const isAfterFromDate = fromDate ? orderDate >= new Date(fromDate) : true;
+      const isBeforeToDate = toDate ? orderDate <= new Date(toDate) : true;
+
+      return matchesSearch && isAfterFromDate && isBeforeToDate;
+    });
+
+    setFilteredOrders(filtered);
+  }, [orders, search, fromDate, toDate]);
 
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
   const currentOrders = filteredOrders.slice(
@@ -132,17 +63,18 @@ const Orders = () => {
     currentPage * ordersPerPage
   );
 
+  if (loading) return <p className="text-white p-4">Loading orders...</p>;
+  if (error) return <p className="text-red-500 p-4">Error: {error}</p>;
+
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-sm text-white rounded-lg">
+      {/* --- Search & Filters --- */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">All Order List</h2>
         <div className="flex">
           <div className="flex items-center gap-4 mx-4">
-            <div className="flex items-center">
-              <Search
-                className="absolute ml-4 text-gray-400"
-                size={18}
-              />
+            <div className="relative flex items-center">
+              <Search className="absolute ml-3 text-gray-400" size={18} />
               <input
                 type="text"
                 placeholder="Search orders..."
@@ -183,6 +115,7 @@ const Orders = () => {
         </div>
       </div>
 
+      {/* --- Table --- */}
       <table className="w-full text-left border-collapse">
         <thead className="border-b">
           <tr className="bg-gray-800 text-gray-300 text-base">
@@ -191,39 +124,34 @@ const Orders = () => {
             <th className="p-3">Contact</th>
             <th className="p-3">Order ID</th>
             <th className="p-3">Amount</th>
-            <th className="p-3">Billing Address</th>
-            <th className="p-3">Order Status</th>
+            <th className="p-3">Email</th>
+            <th className="p-3">Status</th>
             <th className="p-3">Action</th>
           </tr>
         </thead>
         <tbody>
           {currentOrders.map((order) => (
-            <tr key={order.id} className="border-b border-gray-700">
-              <td className="p-3 flex items-center space-x-3">
-                <Image
-                  src={order.avatar}
-                  alt={order.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                />
-                <span>{order.name}</span>
+            <tr key={order._id} className="border-b border-gray-700">
+              <td className="p-3">{order.user?.name || "Unknown"}</td>
+              <td className="p-3">
+                {new Date(order.createdAt).toLocaleDateString()}
               </td>
-              <td className="p-3">{order.date}</td>
-              <td className="p-3">{order.contact}</td>
-              <td className="p-3">{order.orderID}</td>
-              <td className="p-3">{order.amount}</td>
-              <td className="p-3">{order.property}</td>
+              <td className="p-3">{order.shippingAddress?.phone || "-"}</td>
+              <td className="p-3">
+                {order.orderId || order._id.slice(-8).toUpperCase()}
+              </td>
+              <td className="p-3">Rs. {order.totalAmount?.toLocaleString()}</td>
+              <td className="p-3">{order.user?.email || "-"}</td>
               <td className="p-3">
                 <span
                   className={`px-3 py-1 text-xs font-bold rounded-full ${
-                    order.status === "Delivered"
-                      ? "text-green-light-2"
-                      : order.status === "Cancelled"
-                      ? "text-red-light"
-                      : order.status === "Pending"
-                      ? "text-yellow-light"
-                      : ""
+                    order.status === "delivered"
+                      ? "text-green-500"
+                      : order.status === "cancelled"
+                      ? "text-red-500"
+                      : order.status === "pending"
+                      ? "text-yellow-400"
+                      : "text-gray-400"
                   }`}
                 >
                   {order.status}
@@ -231,15 +159,21 @@ const Orders = () => {
               </td>
               <td className="p-3 flex space-x-2">
                 <button
-                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white"
-                  onClick={() => router.push("/admin/order-details")}
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      "selectedOrder",
+                      JSON.stringify(order)
+                    ); // 🔹 Store order data
+                    router.push("/admin/order-details"); // 🔹 Then navigate
+                  }}
+                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-400 hover:bg-blue-500 text-black hover:text-white"
                 >
                   <Eye size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-light-4 border border-hidden ease-out duration-200 hover:bg-green-dark hover:border-white text-dark hover:text-white">
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-400 hover:bg-green-500 text-black hover:text-white">
                   <Pencil size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white">
+                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-400 hover:bg-red-500 text-black hover:text-white">
                   <Trash2 size={16} />
                 </button>
               </td>
@@ -248,11 +182,11 @@ const Orders = () => {
         </tbody>
       </table>
 
-      {/* Pagination */}
+      {/* --- Pagination --- */}
       <div className="flex justify-end mt-4 space-x-2">
         <button
           disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
+          onClick={() => setCurrentPage((prev) => prev - 1)}
           className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50"
         >
           Previous
@@ -262,7 +196,7 @@ const Orders = () => {
         </span>
         <button
           disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
+          onClick={() => setCurrentPage((prev) => prev + 1)}
           className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 disabled:opacity-50"
         >
           Next

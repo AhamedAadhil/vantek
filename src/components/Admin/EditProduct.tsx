@@ -235,7 +235,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
                 disabled={!mainCategory}
               >
                 <option value="">Select Sub Category 1</option>
-                {subCategories1.map((sub) => (
+                {subCategories1?.map((sub) => (
                   <option key={sub} value={sub}>
                     {sub}
                   </option>
@@ -249,7 +249,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
                 disabled={!subCategory1}
               >
                 <option value="">Select Sub Category 2</option>
-                {subCategories2.map((item) => (
+                {subCategories2?.map((item) => (
                   <option key={item} value={item}>
                     {item}
                   </option>
