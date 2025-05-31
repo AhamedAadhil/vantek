@@ -197,7 +197,7 @@ const Header = () => {
                     <span className="block text-2xs text-dark-4 uppercase">
                       account
                     </span>
-                    <p className="font-medium text-custom-sm text-dark">
+                    <p className="font-medium text-custom-sm text-dark truncate max-w-[100px]">
                       {user ? user.name : "Sign in"}
                     </p>
                   </div>
@@ -348,17 +348,11 @@ const Header = () => {
             <div className="hidden xl:block">
               <ul className="flex items-center gap-5.5">
                 {user?.role === "admin" && (
-                  <Link
-                  href="/admin"
-                  className=""
-                  >
-                  <li className="flex items-center gap-1.5 font-medium text-custom-sm p-2 rounded-lg bg-cyan-800 text-white hover:bg-blue">
-                    
-                    
+                  <Link href="/admin" className="">
+                    <li className="flex items-center gap-1.5 font-medium text-custom-sm p-2 rounded-lg bg-cyan-800 text-white hover:bg-blue">
                       <Lock size={16} />
                       Admin Dashboard
-                    
-                  </li>
+                    </li>
                   </Link>
                 )}
 

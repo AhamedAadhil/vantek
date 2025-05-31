@@ -54,9 +54,6 @@ export default function RootLayout({
           </>
         )}
       </body>
-      <Script
-        src={`https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID}&currency=EUR`}
-      ></Script>
     </html>
   );
 }

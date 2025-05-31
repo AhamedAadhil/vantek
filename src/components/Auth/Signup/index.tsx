@@ -99,6 +99,7 @@ const Signup = () => {
                     type="text"
                     name="name"
                     value={formData.name}
+                    maxLength={15}
                     onChange={handleChange}
                     placeholder="Enter your full name"
                     required
@@ -130,6 +131,7 @@ const Signup = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
+                    minLength={6}
                     placeholder="Enter your password"
                     required
                     className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5"
@@ -146,6 +148,7 @@ const Signup = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Re-type your password"
+                    minLength={6}
                     required
                     className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5"
                   />

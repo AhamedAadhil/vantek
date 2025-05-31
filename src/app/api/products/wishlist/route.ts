@@ -118,7 +118,7 @@ export const GET = async (req: NextRequest) => {
           message: "No wishlist exist",
           success: false,
         },
-        { status: 401 }
+        { status: 404 }
       );
     }
     return NextResponse.json(

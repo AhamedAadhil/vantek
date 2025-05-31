@@ -177,7 +177,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
   return (
     <>
-      <Breadcrumb title={"Shop Details"} pages={["shop details"]} />
+      <Breadcrumb title={"Product Details"} pages={["shop details"]} />
 
       {product?.name === "" ? (
         "Please add products"

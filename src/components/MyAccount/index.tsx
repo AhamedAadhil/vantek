@@ -33,13 +33,27 @@ const MyAccount = () => {
   const [activeTab, setActiveTab] = useState("account-details");
   const [addressModal, setAddressModal] = useState(false);
   const [formData, setFormData] = useState({
-    name: user.name,
-    email: user.email,
-    updatedAt: user.updatedAt,
-    role: user.role,
-    isActive: user.isActive,
-    totalSpent: user.totalSpent,
+    name: user?.name,
+    email: user?.email,
+    updatedAt: user?.updatedAt,
+    role: user?.role,
+    isActive: user?.isActive,
+    totalSpent: user?.totalSpent,
   });
+  const [passwordFormData, setPasswordFormData] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+  });
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPasswordFormData({
+      ...passwordFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -92,6 +106,50 @@ const MyAccount = () => {
     console.log("Logout failed", data.message);
   };
 
+  const handleResetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setMessage("");
+    const { oldPassword, newPassword, confirmNewPassword } = passwordFormData;
+
+    if (!oldPassword || !newPassword || !confirmNewPassword) {
+      setMessage("All fields are required.");
+      return;
+    }
+
+    if (newPassword !== confirmNewPassword) {
+      setMessage("New passwords do not match.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await fetch("api/me/update-password", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ oldPassword, newPassword }),
+      });
+
+      const data = await res.json();
+      setLoading(false);
+
+      if (!res.ok) {
+        setMessage(data.error || "Password update failed");
+        return;
+      }
+
+      setMessage("Password updated successfully. Logging out...");
+      // Wait a second before redirecting
+      setTimeout(() => {
+        handleLogout();
+      }, 1000);
+    } catch (err) {
+      setLoading(false);
+      setMessage("An error occurred. Please try again.");
+    }
+  };
+
   return (
     <>
       <Breadcrumb title={"My Account"} pages={["my account"]} />
@@ -115,7 +173,7 @@ const MyAccount = () => {
                   <div>
                     <p className="font-medium text-dark mb-0.5">{user?.name}</p>
                     <p className="text-custom-xs">
-                      `Member Since {user?.createdAt.split("T")[0]}`
+                      `Member Since {formatDateTime(user?.createdAt)}`
                     </p>
                   </div>
                 </div>
@@ -339,7 +397,7 @@ const MyAccount = () => {
                   <button
                     type="button"
                     onClick={() => handleUpdateName(formData.name)}
-                    disabled={!formData.name || formData.name === user.name}
+                    disabled={!formData.name || formData.name === user?.name}
                     className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
                   >
                     Update Name
@@ -360,13 +418,13 @@ const MyAccount = () => {
                     <label htmlFor="oldPassword" className="block mb-2.5">
                       Old Password
                     </label>
-
                     <input
                       type="password"
                       name="oldPassword"
                       id="oldPassword"
-                      autoComplete="on"
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      value={passwordFormData.oldPassword}
+                      onChange={handlePasswordChange}
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
                     />
                   </div>
 
@@ -374,13 +432,13 @@ const MyAccount = () => {
                     <label htmlFor="newPassword" className="block mb-2.5">
                       New Password
                     </label>
-
                     <input
                       type="password"
                       name="newPassword"
                       id="newPassword"
-                      autoComplete="on"
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      value={passwordFormData.newPassword}
+                      onChange={handlePasswordChange}
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
                     />
                   </div>
 
@@ -391,21 +449,25 @@ const MyAccount = () => {
                     >
                       Confirm New Password
                     </label>
-
                     <input
                       type="password"
                       name="confirmNewPassword"
                       id="confirmNewPassword"
-                      autoComplete="on"
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none duration-200 focus:border-transparent focus:shadow-input focus:ring-2 focus:ring-blue/20"
+                      value={passwordFormData.confirmNewPassword}
+                      onChange={handlePasswordChange}
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
                     />
                   </div>
-
+                  {message && (
+                    <p className="text-red-500 mb-4 font-medium">*{message}</p>
+                  )}
                   <button
-                    type="submit"
-                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md ease-out duration-200 hover:bg-blue-dark"
+                    type="button"
+                    onClick={handleResetPassword}
+                    disabled={loading}
+                    className="inline-flex font-medium text-white bg-blue py-3 px-7 rounded-md hover:bg-blue-dark"
                   >
-                    Change Password
+                    {loading ? "Updating..." : "Change Password"}
                   </button>
                 </div>
               </form>

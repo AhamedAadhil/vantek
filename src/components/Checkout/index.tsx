@@ -15,6 +15,7 @@ import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { updateUserAddress } from "@/redux/features/authSlice";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -92,6 +93,7 @@ const Checkout = () => {
       options={{
         clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
         currency: "EUR",
+        disableFunding: "card,credit",
       }}
     >
       <>
@@ -200,7 +202,7 @@ const Checkout = () => {
                           </div>
                           <div>
                             <p className="text-dark text-right text-sm sm:text-base">
-                              ${item.actualPrice * item.quantity}
+                              {formatToEuro(item.actualPrice * item.quantity)}
                             </p>
                           </div>
                         </div>
@@ -213,7 +215,7 @@ const Checkout = () => {
                         </div>
                         <div>
                           <p className="text-dark text-right">
-                            ${shippingFee.toFixed(2)}
+                            {formatToEuro(parseFloat(shippingFee.toFixed(2)))}
                           </p>
                         </div>
                       </div>
@@ -225,7 +227,9 @@ const Checkout = () => {
                         </div>
                         <div>
                           <p className="font-medium text-lg text-dark text-right">
-                            ${(totalAmount + shippingFee).toFixed(2)}
+                            {formatToEuro(
+                              parseFloat((totalAmount + shippingFee).toFixed(2))
+                            )}
                           </p>
                         </div>
                       </div>
