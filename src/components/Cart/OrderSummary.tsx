@@ -4,6 +4,7 @@ import { useAppSelector } from "@/redux/store";
 import React from "react";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const OrderSummary = () => {
   const cartItems = useAppSelector((state) => state.cartReducer.items);
@@ -44,7 +45,7 @@ const OrderSummary = () => {
               </div>
               <div>
                 <p className="text-dark text-right">
-                  ${item.actualPrice * item.quantity}
+                  {formatToEuro(item.actualPrice * item.quantity)}
                 </p>
               </div>
             </div>
@@ -57,7 +58,7 @@ const OrderSummary = () => {
             </div>
             <div>
               <p className="font-medium text-lg text-dark text-right">
-                ${totalPrice}
+                {formatToEuro(totalPrice)}
               </p>
             </div>
           </div>

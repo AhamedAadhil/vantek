@@ -9,6 +9,7 @@ import {
 import Image from "next/image";
 import { Trash } from "lucide-react";
 import { removeFromCartHelper } from "@/helper/removeFromCartHelper";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const SingleItem = ({ item }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -65,19 +66,19 @@ const SingleItem = ({ item }) => {
       </div>
 
       <div className="min-w-[180px]">
-        <p className="text-dark">${item.actualPrice}</p>
+        <p className="text-dark">{formatToEuro(item.actualPrice)}</p>
       </div>
 
       <div className="min-w-[275px]">
         <div className="w-max flex items-center ">
           <span className="flex items-center justify-center w-16 h-11.5 ">
-            {quantity}
+            x{quantity}
           </span>
         </div>
       </div>
 
       <div className="min-w-[200px]">
-        <p className="text-dark">${item.actualPrice * quantity}</p>
+        <p className="text-dark">{formatToEuro(item.actualPrice * quantity)}</p>
       </div>
 
       <div className="min-w-[50px] flex justify-end">

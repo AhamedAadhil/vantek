@@ -4,7 +4,7 @@ import Order, { IOrder } from "@/lib/models/order";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-//  /api/admin/order
+//GET /api/admin/order
 export const GET = async (req: NextRequest) => {
   const isAdminMiddlewareResponse = await isAdmin(req);
   if (isAdminMiddlewareResponse) {
@@ -37,6 +37,103 @@ export const GET = async (req: NextRequest) => {
         success: true,
         message: "Orders fetched successfully.",
         data: orders,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return NextResponse.json(
+      {
+        error: "An error occurred while processing your request.",
+        success: false,
+        message: error.message,
+      },
+      { status: 500 }
+    );
+  }
+};
+
+// PATCH /api/admin/order
+export const PATCH = async (req: NextRequest) => {
+  const isAdminMiddlewareResponse = await isAdmin(req);
+  if (isAdminMiddlewareResponse) {
+    return isAdminMiddlewareResponse;
+  }
+
+  try {
+    await connectDB();
+
+    const { orderId, status, trackingId, trackingUrl } = await req.json();
+    if (!orderId || !mongoose.isValidObjectId(orderId)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid or missing order ID" },
+        { status: 400 }
+      );
+    }
+
+    const order = await (Order as mongoose.Model<IOrder>).findById(orderId);
+
+    if (!order) {
+      return NextResponse.json(
+        { success: false, message: "Order not found" },
+        { status: 404 }
+      );
+    }
+
+    // if (order.paymentStatus === "paid") {
+    //   return NextResponse.json(
+    //     { success: false, message: "Cannot update a paid order" },
+    //     { status: 400 }
+    //   );
+    // }
+
+    if (!status) {
+      return NextResponse.json(
+        { success: false, message: "Status is required" },
+        { status: 400 }
+      );
+    }
+
+    const allowedStatuses = ["pending", "shipped", "delivered", "cancelled"];
+    if (!allowedStatuses.includes(status)) {
+      return NextResponse.json(
+        { success: false, message: "Invalid status value" },
+        { status: 400 }
+      );
+    }
+
+    const updatedOrder = await (
+      Order as mongoose.Model<IOrder>
+    ).findByIdAndUpdate(orderId, { status }, { new: true });
+
+    if (trackingId && trackingUrl) {
+      if (!trackingId || !trackingUrl) {
+        return NextResponse.json(
+          { success: false, message: "Tracking ID and URL are required" },
+          { status: 400 }
+        );
+      }
+      updatedOrder.trackingId = trackingId;
+      updatedOrder.trackingUrl = trackingUrl;
+    }
+
+    await updatedOrder.save();
+
+    if (updatedOrder.status === "delivered")
+      await (Order as mongoose.Model<IOrder>).findByIdAndUpdate(
+        orderId,
+        { paymentStatus: "paid" },
+        { new: true }
+      );
+
+    const orderToSend = await (Order as mongoose.Model<IOrder>)
+      .findById(orderId)
+      .populate("user")
+      .populate("items.product");
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Order status updated successfully.",
+        data: orderToSend,
       },
       { status: 200 }
     );
