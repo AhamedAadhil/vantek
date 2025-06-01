@@ -24,6 +24,8 @@ export const GET = async (req: NextRequest) => {
     const users = await (User as mongoose.Model<IUser>)
       .find({ role: "user" })
       .select("-password")
+      .populate("address") // Populate address field if needed
+      .populate("orders")
       .sort({ [sortBy]: order }) // Dynamic sorting
       .skip(skip)
       .limit(limit)

@@ -3,105 +3,16 @@
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { formatDateTime } from "@/helper/formatDateTime";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
-const ordersData = [
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Kabeeb",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Rafeek",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Delivered",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Michael A. Miner",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Cancelled",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Kabeeb",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Delivered",
-    statusColor: "bg-green-500",
-  },
-  {
-    id: 1,
-    name: "Rafeek",
-    date: "01/26/2025",
-    contact: "+231 06-75820711",
-    type: "Residences",
-    amount: "$45,842",
-    property: "4604 , Philli Lane Kiowa",
-    status: "Pending",
-    statusColor: "bg-green-500",
-  },
-];
-
-const UserOrders = () => {
+const UserOrders = ({ orderData }) => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const ordersPerPage = 10;
 
-  const filteredOrders = ordersData.filter((order) =>
-    order.name.toLowerCase().includes(search.toLowerCase())
+  const filteredOrders = orderData.filter((order) =>
+    order.orderId.toLowerCase().includes(search.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredOrders.length / ordersPerPage);
@@ -138,19 +49,19 @@ const UserOrders = () => {
         <tbody>
           {currentOrders.map((order) => (
             <tr key={order.id} className="border-b border-gray-700">
-              <td className="p-3">{order.date}</td>
-              <td className="p-3">{order.type}</td>
-              <td className="p-3">{order.amount}</td>
+              <td className="p-3">{formatDateTime(order.createdAt)}</td>
+              <td className="p-3">{order.orderId}</td>
+              <td className="p-3">{formatToEuro(order.totalAmount)}</td>
               <td className="p-3">
                 <span
                   className={`px-3 py-1 text-xs font-bold rounded-full ${
-                    order.status === "Delivered"
+                    order.status === "delivered"
                       ? "text-green-light-2"
-                      : order.status === "Cancelled"
+                      : order.status === "cancelled"
                       ? "text-red-light"
-                      : order.status === "Pending"
+                      : order.status === "pending"
                       ? "text-yellow-light"
-                      : ""
+                      : "text-blue-light"
                   }`}
                 >
                   {order.status}

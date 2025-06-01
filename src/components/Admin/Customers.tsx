@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { Search, Eye, Trash2, Upload } from "lucide-react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { utils, writeFile } from "xlsx";
+import { formatDateTime } from "@/helper/formatDateTime";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const Customers = () => {
   const router = useRouter();
@@ -23,6 +24,7 @@ const Customers = () => {
         const data = await res.json();
         if (data.success) {
           setUsers(data.data);
+          console.log("Fetched users:", data.data);
         } else {
           console.error("Failed to fetch users:", data.message);
         }
@@ -36,8 +38,10 @@ const Customers = () => {
     fetchUsers();
   }, []);
 
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(search.toLowerCase())
+  const filteredUsers = users.filter(
+    (user) =>
+      user.name.toLowerCase().includes(search.toLowerCase()) ||
+      user.email.toLowerCase().includes(search.toLowerCase())
   );
 
   const totalPages = Math.ceil(filteredUsers.length / customersPerPage);
@@ -51,10 +55,24 @@ const Customers = () => {
     setShowModal(true);
   };
 
-  const confirmDelete = () => {
-    // Implement delete logic here using selectedId
-    setShowModal(false);
-    setSelectedId(null);
+  const confirmDelete = async () => {
+    try {
+      // Replace with your actual delete API endpoint
+      const res = await fetch(`/api/admin/user/${selectedId}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setUsers((prev) => prev.filter((user) => user._id !== selectedId));
+      } else {
+        alert("Failed to delete user: " + data.message);
+      }
+    } catch (error) {
+      alert("Error deleting user: " + error.message);
+    } finally {
+      setShowModal(false);
+      setSelectedId(null);
+    }
   };
 
   if (loading) {
@@ -65,16 +83,20 @@ const Customers = () => {
     );
   }
 
-  //Export To Excel Function
+  // Export To Excel Function
   const exportToExcel = () => {
     const exportData = users.map((user) => ({
       Name: user.name,
-      "Joined Date": user.joinedDate || "N/A",
+      Email: user.email,
+      Role: user.role,
+      Status: user.isActive ? "Active" : "Inactive",
+      "Joined Date": user.createdAt
+        ? new Date(user.createdAt).toLocaleDateString()
+        : "N/A",
+      "Total Spent": user.totalSpent?.toFixed(2) || "0.00",
+      "Orders Count": user.ordersCount || 0,
       Phone: user.phone || "N/A",
       Country: user.country || "N/A",
-      "Total Spend": user.totalPurchase || "N/A",
-      "Billing Address": user.property || "N/A",
-      "Recent Order": user.status || "N/A",
     }));
 
     const worksheet = utils.json_to_sheet(exportData);
@@ -91,7 +113,7 @@ const Customers = () => {
           <div className="relative">
             <input
               type="text"
-              placeholder="Search customers..."
+              placeholder="Search customers by name or email..."
               className="bg-[#202020] text-white border border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
@@ -112,12 +134,14 @@ const Customers = () => {
         <thead className="border-b">
           <tr className="bg-gray-800 text-gray-300">
             <th className="p-3">Full Name</th>
+            <th className="p-3">Email</th>
+            <th className="p-3">Role</th>
+            <th className="p-3">Status</th>
             <th className="p-3">Joined Date</th>
-            <th className="p-3">Contact</th>
+            <th className="p-3">Total Spent</th>
+            <th className="p-3">Orders Count</th>
+            <th className="p-3">Phone</th>
             <th className="p-3">Country</th>
-            <th className="p-3">Tot. Spend</th>
-            <th className="p-3">Billing Address</th>
-            <th className="p-3">Recent Order</th>
             <th className="p-3">Action</th>
           </tr>
         </thead>
@@ -127,37 +151,49 @@ const Customers = () => {
               key={user._id}
               className="border-b border-dashed text-sm border-gray-500"
             >
-              <td className="p-3 flex items-center space-x-3">
-                {/* <Image
-                  src={user.avatar || "/images/users/default.jpg"}
-                  alt={user.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                /> */}
-                <span>{user.name}</span>
+              <td className="p-3">{user.name}</td>
+              <td className="p-3">{user.email}</td>
+              <td className="p-3 capitalize">{user.role}</td>
+              <td className="p-3">
+                {user.isActive ? (
+                  <span className="text-green-500 font-semibold">Active</span>
+                ) : (
+                  <span className="text-red-500 font-semibold">Inactive</span>
+                )}
               </td>
               <td className="p-3">
-                {user.createdAt
-                  ? new Date(user.createdAt).toISOString().split("T")[0]
+                {user.createdAt ? formatDateTime(user.createdAt) : "N/A"}
+              </td>
+              <td className="p-3">
+                {formatToEuro(user.totalSpent?.toFixed(2)) || "0.00"}
+              </td>
+              <td className="p-3">{user.orders?.length || 0}</td>
+              <td className="p-3">
+                {user.address && user.address.length > 0
+                  ? user.address[0].phone || "N/A"
                   : "N/A"}
               </td>
-              <td className="p-3">{user.phone || "N/A"}</td>
-              <td className="p-3">{user.country || "N/A"}</td>
-              <td className="p-3">{user.totalPurchase || "N/A"}</td>
-              <td className="p-3">{user.property || "N/A"}</td>
-              <td className="p-3">{user.status || "N/A"}</td>
+              <td className="p-3">
+                {user.address && user.address.length > 0
+                  ? user.address[0].country || "N/A"
+                  : "N/A"}
+              </td>
+
               <td className="p-3 flex space-x-2">
                 <button
-                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white"
-                  onClick={() =>
-                    router.push(`/admin/customer-details/${user._id}`)
-                  }
+                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => {
+                    sessionStorage.setItem(
+                      "selectedUser",
+                      JSON.stringify(user)
+                    );
+                    router.push(`/admin/customer-details/${user._id}`);
+                  }}
                 >
                   <Eye size={16} />
                 </button>
                 <button
-                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-light-4 border border-hidden ease-out duration-200 hover:bg-red-dark hover:border-white text-dark hover:text-white"
+                  className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-600 hover:bg-red-700 text-white"
                   onClick={() => handleDeleteClick(user._id)}
                 >
                   <Trash2 size={16} />
@@ -168,9 +204,9 @@ const Customers = () => {
         </tbody>
       </table>
 
-      {/* PopUp Modal */}
+      {/* Delete Confirmation Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm bg-black/60">
+        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center backdrop-blur-sm">
           <div className="bg-white rounded-lg p-6 w-80 text-center">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">
               Are you sure?
