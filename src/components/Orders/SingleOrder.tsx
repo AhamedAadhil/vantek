@@ -25,7 +25,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
       {!smallView && (
         <div className="items-center justify-between border-t border-gray-3 py-5 px-7.5 hidden md:flex">
           <div className="min-w-[111px]">
-            <p className="text-custom-sm text-red">
+            <p className="text-custom-sm text-blue">
               #{orderItem.orderId.slice(-8)}
             </p>
           </div>
@@ -40,11 +40,11 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
               className={`inline-block text-custom-sm  py-0.5 px-2.5 rounded-[30px] capitalize ${
                 orderItem.status === "delivered"
                   ? "text-green bg-green-light-6"
-                  : orderItem.status === "on-hold"
+                  : orderItem.status === "cancelled"
                   ? "text-red bg-red-light-6"
                   : orderItem.status === "pending"
                   ? "text-yellow bg-yellow-light-4"
-                  : "Unknown Status"
+                  : "text-white bg-blue-light-2"
               }`}
             >
               {orderItem.status}

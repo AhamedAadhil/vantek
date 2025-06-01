@@ -25,6 +25,7 @@ import {
 import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { formatDateTime } from "@/helper/formatDateTime";
+import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
 
 const MyAccount = () => {
   const router = useRouter();
@@ -163,7 +164,7 @@ const MyAccount = () => {
                 <div className="hidden lg:flex flex-wrap items-center gap-5 py-6 px-4 sm:px-7.5 xl:px-9 border-r xl:border-r-0 xl:border-b border-gray-3">
                   <div className="max-w-[64px] w-full h-16 rounded-full overflow-hidden">
                     <Image
-                      src="/images/users/user-04.jpg"
+                      src={generateAvatarUrl(user?.email)}
                       alt="user"
                       width={64}
                       height={64}
@@ -361,7 +362,7 @@ const MyAccount = () => {
                       />
                     </div>
 
-                    <div className="w-full">
+                    {/* <div className="w-full">
                       <label className="block mb-2.5">Role</label>
                       <input
                         type="text"
@@ -369,7 +370,7 @@ const MyAccount = () => {
                         disabled
                         className="rounded-md border border-gray-3 bg-gray-2 text-dark-5 w-full py-2.5 px-5 outline-none"
                       />
-                    </div>
+                    </div> */}
 
                     <div className="w-full">
                       <label className="block mb-2.5">Status</label>
@@ -405,7 +406,7 @@ const MyAccount = () => {
                 </div>
 
                 <p className="text-custom-sm mt-5 mb-9">
-                  This will be how your name will be displayed in the account
+                  * This will be how your name will be displayed in the account
                   section and in reviews
                 </p>
 
