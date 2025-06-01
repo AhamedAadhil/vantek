@@ -106,6 +106,35 @@ const OrderDetails = ({ orderItem }: any) => {
             </div>
           )}
 
+          {/* ✅ Payment Method Section */}
+          {orderItem.paymentMethod && (
+            <div className="mt-4 bg-gray-800 rounded-md p-4 text-sm">
+              <h3 className="text-gray-300 font-semibold mb-2">
+                Payment Details
+              </h3>
+              <div className="flex items-center space-x-2">
+                <span className="bg-blue-600 text-white px-2 py-1 rounded-full text-xs font-semibold capitalize">
+                  {orderItem.paymentMethod}
+                </span>
+
+                {orderItem.cardDetails && (
+                  <span className="bg-gray-700 text-white px-2 py-1 rounded-full text-xs">
+                    {orderItem.cardDetails.brand} ••••{" "}
+                    {orderItem.cardDetails.last_digits} (
+                    {orderItem.cardDetails.type})
+                  </span>
+                )}
+
+                {orderItem.paypalDetails && (
+                  <span className="bg-gray-700 text-white px-2 py-1 rounded-full text-xs">
+                    Email: {orderItem.paypalDetails.email}, ID:{" "}
+                    {orderItem.paypalDetails.accountId}
+                  </span>
+                )}
+              </div>
+            </div>
+          )}
+
           <div
             className={`mt-4 overflow-y-auto ${
               orderItem.items.length > 3 ? "max-h-[300px]" : ""

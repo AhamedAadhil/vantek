@@ -24,6 +24,15 @@ export interface IOrder extends Document {
   paymentMethod: "creditCard" | "paypal" | "cod";
   paymentStatus: "paid" | "unpaid";
   shippingMethod: "standard" | "express";
+  cardDetails?: {
+    brand: string;
+    last_digits: string;
+    type: string;
+  };
+  paypalDetails?: {
+    email: string;
+    accountId: string;
+  };
   deliveryNote?: string;
   shippingAddress: IAddress;
   createdAt: Date;
@@ -94,6 +103,15 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       enum: ["standard", "express"],
       default: "standard",
+    },
+    cardDetails: {
+      brand: String,
+      last_digits: String,
+      type: String,
+    },
+    paypalDetails: {
+      email: String,
+      accountId: String,
     },
     shippingAddress: {
       phone: { type: String, required: true },

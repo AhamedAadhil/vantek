@@ -1,6 +1,7 @@
 import connectDB from "@/lib/db";
 import { authMiddleware } from "@/lib/middleware";
 import Order, { IOrder } from "@/lib/models/order";
+import Product from "@/lib/models/product";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 

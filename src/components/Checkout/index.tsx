@@ -48,9 +48,16 @@ const Checkout = () => {
     setCouponCode(code);
   };
 
-  const isBillingDataValid = Object.values(billingData).every(
-    (value) => value && value.trim() !== ""
-  );
+  const { country, firstName, email, ...billingDataWithoutUnwantedItems } =
+    billingData;
+
+  const isBillingDataValid = Object.values(
+    billingDataWithoutUnwantedItems
+  ).every((value) => value && value.trim() !== "");
+
+  useEffect(() => {
+    console.log("Billing Data:", billingData);
+  }, [billingData]);
 
   useEffect(() => {
     let fee = 0;
@@ -362,6 +369,8 @@ const Checkout = () => {
                           }
 
                           const captureData = await captureRes.json();
+
+                          console.log("Capture data:", captureData);
 
                           if (captureData.success) {
                             dispatch(removeAllItemsFromCart());

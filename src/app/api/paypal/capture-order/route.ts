@@ -123,14 +123,55 @@ export const POST = async (req: NextRequest) => {
         { new: true }
       );
 
+      // STEP 5 – Store card or PayPal source details if available
+      if (captureData.payment_source) {
+        const paymentSource = captureData.payment_source;
+
+        // If paid using card
+        if (paymentSource.card) {
+          const cardDetails = paymentSource.card;
+
+          await (Order as mongoose.Model<IOrder>).findOneAndUpdate(
+            { orderId },
+            {
+              $set: {
+                cardDetails: {
+                  brand: cardDetails.brand,
+                  last_digits: cardDetails.last_digits,
+                  type: cardDetails.type,
+                },
+                paymentMethod: "card",
+              },
+            },
+            { new: true }
+          );
+        }
+
+        // paypal info
+        if (paymentSource.paypal) {
+          const paypal = paymentSource.paypal;
+
+          await (Order as mongoose.Model<IOrder>).findOneAndUpdate(
+            { orderId },
+            {
+              $set: {
+                paypalDetails: {
+                  email: paypal.email_address,
+                  accountId: paypal.account_id,
+                },
+                paymentMethod: "paypal",
+              },
+            }
+          );
+        }
+      }
+
       if (!updatedOrder) {
         return NextResponse.json(
           { message: "Order not found or update failed." },
           { status: 404 }
         );
       }
-
-      console.log("user address before returning==", user?.address);
 
       return NextResponse.json({
         message: "Payment captured and order updated successfully.",

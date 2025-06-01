@@ -1,5 +1,6 @@
 import connectDB from "@/lib/db";
 import Product, { IProduct } from "@/lib/models/product";
+import "@/lib/models/user";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
@@ -40,14 +41,14 @@ export const GET = async (
     }
     return NextResponse.json({ success: true, product }, { status: 200 });
   } catch (error: any) {
-  console.error("❌ Error in GET /api/products/[id]:", error); // ADD THIS
-  return NextResponse.json(
-    {
-      success: false,
-      message: "Internal Server Error",
-      error: error.message,
-    },
-    { status: 500 }
-  );
-}
+    console.error("❌ Error in GET /api/products/[id]:", error); // ADD THIS
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal Server Error",
+        error: error.message,
+      },
+      { status: 500 }
+    );
+  }
 };
