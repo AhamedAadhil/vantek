@@ -189,19 +189,37 @@ const AdminOrderDetails = () => {
             </div>
 
             <div className="flex justify-between">
-              <span>Sub Total:</span>
+              <span> Total:</span>
               <span>{formatToEuro(calculateSubtotal())}</span>
             </div>
 
-            <div className="flex justify-between">
-              <span>Coupon Applied:</span>
-              <span className="bg-green-500 px-2 py-1 rounded text-white">
-                {order.couponCode || "N/A"}
+            {/* <div className="flex justify-between">
+              <span> Shipping Fee:</span>
+              <span>
+                {order.shippingMethod === "standard" ? "4.50" : "8.50"}
               </span>
-            </div>
+            </div> */}
+
+            {order.couponCode !== "" && order.discountAmount !== 0 && (
+              <>
+                <div className="flex justify-between">
+                  <span>Coupon Applied:</span>
+                  <span className="bg-green-500 px-2 py-1 rounded text-white">
+                    {order.couponCode || "N/A"}
+                  </span>
+                </div>
+
+                <div className="flex justify-between">
+                  <span>Discount Amount:</span>
+                  <span className=" px-2 py-1 rounded text-green-500">
+                    {formatToEuro(order.discountAmount.toFixed(2)) || "N/A"}
+                  </span>
+                </div>
+              </>
+            )}
 
             <div className="flex justify-between text-xl font-bold">
-              <span>Total Amount:</span>
+              <span>Sub Total:</span>
               <span>{formatToEuro(order.totalAmount)}</span>
             </div>
 

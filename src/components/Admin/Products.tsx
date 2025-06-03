@@ -70,16 +70,6 @@ const ProductList = () => {
     saveAs(dataBlob, "products.xlsx");
   };
 
-  // Handle "Select All" toggle
-  const handleSelectAll = () => {
-    if (selectAll) {
-      setSelectedProducts([]);
-    } else {
-      setSelectedProducts(currentProducts.map((product) => product._id));
-    }
-    setSelectAll(!selectAll);
-  };
-
   const fetchData = async () => {
     try {
       setIsLoading(true); // Start spinner
@@ -103,6 +93,38 @@ const ProductList = () => {
       console.error("❌ Fetch error:", error);
     } finally {
       setIsLoading(false); // Stop spinner
+    }
+  };
+
+  const handleToggle = async (
+    productId: string,
+    action: "toggleVisibility" | "toggleFeatured" | "toggleTopSelling"
+  ) => {
+    try {
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/product`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ action, id: productId }),
+        }
+      );
+
+      if (res.ok) {
+        // Re-fetch updated product data
+        await fetchData();
+      } else {
+        const data = await res.json();
+        console.error(`Failed to toggle: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Toggle error:", error);
     }
   };
 
@@ -182,24 +204,18 @@ const ProductList = () => {
           <table className="w-full text-left border-collapse">
             <thead className="border-b">
               <tr className="bg-gray-800 text-gray-300">
-                <th className="p-3">
-                  <input
-                    type="checkbox"
-                    checked={selectAll}
-                    onChange={handleSelectAll}
-                  />
-                </th>
-                <th className="p-3 text-sm">PRODUCT CODE</th>
-                <th className="p-3 text-sm">PRODUCT</th>
-                <th className="p-3 text-sm">CATEGORY</th>
-                <th className="p-3 text-sm">SUB-CATEGORY</th>
-                <th className="p-3 text-sm">SUB-CATEGORY-2</th>
-                <th className="p-3 text-sm">VARIANTS</th>
-                {/* <th className="p-3">PRICE</th>
-            <th className="p-3">STOCK</th> */}
-                <th className="p-3 text-sm">LAST UPDATE</th>
-                <th className="p-3 text-sm">PUBLISHED</th>
-                <th className="p-3 text-sm">ACTION</th>
+                <th className="p-3 text-sm">Product Code</th>
+                <th className="p-3 text-sm">Product</th>
+                <th className="p-3 text-sm">Category</th>
+                <th className="p-3 text-sm">Subcategory</th>
+                <th className="p-3 text-sm">Subcategory 2</th>
+                <th className="p-3 text-sm">Variants</th>
+                <th className="p-3 text-sm">Last Update</th>
+                <th className="p-3 text-sm">Published</th>
+                <th className="p-3 text-sm">Visible</th>
+                <th className="p-3 text-sm">Featured</th>
+                <th className="p-3 text-sm">Trending</th>
+                <th className="p-3 text-sm">Action</th>
               </tr>
             </thead>
 
@@ -209,31 +225,49 @@ const ProductList = () => {
                   key={product._id}
                   className="border-b border-dashed border-gray-5"
                 >
-                  <td className="p-3">
-                    <input
-                      type="checkbox"
-                      checked={selectedProducts.includes(product?._id)}
-                      onChange={() => handleSelectProduct(product?._id)}
-                    />
-                  </td>
                   <td className="p-3">{product?.productCode}</td>
                   <td className="p-3 flex items-center space-x-3">
-                    {/* <Image
-                  src={product?.images[0]}
-                  alt={product?.name}
-                  width={40}
-                  height={40}
-                  className="rounded-full"
-                /> */}
                     <span>{product.name}</span>
                   </td>
                   <td className="p-3">{product?.mainCategory}</td>
                   <td className="p-3">{product?.subCategory1}</td>
                   <td className="p-3">{product?.subCategory2}</td>
                   <td className="p-3">{product.variants.length}</td>
-                  {/* <td className="p-3">{product.stock}</td> */}
                   <td className="p-3">{product?.updatedAt.split("T")[0]}</td>
                   <td className="p-3">{product?.createdAt.split("T")[0]}</td>
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={product?.isVisible}
+                      onChange={() =>
+                        handleToggle(product._id, "toggleVisibility")
+                      }
+                      className="cursor-pointer"
+                      aria-label="Toggle Visible"
+                    />
+                  </td>
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={product?.featuredProduct}
+                      onChange={() =>
+                        handleToggle(product._id, "toggleFeatured")
+                      }
+                      className="cursor-pointer"
+                      aria-label="Toggle Featured"
+                    />
+                  </td>
+                  <td className="p-3 text-center">
+                    <input
+                      type="checkbox"
+                      checked={product?.topSellingProduct}
+                      onChange={() =>
+                        handleToggle(product._id, "toggleTopSelling")
+                      }
+                      className="cursor-pointer"
+                      aria-label="Toggle Trending"
+                    />
+                  </td>
                   <td className="p-3 flex space-x-2">
                     <button
                       className="flex items-center justify-center rounded-lg w-9 h-9 bg-blue-light-4 border border-hidden ease-out duration-200 hover:bg-blue-light hover:border-white text-dark hover:text-white"

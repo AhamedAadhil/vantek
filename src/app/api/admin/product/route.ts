@@ -153,6 +153,10 @@ export const PATCH = async (req: NextRequest) => {
     if (action === "toggleVisibility") {
       product.isVisible = !product.isVisible;
       await product.save();
+      console.log(
+        "Product toggleVisibility status updated:",
+        product.isVisible
+      );
       return NextResponse.json(
         {
           success: true,
@@ -164,6 +168,10 @@ export const PATCH = async (req: NextRequest) => {
     } else if (action === "toggleTopSelling") {
       product.topSellingProduct = !product.topSellingProduct;
       await product.save();
+      console.log(
+        "Product toggleTopSelling status updated:",
+        product.topSellingProduct
+      );
       return NextResponse.json(
         {
           success: true,
@@ -175,6 +183,7 @@ export const PATCH = async (req: NextRequest) => {
     } else if (action === "toggleFeatured") {
       product.featuredProduct = !product.featuredProduct;
       await product.save();
+      console.log("Product featured status updated:", product.featuredProduct);
       return NextResponse.json(
         {
           success: true,

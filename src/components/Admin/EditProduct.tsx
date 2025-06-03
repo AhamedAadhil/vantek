@@ -478,7 +478,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
+            {/* <div className="grid grid-cols-3 gap-4">
               <div className="flex flex-col">
                 <div></div>
                 <div className="mt-8">
@@ -509,7 +509,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
 

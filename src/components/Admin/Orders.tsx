@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { Search, Eye, Pencil, Trash2, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const Orders = () => {
   const [orders, setOrders] = useState([]);
@@ -137,10 +138,8 @@ const Orders = () => {
                 {new Date(order.createdAt).toLocaleDateString()}
               </td>
               <td className="p-3">{order.shippingAddress?.phone || "-"}</td>
-              <td className="p-3">
-                {order.orderId || order._id.slice(-8).toUpperCase()}
-              </td>
-              <td className="p-3">Rs. {order.totalAmount?.toLocaleString()}</td>
+              <td className="p-3">{order._id.slice(-8).toUpperCase()}</td>
+              <td className="p-3"> {formatToEuro(order.totalAmount)}</td>
               <td className="p-3">{order.user?.email || "-"}</td>
               <td className="p-3">
                 <span

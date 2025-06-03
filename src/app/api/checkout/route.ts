@@ -132,6 +132,16 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
         );
       }
 
+      if (!product.isVisible) {
+        return NextResponse.json(
+          {
+            message: `Product ${product.name} is Currently Unavailable, Please Remove it from your Cart`,
+            success: false,
+          },
+          { status: 400 }
+        );
+      }
+
       // Find variant inside product variants
       const variant = product.variants.find(
         (v) => v._id.toString() === variantId
