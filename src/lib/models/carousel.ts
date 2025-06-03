@@ -6,6 +6,7 @@ export interface ICarouselItem extends Document {
   title: string;
   description?: string;
   code?: string;
+  usedBy?: mongoose.Types.ObjectId[];
   isActive?: boolean;
   percentage?: number;
   startDate?: Date;
@@ -38,6 +39,13 @@ const carouselItemSchema = new Schema<ICarouselItem>(
       sparse: true,
       default: "",
     },
+    usedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
+
     percentage: {
       type: Number,
       default: 0,

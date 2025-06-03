@@ -27,6 +27,9 @@ const Checkout = () => {
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [isUk, setIsUk] = useState(true); // Assume true by default (UK shipping)
   const [couponCode, setCouponCode] = useState("");
+  const [couponStatus, setCouponStatus] = React.useState(null); // for success/error message
+  const [couponPercentage, setCouponPercentage] = React.useState(0);
+  const [appliedCouponCode, setAppliedCouponCode] = React.useState("");
   const [deliveryNote, setDeliveryNote] = useState("");
   const [shippingFee, setShippingFee] = useState(0);
   const totalAmount = cart.totalPrice;
@@ -44,12 +47,44 @@ const Checkout = () => {
     province: "",
   });
 
-  const handleCouponApply = (code) => {
+  const handleCouponApply = async (code) => {
     setCouponCode(code);
+    setCouponStatus(null);
+    setCouponPercentage(0);
+
+    try {
+      const response = await fetch("/api/coupon/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          code,
+          userId: user._id,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setCouponStatus("Coupon applied successfully!");
+        setCouponPercentage(data.percentage);
+        setAppliedCouponCode(data.couponCode);
+      } else {
+        setCouponStatus(data.message || "Failed to apply coupon");
+      }
+    } catch (error) {
+      setCouponStatus("Error validating coupon");
+    }
   };
 
-  const { country, firstName, email, ...billingDataWithoutUnwantedItems } =
-    billingData;
+  const {
+    country,
+    firstName,
+    email,
+    addressTwo,
+    ...billingDataWithoutUnwantedItems
+  } = billingData;
 
   const isBillingDataValid = Object.values(
     billingDataWithoutUnwantedItems
@@ -80,7 +115,13 @@ const Checkout = () => {
         address: user.address[0].street,
         addressTwo: user.address[0].apartment,
         town: user.address[0].city,
-        countryName: user.address[0].country,
+        countryName:
+          user.address[0].country !== "England" ||
+          user.address[0].country !== "Scotland" ||
+          user.address[0].country !== "Wales" ||
+          user.address[0].country !== "Northern Ireland"
+            ? "OutsideUK"
+            : user.address[0].country,
         country: user.address[0].country,
         phone: user.address[0].phone,
         zipCode: user.address[0].zipCode,
@@ -222,10 +263,38 @@ const Checkout = () => {
                         </div>
                         <div>
                           <p className="text-dark text-right">
-                            {formatToEuro(parseFloat(shippingFee.toFixed(2)))}
+                            {formatToEuro(parseFloat(shippingFee.toFixed(2))) ||
+                              "0.00"}
                           </p>
                         </div>
                       </div>
+
+                      {/* <!-- IF Coupon applied --> */}
+                      {appliedCouponCode !== "" && (
+                        <>
+                          <div className="flex items-center justify-between py-5 border-b border-gray-3">
+                            <div>
+                              <p className="text-green">Applied Coupon Code</p>
+                            </div>
+                            <div>
+                              <p className="text-green text-right">
+                                {appliedCouponCode}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center justify-between py-5 border-b border-gray-3">
+                            <div>
+                              <p className="text-green">Discount Percentage</p>
+                            </div>
+                            <div>
+                              <p className="text-green text-right">
+                                {couponPercentage}%
+                              </p>
+                            </div>
+                          </div>
+                        </>
+                      )}
 
                       {/* <!-- total --> */}
                       <div className="flex items-center justify-between pt-5">
@@ -240,11 +309,41 @@ const Checkout = () => {
                           </p>
                         </div>
                       </div>
+                      {/* <!-- Total After Coupon Applied --> */}
+                      {appliedCouponCode !== "" && (
+                        <>
+                          <div className="flex items-center justify-between pt-5">
+                            <div>
+                              <p className="font-medium text-lg text-dark">
+                                Total After Coupon Applied
+                              </p>
+                            </div>
+                            <div>
+                              <p className="font-medium text-lg text-green text-right">
+                                {formatToEuro(
+                                  parseFloat(
+                                    (
+                                      totalAmount +
+                                      shippingFee -
+                                      (totalAmount + shippingFee) *
+                                        (couponPercentage / 100)
+                                    ).toFixed(2)
+                                  )
+                                )}
+                              </p>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
 
                   {/* <!-- coupon box --> */}
-                  <Coupon onApplyCoupon={handleCouponApply} />
+                  <Coupon
+                    onApplyCoupon={handleCouponApply}
+                    couponStatus={couponStatus}
+                    appliedCouponCode={appliedCouponCode}
+                  />
 
                   {/* <!-- checkout button --> */}
                   <div className="mt-7.5">

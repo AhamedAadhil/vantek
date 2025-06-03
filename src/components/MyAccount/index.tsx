@@ -78,10 +78,10 @@ const MyAccount = () => {
     );
     const data = await res.json();
     if (res.ok) {
+      router.replace("/");
       dispatch(logout());
       dispatch(removeAllItemsFromWishlist());
       dispatch(removeAllItemsFromCart());
-      router.replace("/");
     }
     // TODO: implement Toaster to show errors ....
   };

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 
-const Coupon = ({ onApplyCoupon }) => {
+const Coupon = ({ onApplyCoupon, couponStatus, appliedCouponCode }) => {
   const [inputValue, setInputValue] = useState("");
 
   const handleApplyClick = () => {
     if (inputValue.trim() !== "") {
+      console.log("Applying coupon:", inputValue.trim());
       onApplyCoupon(inputValue.trim());
     }
   };
@@ -28,12 +29,16 @@ const Coupon = ({ onApplyCoupon }) => {
 
           <button
             type="button"
+            disabled={!inputValue.trim() || appliedCouponCode !== ""}
             onClick={handleApplyClick}
             className="inline-flex font-medium text-white bg-blue py-3 px-6 rounded-md ease-out duration-200 hover:bg-blue-dark"
           >
             Apply
           </button>
         </div>
+        {couponStatus && (
+          <div className="mt-4 text-sm text-green-600">{couponStatus}</div>
+        )}
       </div>
     </div>
   );

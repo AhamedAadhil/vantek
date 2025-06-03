@@ -18,6 +18,7 @@ export interface IOrder extends Document {
   totalAmount: number;
   isUK: boolean;
   couponCode?: string;
+  discountAmount?: number;
   trackingId?: string;
   trackingUrl?: string;
   status: "pending" | "shipped" | "delivered" | "cancelled";
@@ -133,7 +134,11 @@ const orderSchema = new Schema<IOrder>(
     },
     couponCode: {
       type: String,
-      degault: "",
+      default: "",
+    },
+    discountAmount: {
+      type: Number,
+      default: 0,
     },
     trackingId: {
       type: String,

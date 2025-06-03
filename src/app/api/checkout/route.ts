@@ -1,11 +1,12 @@
 import generateUniqueOrderId from "@/helper/generateOrderId";
 import connectDB from "@/lib/db";
 import { authMiddleware } from "@/lib/middleware";
+import CarouselItem, { ICarouselItem } from "@/lib/models/carousel";
 import Cart, { ICart } from "@/lib/models/cart";
 import Order, { IOrder } from "@/lib/models/order";
 import Product, { IProduct } from "@/lib/models/product";
 import User, { IUser } from "@/lib/models/user";
-import mongoose from "mongoose";
+import mongoose, { isValidObjectId } from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
 export const POST = async (req: NextRequest, res: NextResponse) => {
@@ -201,7 +202,6 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
     );
 
     // STEP5- Create the order
-    // TODO: modify to make it payed after integrate payhere
     const order = new (Order as mongoose.Model<IOrder>)({
       orderId: await generateUniqueOrderId(),
       user: userId,
@@ -219,9 +219,72 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       updatedAt: new Date(),
     });
 
+    // STEP6- apply coupon if provided
+
+    let discount = 0;
+    let isCouponApplied = false;
+    let coupon: ICarouselItem | null = null;
+    if (couponCode) {
+      coupon = await (CarouselItem as mongoose.Model<ICarouselItem>).findOne({
+        code: couponCode,
+        isActive: true,
+      });
+
+      if (!coupon) {
+        return NextResponse.json(
+          { message: "Invalid coupon code", success: false },
+          { status: 400 }
+        );
+      }
+
+      const now = new Date();
+
+      if (coupon.startDate && now < coupon.startDate) {
+        return NextResponse.json(
+          { message: "Coupon not active yet", success: false },
+          { status: 400 }
+        );
+      }
+
+      if (coupon.endDate && now > coupon.endDate) {
+        return NextResponse.json(
+          { message: "Coupon expired", success: false },
+          { status: 400 }
+        );
+      }
+
+      if (coupon.usedBy?.some((id) => id.toString() === userId)) {
+        return NextResponse.json(
+          { message: "You have already used this coupon", success: false },
+          { status: 400 }
+        );
+      }
+
+      // Apply the discount
+      discount = (totalAmount * (coupon.percentage || 0)) / 100;
+      totalAmount = totalAmount - discount;
+
+      // Mark the coupon as used by this user
+      if (!isValidObjectId(userId)) {
+        return NextResponse.json(
+          { message: "Invalid user ID", success: false },
+          { status: 400 }
+        );
+      }
+      await (CarouselItem as mongoose.Model<ICarouselItem>).updateOne(
+        { _id: coupon._id },
+        { $push: { usedBy: userId } }
+      );
+
+      isCouponApplied = true;
+      order.couponCode = couponCode;
+      order.totalAmount = totalAmount;
+      order.discountAmount = discount;
+    }
+
     await order.save();
 
-    // STEP6- return the order details
+    // STEP7- return the order details
     return NextResponse.json({
       message: "Order validated and placed successfully",
       success: true,
@@ -230,6 +293,11 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       orderId: order.orderId,
       shippingFee,
       totalAmount,
+      discount,
+      isCouponApplied,
+      appliedCoupon: coupon
+        ? { code: coupon.code, percentage: coupon.percentage }
+        : null,
       items: processedItems,
     });
   } catch (error) {

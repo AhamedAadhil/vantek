@@ -305,12 +305,25 @@ const OrderDetails = ({ orderItem }: any) => {
               <span>Sub Total:</span>
               <span>{formatToEuro(orderItem.totalAmount)}</span>
             </div>
-            <div className="flex justify-between mb-2">
-              <span>Applied Coupon:</span>
-              <span className="bg-green-500 px-2 py-1 rounded text-white">
-                {orderItem.couponCode || "N/A"}
-              </span>
-            </div>
+            {/* ✅ Coupon code only if exist */}
+            {orderItem.discountAmount && orderItem.discountAmount !== 0 && (
+              <div className="flex justify-between mb-2">
+                <span>Applied Coupon:</span>
+                <span className="bg-green-500 px-2 py-1 rounded text-white">
+                  {orderItem.couponCode || "N/A"}
+                </span>
+              </div>
+            )}
+            {/* ✅ Total Saving by Coupon only if exist */}
+            {orderItem.discountAmount && orderItem.discountAmount !== 0 && (
+              <div className="flex justify-between mb-2">
+                <span>Total Saving by Coupon:</span>
+                <span className=" px-2 py-1 rounded text-green">
+                  {orderItem.discountAmount &&
+                    formatToEuro(parseFloat(orderItem.discountAmount))}
+                </span>
+              </div>
+            )}
             <div className="flex justify-between mb-2 items-center">
               <span>Delivery Fees:</span>
               <span
@@ -329,7 +342,6 @@ const OrderDetails = ({ orderItem }: any) => {
                   : "8.50 EUR"}
               </span>
             </div>
-
             {/* ✅ Shipping Method (separate line, only if UK) */}
             {orderItem.isUK && orderItem.shippingMethod && (
               <div className="flex justify-between mb-2 items-center">
@@ -347,7 +359,6 @@ const OrderDetails = ({ orderItem }: any) => {
                 </span>
               </div>
             )}
-
             <div className="flex justify-between text-xl font-bold mt-3">
               <span>Total Price:</span>
               <span> {formatToEuro(orderItem.totalAmount)}</span>
