@@ -16,6 +16,7 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
 import Sidebar from "@/components/Admin/Sidebar";
+import OfflineOverlay from "@/components/Common/OfflineOverlay";
 
 export default function RootLayout({
   children,
@@ -31,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body>
+        <OfflineOverlay />
         {loading ? (
           <PreLoader />
         ) : (
@@ -44,7 +46,6 @@ export default function RootLayout({
                       <Sidebar />
                       {children}
                     </div>
-                    
 
                     <QuickViewModal />
                     <CartSidebarModal />
