@@ -7,7 +7,9 @@ export interface IReview {
   userId: mongoose.Types.ObjectId;
   rate: number;
   comment?: string;
-  order: mongoose.Types.ObjectId;
+  orderId: string;
+  variantId: mongoose.Types.ObjectId;
+  // productId: mongoose.Types.ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
 }
@@ -58,9 +60,12 @@ const reviewSchema = new Schema(
       type: String,
       trim: true,
     },
-    order: {
+    orderId: {
+      type: String,
+      required: true,
+    },
+    variantId: {
       type: mongoose.Types.ObjectId,
-      ref: "Order",
       required: true,
     },
   },

@@ -26,7 +26,7 @@ export interface IUser extends Document {
   orders: mongoose.Types.ObjectId[];
   reviews: mongoose.Types.ObjectId[];
   resetToken?: string;
-  expiresAt?: Date;
+  resetTokenexpiresAt?: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -99,7 +99,7 @@ const userSchema = new Schema<IUser>(
     resetToken: {
       type: String,
     },
-    expiresAt: {
+    resetTokenexpiresAt: {
       type: Date,
     },
   },

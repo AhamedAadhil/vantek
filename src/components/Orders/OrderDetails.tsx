@@ -1,14 +1,37 @@
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { formatDateTime } from "@/helper/formatDateTime";
+import ReviewModal from "./ReviewModal";
 import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
 import { RootState } from "@/redux/store";
 import { Euro, ExternalLink, Link, Printer, Share } from "lucide-react";
 import Image from "next/image";
-import React from "react";
+import React, { useState } from "react";
 import { useSelector } from "react-redux";
 
 const OrderDetails = ({ orderItem }: any) => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  // const handleReviewSubmit = async (rate: number, comment: string) => {
+  //   const res = await fetch("/api/products/reviews", {
+  //     method: "POST",
+  //     headers: { "Content-Type": "application/json", userId: orderItem.userId },
+  //     body: JSON.stringify({
+  //       productId: orderItem.product._id,
+  //       orderId: orderItem.orderId,
+  //       variantId: orderItem.variantId,
+  //       review: { rate, comment },
+  //     }),
+  //   });
+
+  //   const data = await res.json();
+  //   if (data.success) {
+  //     alert("Review submitted!");
+  //   } else {
+  //     alert(data.message || "Failed to submit review");
+  //   }
+  // };
+
   console.log(orderItem);
   return (
     <>
@@ -148,6 +171,7 @@ const OrderDetails = ({ orderItem }: any) => {
                   <th className="p-3">Price</th>
                   <th className="p-3">Qty</th>
                   <th className="p-3">Total Price</th>
+                  <th className="p-3">Add Review</th>
                 </tr>
               </thead>
               <tbody>
@@ -173,6 +197,11 @@ const OrderDetails = ({ orderItem }: any) => {
                             Top Seller
                           </span>
                         )}
+                        {item.product.featuredProduct && (
+                          <span className="ml-2 text-xs bg-green-500 px-2 py-1 rounded text-white">
+                            Featured Product
+                          </span>
+                        )}
                       </div>
                     </td>
 
@@ -180,6 +209,86 @@ const OrderDetails = ({ orderItem }: any) => {
                     <td className="p-3">{item.quantity}</td>
                     <td className="p-3 font-bold">
                       {item.price * item.quantity}
+                    </td>
+                    <td className="p-3 font-bold">
+                      {orderItem.status === "delivered" ? (
+                        <>
+                          {orderItem.items.map((item) => {
+                            let hasReviewed = item.product.reviews?.some(
+                              (rev) =>
+                                rev.userId === user?._id &&
+                                rev.variantId === item.variant &&
+                                rev.orderId === orderItem.orderId
+                            );
+
+                            return (
+                              <div key={item._id}>
+                                {/* Review Logic */}
+                                {orderItem.status === "delivered" ? (
+                                  hasReviewed ? (
+                                    <span className="text-green-400 text-sm">
+                                      Review already added
+                                    </span>
+                                  ) : (
+                                    <>
+                                      <button
+                                        onClick={() => setIsModalOpen(true)}
+                                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                                      >
+                                        Add Review
+                                      </button>
+                                      <ReviewModal
+                                        isOpen={isModalOpen}
+                                        onClose={() => setIsModalOpen(false)}
+                                        onSubmit={async (rate, comment) => {
+                                          const res = await fetch(
+                                            "/api/products/reviews",
+                                            {
+                                              method: "POST",
+                                              headers: {
+                                                "Content-Type":
+                                                  "application/json",
+                                                userId: user?._id,
+                                              },
+                                              body: JSON.stringify({
+                                                productId: item.product._id,
+                                                orderId: orderItem.orderId,
+                                                variantId: item.variant,
+                                                review: { rate, comment },
+                                              }),
+                                            }
+                                          );
+
+                                          const data = await res.json();
+                                          if (data.success) {
+                                            alert("Review submitted!");
+                                            hasReviewed = true; // Update local state
+                                            setIsModalOpen(false);
+                                            // Optional: Refetch or update state
+                                          } else {
+                                            alert(
+                                              data.message ||
+                                                "Failed to submit review"
+                                            );
+                                          }
+                                        }}
+                                      />
+                                    </>
+                                  )
+                                ) : (
+                                  <span className="text-gray-500">
+                                    Review available after delivery
+                                  </span>
+                                )}
+                              </div>
+                            );
+                          })}
+                        </>
+                      ) : (
+                        <span className="text-gray-500">
+                          Review available after delivery
+                        </span>
+                      )}
                     </td>
                   </tr>
                 ))}

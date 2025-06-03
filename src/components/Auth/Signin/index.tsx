@@ -118,12 +118,12 @@ const Signin = () => {
                 {loading ? "Signing in..." : "Sign in to account"}
               </button>
 
-              <a
-                href="#"
+              <Link
+                href="/forgot-password"
                 className="block text-center text-dark-4 mt-4 hover:text-dark"
               >
                 Forgot your password?
-              </a>
+              </Link>
 
               <p className="text-center mt-6">
                 Don&apos;t have an account?

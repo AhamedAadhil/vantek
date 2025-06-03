@@ -25,6 +25,7 @@ import {
   removeItemFromWishlist,
 } from "@/redux/features/wishlist-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
+import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
@@ -174,6 +175,8 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
     fetchProduct();
   }, [productId]);
+
+  console.log(product);
 
   return (
     <>
@@ -447,18 +450,46 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                 ></div>
               ) : (
                 <div>
-                  {/* TODO */}
-                  <h3 className="text-lg font-semibold mb-2">
+                  <h3 className="text-lg font-semibold mb-4">
                     Customer Reviews
                   </h3>
-                  <p className="text-gray-600 italic">
-                    &quot;Very sturdy, fits perfectly in my T6. Easy to operate
-                    and super safe. Worth every penny!&quot;
-                  </p>
-                  <p className="mt-4 text-gray-600 italic">
-                    &quot;Absolutely love the quality. Installation was
-                    straightforward and the reclining feature is great.&quot;
-                  </p>
+
+                  {product?.reviews?.length > 0 ? (
+                    product?.reviews?.map((review) => (
+                      <div
+                        key={review._id}
+                        className="mb-6 border-b border-gray-200 pb-4"
+                      >
+                        <div className="flex items-center mb-1">
+                          {/* Placeholder for user name */}
+                          <span className="font-semibold">
+                            <Image
+                              src={generateAvatarUrl(review?.userId?.email)}
+                              alt={review?.userId?.name || "User Avatar"}
+                              width={24}
+                              height={24}
+                              className="inline-block rounded-full mr-2"
+                            />{" "}
+                            {review?.userId?.name}
+                          </span>
+                          <span className="ml-3 text-yellow-500">
+                            {"★".repeat(review?.rate) +
+                              "☆".repeat(5 - review?.rate)}
+                          </span>
+                        </div>
+                        <p className="italic text-gray-700">
+                          {review?.comment}
+                        </p>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(review?.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
+                    ))
+                  ) : (
+                    <p className="text-gray-600 italic">
+                      No reviews yet. Be the first to review!
+                    </p>
+                  )}
                 </div>
               )}
             </div>

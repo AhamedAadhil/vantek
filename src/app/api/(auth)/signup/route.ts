@@ -8,11 +8,32 @@ import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
   const { email, password, name } = await req.json();
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   if (!email || !password || !name) {
     return NextResponse.json(
       {
         message: "Email, password, and name are required",
+        success: false,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (!emailRegex.test(email)) {
+    return NextResponse.json(
+      {
+        message: "Please enter a valid email address",
+        success: false,
+      },
+      { status: 400 }
+    );
+  }
+
+  if (password.length < 6) {
+    return NextResponse.json(
+      {
+        message: "Password must be at least 6 characters long",
         success: false,
       },
       { status: 400 }

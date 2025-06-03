@@ -18,11 +18,15 @@ const transporter = nodemailer.createTransport({
  * @returns Promise<{ success: boolean; message?: string; error?: any }>
  */
 
-export const sendMail = async (
-  to: string,
-  subject: string,
-  html: string
-): Promise<{ success: boolean; message?: string; error?: any }> => {
+export const sendMail = async ({
+  to,
+  subject,
+  html,
+}: {
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<{ success: boolean; message?: string; error?: any }> => {
   try {
     const mailOptions = {
       from: `"VANTEK Support" <${process.env.SMTP_USER}>`,
