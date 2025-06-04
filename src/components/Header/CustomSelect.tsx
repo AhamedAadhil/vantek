@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-const CustomSelect = ({ options }) => {
+const CustomSelect = ({ options, onChange }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
@@ -8,8 +8,14 @@ const CustomSelect = ({ options }) => {
     setIsOpen(!isOpen);
   };
 
+  // const handleOptionClick = (option) => {
+  //   setSelectedOption(option);
+  //   toggleDropdown();
+  // };
+
   const handleOptionClick = (option) => {
     setSelectedOption(option);
+    onChange(option.label); // pass selected label back
     toggleDropdown();
   };
 

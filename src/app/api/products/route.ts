@@ -31,9 +31,11 @@ export async function GET(req: Request) {
     let query = {} as Record<string, any>;
 
     if (search) {
+      const regex = new RegExp(search, "i");
       query.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { description: { $regex: search, $options: "i" } },
+        { name: { $regex: regex } },
+        { description: { $regex: regex } },
+        { tags: { $in: [regex] } }, // tags array search
       ];
     }
     if (subCategory2.length > 0) {
