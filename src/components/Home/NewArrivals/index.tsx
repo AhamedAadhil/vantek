@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
-import shopData from "@/components/Shop/shopData";
 import { useDispatch } from "react-redux";
 import { setWishlist } from "@/redux/features/wishlist-slice";
 import { AppDispatch } from "@/redux/store";

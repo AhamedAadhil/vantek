@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import SingleItem from "./SingleItem";
 import Image from "next/image";
 import Link from "next/link";
-import shopData from "@/components/Shop/shopData";
 import ProductItem from "@/components/Common/ProductItem";
 
 //TODO : Fetch only best selling
