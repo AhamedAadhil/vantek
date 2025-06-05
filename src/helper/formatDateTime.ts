@@ -1,16 +1,19 @@
 // utils/dateFormatter.js
 
-export function formatDateTime(dateString, options = {}) {
-  const defaultOptions = {
-    timeZone: "Asia/Colombo", // You can change based on your preference
-    dateStyle: "medium",
-    timeStyle: "short",
+export function formatDateTime(
+  dateString: string,
+  options: Intl.DateTimeFormatOptions = {}
+): string {
+  const defaultOptions: Intl.DateTimeFormatOptions = {
+    timeZone: "Asia/Colombo",
+    dateStyle: "medium", // This is allowed by Intl.DateTimeFormatOptions
+    timeStyle: "short", // Also allowed
   };
 
-  try {
-    const date = new Date(dateString);
-    return date.toLocaleString("en-US", { ...defaultOptions, ...options });
-  } catch (err) {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
     return "Invalid Date";
   }
+
+  return date.toLocaleString("en-US", { ...defaultOptions, ...options });
 }
