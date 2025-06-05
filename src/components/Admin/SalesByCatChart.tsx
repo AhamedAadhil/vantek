@@ -1,22 +1,31 @@
-import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import React from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 
-interface DeviceData {
+interface CategoryDataItem {
   name: string;
   value: number;
   color: string;
   percentage: string;
 }
 
-const SalesByCatergoryChart: React.FC = () => {
-  const deviceData: DeviceData[] = [
-    { name: 'VW-T5', value: 2825, color: '#2DD4BF', percentage: '68.3%' },
-    { name: 'VW-T6.1', value: 731, color: '#F59E0B', percentage: '17.68%' },
-    { name: 'VW-T7', value: 434, color: '#38BDF8', percentage: '10.5%' },
-    { name: 'Other Parts', value: 146, color: '#8B5CF6', percentage: '3.52%' },
-  ];
+interface SalesByCatergoryChartProps {
+  categoryData: CategoryDataItem[];
+}
 
-  const totalSessions = deviceData.reduce((sum, item) => sum + item.value, 0);
+const SalesByCatergoryChart: React.FC<SalesByCatergoryChartProps> = ({
+  categoryData,
+}) => {
+  // const deviceData: DeviceData[] = [
+  //   { name: "VW-T5", value: 2825, color: "#2DD4BF", percentage: "68.3%" },
+  //   { name: "VW-T6.1", value: 731, color: "#F59E0B", percentage: "17.68%" },
+  //   { name: "VW-T7", value: 434, color: "#38BDF8", percentage: "10.5%" },
+  //   { name: "Other Parts", value: 146, color: "#8B5CF6", percentage: "3.52%" },
+  // ];
+
+  const totalSessions = categoryData?.reduce(
+    (sum, item) => sum + item.value,
+    0
+  );
 
   const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -52,7 +61,7 @@ const SalesByCatergoryChart: React.FC = () => {
             <PieChart>
               <Tooltip content={<CustomTooltip />} />
               <Pie
-                data={deviceData}
+                data={categoryData && categoryData}
                 cx="50%"
                 cy="50%"
                 innerRadius={70}
@@ -62,7 +71,7 @@ const SalesByCatergoryChart: React.FC = () => {
                 startAngle={90}
                 endAngle={-270}
               >
-                {deviceData.map((entry, index) => (
+                {categoryData?.map((entry, index) => (
                   <Cell key={`cell-${index}`} fill={entry.color} />
                 ))}
               </Pie>
@@ -79,23 +88,24 @@ const SalesByCatergoryChart: React.FC = () => {
 
       {/* Legend */}
       <div className="grid grid-cols-4 border-t border-gray-500">
-  {deviceData.map((device) => (
-    <div
-      key={device.name}
-      className="flex flex-col items-center justify-center py-3"
-    >
-      <div className="flex items-center gap-2 mb-1">
-        <span
-          className="w-3 h-3 rounded-full"
-          style={{ backgroundColor: device.color }}
-        ></span>
-        <p className="text-gray-400 text-xs">{device.name}</p>
+        {categoryData?.map((device) => (
+          <div
+            key={device.name}
+            className="flex flex-col items-center justify-center py-3"
+          >
+            <div className="flex items-center gap-2 mb-1">
+              <span
+                className="w-3 h-3 rounded-full"
+                style={{ backgroundColor: device.color }}
+              ></span>
+              <p className="text-gray-400 text-xs">{device.name}</p>
+            </div>
+            <p className="text-white text-sm font-medium">
+              {device.percentage}
+            </p>
+          </div>
+        ))}
       </div>
-      <p className="text-white text-sm font-medium">{device.percentage}</p>
-    </div>
-  ))}
-</div>
-
     </div>
   );
 };
