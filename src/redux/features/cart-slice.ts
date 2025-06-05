@@ -65,18 +65,19 @@ export const cart = createSlice({
       );
     },
     updateCartItemQuantity: (
-  state,
-  action: PayloadAction<{ id: number; variantId: number; quantity: number }>
-) => {
-  const { id, variantId, quantity } = action.payload;
-  const existingItem = state.items.find(
-    (item) => item._id === id && item.variantId === variantId
-  );
+      state,
+      action: PayloadAction<{ id: number; variantId: number; quantity: number }>
+    ) => {
+      const { id, variantId, quantity } = action.payload;
+      const existingItem = state.items.find(
+        (item) =>
+          item._id === String(id) && item.variantId === String(variantId)
+      );
 
-  if (existingItem) {
-    existingItem.quantity = quantity;
-  }
-},
+      if (existingItem) {
+        existingItem.quantity = quantity;
+      }
+    },
 
     removeAllItemsFromCart: (state) => {
       state.items = [];
