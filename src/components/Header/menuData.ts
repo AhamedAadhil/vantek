@@ -18,12 +18,12 @@ export const menuData: Menu[] = [
     title: "VW-T5",
     newTab: false,
     path: "/vwt5",
-    submenu:[
+    submenu: [
       {
         id: 100,
         title: "Exterior Styling",
         newTab: false,
-        path: "/exterior-styling"
+        path: "/exterior-styling",
       },
       {
         id: 101,
@@ -103,19 +103,19 @@ export const menuData: Menu[] = [
         newTab: false,
         path: "/window-blinds",
       },
-    ]
+    ],
   },
   {
     id: 26,
     title: "VW-T6.1",
     newTab: false,
     path: "/vwt6.1",
-    submenu:[
+    submenu: [
       {
         id: 200,
         title: "Exterior Styling",
         newTab: false,
-        path: "/exterior-styling"
+        path: "/exterior-styling",
       },
       {
         id: 201,
@@ -195,19 +195,19 @@ export const menuData: Menu[] = [
         newTab: false,
         path: "/window-blinds",
       },
-    ]
+    ],
   },
   {
     id: 36,
     title: "VW-T7",
     newTab: false,
     path: "/vwt7",
-    submenu:[
+    submenu: [
       {
         id: 300,
         title: "Exterior Styling",
         newTab: false,
-        path: "/exterior-styling"
+        path: "/exterior-styling",
       },
       {
         id: 301,
@@ -287,19 +287,19 @@ export const menuData: Menu[] = [
         newTab: false,
         path: "/window-blinds",
       },
-    ]
+    ],
   },
   {
     id: 66,
     title: "Universal Camper Parts",
     newTab: false,
     path: "/universal-camper-parts",
-    submenu:[
+    submenu: [
       {
         id: 400,
         title: "Fridge Freezer 12v 50L",
         newTab: false,
-        path: "/fridge-freezer-12v-50L"
+        path: "/fridge-freezer-12v-50L",
       },
       {
         id: 401,
@@ -337,45 +337,13 @@ export const menuData: Menu[] = [
         newTab: false,
         path: "/external-water-inlet-lockable",
       },
-    ]
+    ],
   },
   {
     id: 3,
     title: "Contact",
     newTab: false,
     path: "/contact",
-  },
-  {
-    id: 7,
-    title: "blogs",
-    newTab: false,
-    path: "/",
-    submenu: [
-      {
-        id: 71,
-        title: "Blog Grid with sidebar",
-        newTab: false,
-        path: "/blogs/blog-grid-with-sidebar",
-      },
-      {
-        id: 72,
-        title: "Blog Grid",
-        newTab: false,
-        path: "/blogs/blog-grid",
-      },
-      {
-        id: 73,
-        title: "Blog details with sidebar",
-        newTab: false,
-        path: "/blogs/blog-details-with-sidebar",
-      },
-      {
-        id: 74,
-        title: "Blog details",
-        newTab: false,
-        path: "/blogs/blog-details",
-      },
-    ],
   },
   {
     id: 6,
