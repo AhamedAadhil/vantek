@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AreaChart,
   Area,
@@ -18,38 +18,49 @@ interface MonthlyData {
   sales: number;
 }
 
-const SalesReportChart = () => {
-  const data: MonthlyData[] = [
-    { month: "Jan", orders: 22, sales: 4200 },
-    { month: "Feb", orders: 10, sales: 5200 },
-    { month: "Mar", orders: 20, sales: 4200 },
-    { month: "Apr", orders: 25, sales: 6500 },
-    { month: "May", orders: 12, sales: 2200 },
-    { month: "Jun", orders: 20, sales: 3000 },
-    { month: "Jul", orders: 35, sales: 4200 },
-    { month: "Aug", orders: 20, sales: 3800 },
-    { month: "Sep", orders: 45, sales: 5000 },
-    { month: "Oct", orders: 20, sales: 3500 },
-    { month: "Nov", orders: 45, sales: 4200 },
-    { month: "Dec", orders: 32, sales: 3000 },
-  ];
+const SalesReportChart = ({ salesData }) => {
+  const months = salesData?.map((d) => d.month) || [];
+  const [startMonth, setStartMonth] = useState(
+    () => salesData?.[0]?.month || ""
+  );
+  const [endMonth, setEndMonth] = useState(
+    () => salesData?.[salesData.length - 1]?.month || ""
+  );
 
-  const months = data.map((d) => d.month);
-  const [startMonth, setStartMonth] = useState("Jan");
-  const [endMonth, setEndMonth] = useState("Dec");
+  useEffect(() => {
+    if (salesData && salesData.length > 0) {
+      setStartMonth(salesData[0].month);
+      setEndMonth(salesData[salesData.length - 1].month);
+    }
+  }, [salesData]);
 
   const startIndex = months.indexOf(startMonth);
   const endIndex = months.indexOf(endMonth);
 
-  const filteredData = data.slice(startIndex, endIndex + 1);
+  // Guard against -1 (not found)
+  const filteredData =
+    startIndex !== -1 && endIndex !== -1
+      ? salesData.slice(startIndex, endIndex + 1)
+      : [];
+
+  if (!salesData || salesData.length === 0) {
+    return <div className="text-gray-400 p-4">No data available.</div>;
+  }
 
   const CustomTooltip = ({ active, payload, label }: any) => {
     if (active && payload && payload.length) {
       return (
         <div className="bg-gray-800 p-2 rounded text-white text-sm">
           <p className="font-semibold">{label}</p>
-          <p>Sales: £{payload.find((d: any) => d.dataKey === "sales")?.value.toLocaleString()}</p>
-          <p>Orders: {payload.find((d: any) => d.dataKey === "orders")?.value}</p>
+          <p>
+            Sales: £
+            {payload
+              .find((d: any) => d.dataKey === "sales")
+              ?.value.toLocaleString()}
+          </p>
+          <p>
+            Orders: {payload.find((d: any) => d.dataKey === "orders")?.value}
+          </p>
         </div>
       );
     }
@@ -133,7 +144,12 @@ const SalesReportChart = () => {
                 tick={{ fill: "#9ca3af" }}
                 axisLine={{ stroke: "#333" }}
                 tickLine={false}
-                label={{ value: "Orders", angle: -90, position: "insideLeft", fill: "#9ca3af" }}
+                label={{
+                  value: "Orders",
+                  angle: -90,
+                  position: "insideLeft",
+                  fill: "#9ca3af",
+                }}
               />
               <YAxis
                 fontSize={14}
@@ -142,7 +158,12 @@ const SalesReportChart = () => {
                 tick={{ fill: "#9ca3af" }}
                 axisLine={{ stroke: "#333" }}
                 tickLine={false}
-                label={{ value: "Sales (£)", angle: -90, position: "insideRight", fill: "#9ca3af" }}
+                label={{
+                  value: "Sales (£)",
+                  angle: -90,
+                  position: "insideRight",
+                  fill: "#9ca3af",
+                }}
               />
               <Tooltip content={<CustomTooltip />} />
               <Legend verticalAlign="top" height={36} />

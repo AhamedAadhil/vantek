@@ -3,114 +3,49 @@ import {
   Download,
   Edit,
   ChevronRight,
-  ArrowDown,
   ChevronLeft,
   ChevronUp,
   ChevronDown,
+  ArrowDown,
   Search,
 } from "lucide-react";
 import Image from "next/image";
+import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
+import { formatDateTime } from "@/helper/formatDateTime";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+
+interface Customer {
+  name: string;
+  email: string;
+}
 
 interface Order {
   id: string;
   orderId: string;
-  customer: {
-    name: string;
-    avatar: string;
-  };
+  customer: Customer;
   quantity: number;
   price: number;
-  status: "Shipped" | "Canceled" | "Under Process" | "Pending" | "Success";
-  orderedDate: string;
+  status: "shipped" | "canceled" | "Under Process" | "pending" | "delivered";
+  orderedDate: string; // format: "25,Nov 2022"
 }
 
-const statusColors = {
-  Shipped: "text-emerald-500 bg-emerald-500/10",
-  Canceled: "text-red-light bg-red-dark/10",
+const statusColors: Record<Order["status"], string> = {
+  shipped: "text-blues-500 bg-blues-500/10",
+  canceled: "text-red-light bg-red-dark/10",
   "Under Process": "text-blues-500 bg-blues-500/10",
-  Pending: "text-amber-500 bg-amber-500/10",
-  Success: "text-emerald-500 bg-emerald-500/10",
+  pending: "text-amber-500 bg-amber-500/10",
+  delivered: "text-emerald-500 bg-emerald-500/10",
 };
 
-const RecentOrdersTable: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState(1);
+interface RecentOrdersTableProps {
+  recentOrders: Order[];
+}
+
+const RecentOrdersTable: React.FC<RecentOrdersTableProps> = ({
+  recentOrders = [],
+}) => {
   const [sortBy, setSortBy] = useState<string | null>(null);
   const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
-
-  const recentOrders: Order[] = [
-    {
-      id: "1",
-      orderId: "#1537890",
-      customer: {
-        name: "Simon Cowall",
-        avatar: "/avatars/simon.jpg",
-      },
-      quantity: 1,
-      price: 4320.29,
-      status: "Shipped",
-      orderedDate: "25,Nov 2022",
-    },
-    {
-      id: "2",
-      orderId: "#1539078",
-      customer: {
-        name: "Meisha Kerr",
-        avatar: "/avatars/meisha.jpg",
-      },
-      quantity: 1,
-      price: 6745.99,
-      status: "Canceled",
-      orderedDate: "29,Nov 2022",
-    },
-    {
-      id: "3",
-      orderId: "#1539832",
-      customer: {
-        name: "Jessica",
-        avatar: "/avatars/jessica.jpg",
-      },
-      quantity: 2,
-      price: 1176.89,
-      status: "Under Process",
-      orderedDate: "04,Dec 2022",
-    },
-    {
-      id: "4",
-      orderId: "#1539832",
-      customer: {
-        name: "Amanda B",
-        avatar: "/avatars/amanda.jpg",
-      },
-      quantity: 1,
-      price: 1899.99,
-      status: "Shipped",
-      orderedDate: "10,Dec 2022",
-    },
-    {
-      id: "5",
-      orderId: "#1538267",
-      customer: {
-        name: "Jason Stathman",
-        avatar: "/avatars/jason.jpg",
-      },
-      quantity: 1,
-      price: 1867.29,
-      status: "Pending",
-      orderedDate: "18,Dec 2022",
-    },
-    {
-      id: "6",
-      orderId: "#1537890",
-      customer: {
-        name: "Khabib Hussain",
-        avatar: "/avatars/khabib.jpg",
-      },
-      quantity: 1,
-      price: 2439.99,
-      status: "Success",
-      orderedDate: "24,Dec 2022",
-    },
-  ];
 
   const handleSort = (column: string) => {
     if (sortBy === column) {
@@ -121,11 +56,14 @@ const RecentOrdersTable: React.FC = () => {
     }
   };
 
-  const getSortedOrders = () => {
+  const getSortedOrders = (): Order[] => {
+    if (!Array.isArray(recentOrders)) return []; // guard clause
+
     if (!sortBy) return recentOrders;
 
     return [...recentOrders].sort((a, b) => {
-      let valueA, valueB;
+      let valueA: any;
+      let valueB: any;
 
       switch (sortBy) {
         case "orderId":
@@ -133,8 +71,8 @@ const RecentOrdersTable: React.FC = () => {
           valueB = b.orderId;
           break;
         case "customer":
-          valueA = a.customer.name;
-          valueB = b.customer.name;
+          valueA = a.customer.name.toLowerCase();
+          valueB = b.customer.name.toLowerCase();
           break;
         case "quantity":
           valueA = a.quantity;
@@ -149,12 +87,12 @@ const RecentOrdersTable: React.FC = () => {
           valueB = b.status;
           break;
         case "orderedDate":
-          valueA = new Date(
-            a.orderedDate.split(",")[1] + " " + a.orderedDate.split(",")[0]
-          ).getTime();
-          valueB = new Date(
-            b.orderedDate.split(",")[1] + " " + b.orderedDate.split(",")[0]
-          ).getTime();
+          const parseDate = (dateStr: string) => {
+            const [day, month, year] = dateStr.split(/,| /).filter(Boolean);
+            return new Date(`${month} ${day}, ${year}`).getTime();
+          };
+          valueA = parseDate(a.orderedDate);
+          valueB = parseDate(b.orderedDate);
           break;
         default:
           return 0;
@@ -178,119 +116,76 @@ const RecentOrdersTable: React.FC = () => {
 
   return (
     <div className="bg-[#202020] border border-gray-600 rounded-lg overflow-hidden">
-      <div className="flex justify-between items-center p-4 border-b border-gray-6">
+      <div className="flex justify-between items-center p-4 border-b border-gray-600">
         <div className="flex items-center">
           <div className="w-1 h-5 bg-blues-500 mr-2"></div>
           <h2 className="text-white font-medium">Recent Orders</h2>
         </div>
-        <div className="flex items-center space-x-2">
+        {/* <div className="flex items-center space-x-2">
           <div className="relative">
             <input
               type="text"
               placeholder="Search orders"
-              className="bg-gray-7 text-gray-5 text-sm border border-gray-6 rounded-md pl-9 pr-4 py-1.5 w-64 focus:outline-none focus:ring-1 focus:ring-purple-light-4"
+              className="bg-gray-700 text-gray-300 text-sm border border-gray-600 rounded-md pl-9 pr-4 py-1.5 w-64 focus:outline-none focus:ring-1 focus:ring-purple-400"
             />
             <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-light-1"
+              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300"
               size={16}
             />
           </div>
-          <button className="bg-purple-light-2 hover:bg-purple-light-4 text-white text-sm px-3 py-1.5 rounded-md flex items-center">
+          <button className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-3 py-1.5 rounded-md flex items-center">
             Sort By <ChevronDown size={16} className="ml-1" />
           </button>
-        </div>
+        </div> */}
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full table-auto">
           <thead>
-            <tr className="bg-gray-6 text-gray-3 text-xs">
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("orderId")}
-              >
-                <div className="flex items-center">
-                  Order Id
-                  {renderSortIcon("orderId")}
-                </div>
-              </th>
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("customer")}
-              >
-                <div className="flex items-center">
-                  Customer
-                  {renderSortIcon("customer")}
-                </div>
-              </th>
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("quantity")}
-              >
-                <div className="flex items-center">
-                  No.of Itmes
-                  {renderSortIcon("quantity")}
-                </div>
-              </th>
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("price")}
-              >
-                <div className="flex items-center">
-                  Price
-                  {renderSortIcon("price")}
-                </div>
-              </th>
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("status")}
-              >
-                <div className="flex items-center">
-                  Status
-                  {renderSortIcon("status")}
-                </div>
-              </th>
-              <th
-                className="p-3 text-left cursor-pointer"
-                onClick={() => handleSort("orderedDate")}
-              >
-                <div className="flex items-center">
-                  Ordered Date
-                  {renderSortIcon("orderedDate")}
-                </div>
-              </th>
+            <tr className="bg-gray-700 text-gray-300 text-xs">
+              {[
+                { key: "orderId", label: "Order Id" },
+                { key: "customer", label: "Customer" },
+                { key: "quantity", label: "No.of Items" },
+                { key: "price", label: "Price" },
+                { key: "status", label: "Status" },
+                { key: "orderedDate", label: "Ordered Date" },
+              ].map(({ key, label }) => (
+                <th
+                  key={key}
+                  className="p-3 text-left cursor-pointer select-none"
+                  onClick={() => handleSort(key)}
+                >
+                  <div className="flex items-center">
+                    {label}
+                    {renderSortIcon(key)}
+                  </div>
+                </th>
+              ))}
               <th className="p-3 text-left">Action</th>
             </tr>
           </thead>
           <tbody>
-            {getSortedOrders().map((order) => (
+            {(getSortedOrders() || []).map((order) => (
               <tr
                 key={order.id}
-                className="border-b border-gray-6 text-white hover:bg-gray-6/50 transition-colors"
+                className="border-b border-gray-600 text-white hover:bg-gray-700/50 transition-colors"
               >
-                <td className="p-3">
-                  <span className="text-emerald-300">{order.orderId}</span>
-                </td>
+                <td className="p-3 text-emerald-300">{order.orderId}</td>
                 <td className="p-3">
                   <div className="flex items-center">
-                    <div className="w-8 h-8 rounded-full bg-gray-5 overflow-hidden flex items-center justify-center mr-2 text-xs">
-                      {order.customer.avatar ? (
-                        <Image
-                          src="/api/placeholder/32/32"
-                          width={32}
-                          height={32}
-                          alt={order.customer.name}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        order.customer.name.charAt(0)
-                      )}
-                    </div>
+                    <Image
+                      src={generateAvatarUrl(order.customer.email)}
+                      alt={`${order.customer.name} avatar`}
+                      width={45}
+                      height={45}
+                      className="rounded-full mr-2"
+                    />
                     <span>{order.customer.name}</span>
                   </div>
                 </td>
                 <td className="p-3">{order.quantity}</td>
-                <td className="p-3">${order.price.toFixed(2)}</td>
+                <td className="p-3">{formatToEuro(order.price)}</td>
                 <td className="p-3">
                   <span
                     className={`inline-block px-2 py-1 rounded text-xs ${
@@ -300,7 +195,7 @@ const RecentOrdersTable: React.FC = () => {
                     {order.status}
                   </span>
                 </td>
-                <td className="p-3">{order.orderedDate}</td>
+                <td className="p-3">{formatDateTime(order.orderedDate)}</td>
                 <td className="p-3">
                   <div className="flex space-x-2">
                     <button className="p-1 text-emerald-500 hover:bg-emerald-900 hover:text-white rounded">
@@ -317,25 +212,25 @@ const RecentOrdersTable: React.FC = () => {
         </table>
       </div>
 
-      <div className="flex justify-between items-center p-4 border-t border-gray-6">
-        <div className="flex items-center text-sm text-gray-3">
-          Showing {recentOrders.length} Entries{" "}
-          <ChevronRight size={14} className="ml-1" />
+      <div className="flex justify-between items-center p-4 border-t border-gray-600">
+        <div className="flex items-center text-sm text-gray-300">
+          Showing Recent {recentOrders?.length} Entries{" "}
+          {/* <ChevronRight size={14} className="ml-1" /> */}
         </div>
-        <div className="flex items-center space-x-1">
-          <button className="flex items-center justify-center w-8 h-8 rounded text-gray-3 hover:bg-gray-6">
+        {/* <div className="flex items-center space-x-1">
+          <button className="flex items-center justify-center w-8 h-8 rounded text-gray-300 hover:bg-gray-700">
             <ChevronLeft size={18} />
           </button>
           <button className="flex items-center justify-center w-8 h-8 rounded bg-violet-600 text-white">
             1
           </button>
-          <button className="flex items-center justify-center w-8 h-8 rounded text-gray-3 hover:bg-gray-6">
+          <button className="flex items-center justify-center w-8 h-8 rounded text-gray-300 hover:bg-gray-700">
             2
           </button>
-          <button className="flex items-center justify-center w-8 h-8 rounded text-gray-3 hover:bg-gray-6">
-            next
+          <button className="flex items-center justify-center w-12 h-8 rounded text-gray-300 hover:bg-gray-700">
+            Next
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

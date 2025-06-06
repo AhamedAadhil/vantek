@@ -179,6 +179,199 @@ export const GET = async (req: NextRequest) => {
 
     // END OF LOW STOCK TABLE INFO
 
+    // ORDER STATUS BREAKDOWN PIE CHART INFO
+    const orderStatusBreakdown = await Order.aggregate([
+      {
+        $group: {
+          _id: "$status",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          status: "$_id",
+          count: 1,
+        },
+      },
+    ]);
+
+    const total = orderStatusBreakdown.reduce(
+      (sum, item) => sum + item.count,
+      0
+    );
+
+    const COLORS = {
+      pending: "#8884d8",
+      shipped: "#82ca9d",
+      delivered: "#ffc658",
+      cancelled: "#ff7f50",
+    };
+
+    const formattedBreakdown = orderStatusBreakdown.map((item, index) => ({
+      name: item.status,
+      value: item.count,
+      color: COLORS[item.status] || "#cccccc",
+      percentage: ((item.count / total) * 100).toFixed(2) + "%",
+    }));
+    // END OF ORDER STATUS BREAKDOWN PIE CHART INFO
+
+    // RECENT ORDER TABLE INFO
+    const getRecentOrders = async () => {
+      // Fetch raw orders from MongoDB, populate user name only
+      const recentOrdersRaw = await (Order as mongoose.Model<IOrder>)
+        .find()
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .populate("user", "name email")
+        .lean();
+
+      // Map raw data to your desired format
+      const recentOrders = recentOrdersRaw.map((order) => {
+        const user = order.user as {
+          email: string;
+          name?: string;
+        } | null;
+
+        // Calculate total quantity
+        const quantity = Array.isArray(order.items)
+          ? order.items.reduce((sum, item) => sum + (item.quantity || 0), 0)
+          : 0;
+
+        return {
+          id: order._id.toString(),
+          orderId: order.orderId
+            ? `#${order.orderId}`
+            : `#${order._id.toString().slice(-6)}`,
+          customer: {
+            name: user?.name || "Unknown User",
+            email: user?.email,
+            avatar: "/avatars/default.jpg", // default avatar path
+          },
+          quantity,
+          price: order.totalAmount || 0,
+          status: order.status || "pending",
+          orderedDate: order.createdAt,
+        };
+      });
+
+      // Return a single object with recentOrders array inside
+      return { recentOrders };
+    };
+    // END OF RECENT ORDER TABLE INFO
+
+    // TOP SELLING PRODUCTS TABLE INFO
+    const topSellingProductsInfo = async () => {
+      const paidOrders = await (Order as mongoose.Model<IOrder>)
+        .find({ paymentStatus: "paid" })
+        .select("items");
+
+      const salesMap = new Map();
+
+      for (const order of paidOrders) {
+        for (const item of order.items) {
+          const key = `${item.product}_${item.variant}`;
+
+          if (!salesMap.has(key)) {
+            salesMap.set(key, {
+              product: item.product,
+              variant: item.variant,
+              totalSales: 0,
+            });
+          }
+
+          salesMap.get(key).totalSales += item.quantity;
+        }
+      }
+
+      const salesArray = Array.from(salesMap.values());
+
+      // Populate product + variant info
+      const topProducts = await Promise.all(
+        salesArray.map(async ({ product, variant, totalSales }) => {
+          const productDoc = await (Product as mongoose.Model<IProduct>)
+            .findById(product)
+            .lean();
+          if (!productDoc) return null;
+
+          const variantInfo = productDoc.variants.find((v) =>
+            v._id.equals(variant)
+          );
+          if (!variantInfo) return null;
+
+          return {
+            productId: product.toString(),
+            variantId: variant.toString(),
+            productName: productDoc.name,
+            variantName: variantInfo.name,
+            image: productDoc.images?.[0] || "/placeholder.png",
+            mainCategory: productDoc.mainCategory,
+            totalSales,
+          };
+        })
+      );
+
+      const filtered = topProducts.filter(Boolean);
+      filtered.sort((a, b) => b.totalSales - a.totalSales);
+
+      return filtered;
+    };
+    // END OF TOP SELLING PRODUCTS TABLE INFO
+
+    // SALES REPORT CHART INFO
+    const salesReport = async () => {
+      const monthlyStats = await Order.aggregate([
+        {
+          $match: {
+            paymentStatus: "paid",
+          },
+        },
+        {
+          $group: {
+            _id: { $month: "$createdAt" }, // 1–12
+            orders: { $sum: 1 },
+            sales: { $sum: "$totalAmount" },
+          },
+        },
+        {
+          $sort: { _id: 1 }, // ✅ sort by month number
+        },
+        {
+          $project: {
+            month: {
+              $let: {
+                vars: {
+                  monthsInString: [
+                    "",
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec",
+                  ],
+                },
+                in: { $arrayElemAt: ["$$monthsInString", "$_id"] },
+              },
+            },
+            orders: 1,
+            sales: 1,
+            _id: 0,
+          },
+        },
+      ]);
+
+      return monthlyStats;
+    };
+
+    // END OF SALES REPORT CHART INFO
+
     const result = {
       totalOrdersThisMonth,
       totalSalesThisMonth,
@@ -200,6 +393,10 @@ export const GET = async (req: NextRequest) => {
       categoryData,
       topCustomers,
       lowStockInfo: products,
+      orderStatusBreakdown: formattedBreakdown,
+      recentOrders: await getRecentOrders(),
+      topSellingProducts: await topSellingProductsInfo(),
+      salesReport: await salesReport(),
     };
 
     // ✅ Cache the result

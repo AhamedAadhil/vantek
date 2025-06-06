@@ -12,6 +12,7 @@ import LowStocksTable from "./LowStocks";
 import SalesByCatergoryChart from "./SalesByCatChart";
 import { useEffect, useState } from "react";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+import OrderStatusBreakdown from "./OrderStatusBreakdown";
 
 const Dashboard = () => {
   const [insights, setInsights] = useState(null);
@@ -120,10 +121,12 @@ const Dashboard = () => {
 
       <div className="col-span-3 row-span-2 col-start-1 row-start-2">
         <div className="mb-4">
-          <SalesReportChart />
+          <SalesReportChart salesData={insights?.salesReport} />
         </div>
         <div className="">
-          <RecentOrdersTable />
+          <RecentOrdersTable
+            recentOrders={insights?.recentOrders.recentOrders}
+          />
         </div>
       </div>
 
@@ -132,11 +135,16 @@ const Dashboard = () => {
           <SalesByCatergoryChart categoryData={insights?.categoryData} />
         </div>
         <div className="mb-4">
+          <OrderStatusBreakdown data={insights?.orderStatusBreakdown} />
+        </div>
+        <div className="mb-4">
           <TopCustomerTable topCustomers={insights?.topCustomers} />
         </div>
       </div>
       <div className="col-span-2 row-span-2 row-start-4">
-        <TopSellingProductsTable />
+        <TopSellingProductsTable
+          topSellingProducts={insights?.topSellingProducts}
+        />
       </div>
       <div className="col-span-3 row-span-2 col-start-3 row-start-4">
         <LowStocksTable lowStockInfo={insights?.lowStockInfo} />
