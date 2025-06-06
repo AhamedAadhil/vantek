@@ -3,7 +3,7 @@ import connectDB from "@/lib/db";
 import { isAdmin } from "@/lib/middleware";
 import Order, { IOrder } from "@/lib/models/order";
 import Product, { IProduct } from "@/lib/models/product";
-import User from "@/lib/models/user";
+import User, { IUser } from "@/lib/models/user";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -143,6 +143,42 @@ export const GET = async (req: NextRequest) => {
       };
     });
 
+    //END OF SALES BY CATEGORY PIE-CHART INFO
+
+    // TOP CUSTOMERS TABLE INFO
+    const topCustomers = await (User as mongoose.Model<IUser>)
+      .find(
+        { totalSpent: { $gt: 0 } }, // optional filter to exclude zero spenders
+        { name: 1, email: 1, totalSpent: 1, _id: 1 } // fields to return
+      )
+      .sort({ totalSpent: -1 }) // sort descending by totalSpent
+      .limit(10);
+    // END OF TOP CUSTOMERS TABLE INFO
+
+    // LOW STOCK TABLE INFO
+    const dbProducts = await (Product as mongoose.Model<IProduct>)
+      .find(
+        {},
+        {
+          name: 1,
+          images: 1,
+          variants: 1,
+        }
+      )
+      .lean();
+
+    const products = dbProducts.flatMap((product) =>
+      product.variants.map((variant) => ({
+        name: product.name,
+        variantName: variant.name,
+        availableStocks: variant.stock,
+        inStock: variant.stock > 5,
+        image: product.images?.[0] || "/images/default.png",
+      }))
+    );
+
+    // END OF LOW STOCK TABLE INFO
+
     const result = {
       totalOrdersThisMonth,
       totalSalesThisMonth,
@@ -162,6 +198,8 @@ export const GET = async (req: NextRequest) => {
         },
       },
       categoryData,
+      topCustomers,
+      lowStockInfo: products,
     };
 
     // ✅ Cache the result

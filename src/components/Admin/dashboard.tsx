@@ -132,14 +132,14 @@ const Dashboard = () => {
           <SalesByCatergoryChart categoryData={insights?.categoryData} />
         </div>
         <div className="mb-4">
-          <TopCustomerTable />
+          <TopCustomerTable topCustomers={insights?.topCustomers} />
         </div>
       </div>
       <div className="col-span-2 row-span-2 row-start-4">
         <TopSellingProductsTable />
       </div>
       <div className="col-span-3 row-span-2 col-start-3 row-start-4">
-        <LowStocksTable />
+        <LowStocksTable lowStockInfo={insights?.lowStockInfo} />
       </div>
     </div>
   );

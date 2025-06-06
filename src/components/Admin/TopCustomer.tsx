@@ -1,5 +1,8 @@
 import React from "react";
 import { MoreVertical } from "lucide-react";
+import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+import Image from "next/image";
 
 interface Customer {
   id: string;
@@ -11,7 +14,7 @@ interface Customer {
   textColor: string;
 }
 
-const TopCustomerTable = () => {
+const TopCustomerTable = ({ topCustomers }) => {
   const customers: Customer[] = [
     {
       id: "1",
@@ -109,17 +112,23 @@ const TopCustomerTable = () => {
 
       {/* Customer details div */}
       <div className="space-y-3 text-sm overflow-y-auto pr-2">
-        {customers.slice(0, 9).map((customer) => (
+        {topCustomers?.map((customer) => (
           <div
-            key={customer.id}
+            key={customer._id}
             className="flex items-center justify-between hover:bg-gray-800 p-2 rounded-md transition-colors duration-150 ease-in-out cursor-pointer"
           >
             <div className="flex items-center space-x-3">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center ${customer.bgColor}`}
+                className={`w-8 h-8 rounded-full flex items-center justify-center `}
               >
-                <span className={`text-xs font-medium ${customer.textColor}`}>
-                  {customer.initials}
+                <span className={`text-xs font-medium`}>
+                  <Image
+                    src={generateAvatarUrl(customer.email)}
+                    alt="avatar"
+                    width={45}
+                    height={45}
+                    className="rounded-full"
+                  />
                 </span>
               </div>
               <div>
@@ -128,7 +137,7 @@ const TopCustomerTable = () => {
               </div>
             </div>
             <div className="font-semibold text-sm">
-              ${customer.amount.toLocaleString()}
+              {formatToEuro(customer.totalSpent.toFixed(2))}
             </div>
           </div>
         ))}
