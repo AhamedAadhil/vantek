@@ -138,7 +138,7 @@ const Orders = () => {
                 {new Date(order.createdAt).toLocaleDateString()}
               </td>
               <td className="p-3">{order.shippingAddress?.phone || "-"}</td>
-              <td className="p-3">{order._id.slice(-8).toUpperCase()}</td>
+              <td className="p-3">{order.orderId}</td>
               <td className="p-3"> {formatToEuro(order.totalAmount)}</td>
               <td className="p-3">{order.user?.email || "-"}</td>
               <td className="p-3">

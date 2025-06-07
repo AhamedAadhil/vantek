@@ -26,6 +26,7 @@ import {
 } from "@/redux/features/wishlist-slice";
 import { addItemToCart } from "@/redux/features/cart-slice";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
+import PreLoader from "../Common/PreLoader";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
@@ -176,10 +177,9 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     fetchProduct();
   }, [productId]);
 
-  console.log(product);
-
   return (
     <>
+    {loading && <PreLoader/>}
       <Breadcrumb title={"Product Details"} pages={["shop details"]} />
 
       {product?.name === "" ? (

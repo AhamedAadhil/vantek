@@ -121,22 +121,7 @@ const RecentOrdersTable: React.FC<RecentOrdersTableProps> = ({
           <div className="w-1 h-5 bg-blues-500 mr-2"></div>
           <h2 className="text-white font-medium">Recent Orders</h2>
         </div>
-        {/* <div className="flex items-center space-x-2">
-          <div className="relative">
-            <input
-              type="text"
-              placeholder="Search orders"
-              className="bg-gray-700 text-gray-300 text-sm border border-gray-600 rounded-md pl-9 pr-4 py-1.5 w-64 focus:outline-none focus:ring-1 focus:ring-purple-400"
-            />
-            <Search
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-purple-300"
-              size={16}
-            />
-          </div>
-          <button className="bg-purple-600 hover:bg-purple-700 text-white text-sm px-3 py-1.5 rounded-md flex items-center">
-            Sort By <ChevronDown size={16} className="ml-1" />
-          </button>
-        </div> */}
+        
       </div>
 
       <div className="overflow-x-auto">
@@ -165,11 +150,11 @@ const RecentOrdersTable: React.FC<RecentOrdersTableProps> = ({
               <th className="p-3 text-left">Action</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-[13px]">
             {(getSortedOrders() || []).map((order) => (
               <tr
                 key={order.id}
-                className="border-b border-gray-600 text-white hover:bg-gray-700/50 transition-colors"
+                className="border-b border-gray-600 text-white text-[13px] hover:bg-gray-700/50 transition-colors"
               >
                 <td className="p-3 text-emerald-300">{order.orderId}</td>
                 <td className="p-3">

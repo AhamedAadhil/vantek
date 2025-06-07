@@ -68,7 +68,7 @@ const SearchWithSidebar = () => {
     }
 
     try {
-      const searchQuery = new URLSearchParams({ page: String(page) });
+      const searchQuery = new URLSearchParams({ page: String(page)});
 
       if (search) searchQuery.set("search", search);
       if (mainCategory) searchQuery.set("mainCategory", mainCategory);

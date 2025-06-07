@@ -212,78 +212,62 @@ const OrderDetails = ({ orderItem }: any) => {
                     </td>
                     <td className="p-3 font-bold">
                       {orderItem.status === "delivered" ? (
-                        <>
-                          {orderItem.items.map((item) => {
-                            let hasReviewed = item.product.reviews?.some(
-                              (rev) =>
-                                rev.userId === user?._id &&
-                                rev.variantId === item.variant &&
-                                rev.orderId === orderItem.orderId
-                            );
+                        (() => {
+                          const hasReviewed = item.product.reviews?.some(
+                            (rev) =>
+                              rev.userId === user?._id &&
+                              rev.variantId === item.variant &&
+                              rev.orderId === orderItem.orderId
+                          );
 
-                            return (
-                              <div key={item._id}>
-                                {/* Review Logic */}
-                                {orderItem.status === "delivered" ? (
-                                  hasReviewed ? (
-                                    <span className="text-green-400 text-sm">
-                                      Review already added
-                                    </span>
-                                  ) : (
-                                    <>
-                                      <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
-                                      >
-                                        Add Review
-                                      </button>
-                                      <ReviewModal
-                                        isOpen={isModalOpen}
-                                        onClose={() => setIsModalOpen(false)}
-                                        onSubmit={async (rate, comment) => {
-                                          const res = await fetch(
-                                            "/api/products/reviews",
-                                            {
-                                              method: "POST",
-                                              headers: {
-                                                "Content-Type":
-                                                  "application/json",
-                                                userId: user?._id,
-                                              },
-                                              body: JSON.stringify({
-                                                productId: item.product._id,
-                                                orderId: orderItem.orderId,
-                                                variantId: item.variant,
-                                                review: { rate, comment },
-                                              }),
-                                            }
-                                          );
+                          return hasReviewed ? (
+                            <span className="text-green-400 text-sm">
+                              Review already added
+                            </span>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => setIsModalOpen(true)}
+                                className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700"
+                              >
+                                Add Review
+                              </button>
+                              <ReviewModal
+                                isOpen={isModalOpen}
+                                onClose={() => setIsModalOpen(false)}
+                                onSubmit={async (rate, comment) => {
+                                  const res = await fetch(
+                                    "/api/products/reviews",
+                                    {
+                                      method: "POST",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                        userId: user?._id,
+                                      },
+                                      body: JSON.stringify({
+                                        productId: item.product._id,
+                                        orderId: orderItem.orderId,
+                                        variantId: item.variant,
+                                        review: { rate, comment },
+                                      }),
+                                    }
+                                  );
 
-                                          const data = await res.json();
-                                          if (data.success) {
-                                            alert("Review submitted!");
-                                            hasReviewed = true; // Update local state
-                                            setIsModalOpen(false);
-                                            // Optional: Refetch or update state
-                                          } else {
-                                            alert(
-                                              data.message ||
-                                                "Failed to submit review"
-                                            );
-                                          }
-                                        }}
-                                      />
-                                    </>
-                                  )
-                                ) : (
-                                  <span className="text-gray-500">
-                                    Review available after delivery
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })}
-                        </>
+                                  const data = await res.json();
+                                  if (data.success) {
+                                    alert("Review submitted!");
+                                    setIsModalOpen(false);
+                                    // Optional: Refetch or update state here
+                                  } else {
+                                    alert(
+                                      data.message || "Failed to submit review"
+                                    );
+                                  }
+                                }}
+                              />
+                            </>
+                          );
+                        })()
                       ) : (
                         <span className="text-gray-500">
                           Review available after delivery

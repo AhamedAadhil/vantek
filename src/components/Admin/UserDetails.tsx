@@ -33,7 +33,7 @@ const UserDetails = ({ user }) => {
   }
 
   return (
-    <div className="bg-dark text-white m-4 p-5 rounded-lg shadow-md max-w-md">
+    <div className="bg-[#1f1f1f] border border-dashed text-white m-4 p-5 rounded-lg shadow-md max-w-md">
       {/* Header */}
       <h2 className="text-lg font-semibold mb-4 flex items-center">
         <span className="border-l-4 border-l-purple-light-2 pl-2">
@@ -64,9 +64,7 @@ const UserDetails = ({ user }) => {
       {/* Delivery Address */}
       <div className="mt-6 pt-4 border-t border-dashed border-gray-700 relative">
         <h4 className="font-semibold mb-2">Delivery address:</h4>
-        <button className="absolute top-4 right-4 bg-gray-700 p-1 rounded-md hover:bg-gray-600">
-          <Pencil className="w-4 h-4 text-gray-300" />
-        </button>
+        
         <ul className="space-y-1 text-sm">
           <li>
             houseNumber:{" "}

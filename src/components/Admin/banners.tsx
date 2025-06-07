@@ -253,7 +253,7 @@ const BannerList = () => {
                       </div>
                       <div>
                         <label className="block text-sm mb-1">
-                          Upload Image
+                          Upload Image <span className="text-xs text-gray-6"> [ Size 354px X 361px ] </span>
                         </label>
                         <input
                           type="file"

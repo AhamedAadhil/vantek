@@ -82,7 +82,7 @@ const HeroCarousal = () => {
     >
       {banners.map((banner, index) => (
         <SwiperSlide key={banner._id || index}>
-          <div className="flex items-center pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
+          <div className="flex min-h-[535px] items-center justify-between pt-6 sm:pt-0 flex-col-reverse sm:flex-row">
             <div className="max-w-[394px] py-10 sm:py-15 lg:py-24.5 pl-4 sm:pl-7.5 lg:pl-12.5">
               <div className="flex items-center gap-4 mb-7.5 sm:mb-10">
                 <span className="block font-semibold text-heading-3 sm:text-heading-1 text-blue">
@@ -106,7 +106,7 @@ const HeroCarousal = () => {
               </a>
             </div>
 
-            <div>
+            <div className="mr-5">
               <Image
                 src={banner.image}
                 alt={banner.title}

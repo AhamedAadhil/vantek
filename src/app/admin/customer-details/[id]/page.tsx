@@ -25,7 +25,7 @@ const AdminUserDetailsPage = () => {
   }, []);
 
   return (
-    <div className="bg-gray-900 w-screen h-full grid grid-cols-6 grid-rows-1">
+    <div className="bg-gray-900 w-screen h-full min-h-screen grid grid-cols-6 grid-rows-1">
       <div className="col-span-2 row-span-1">
         <UserDetails user={user} />
       </div>

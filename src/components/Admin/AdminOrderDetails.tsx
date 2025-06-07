@@ -108,7 +108,11 @@ const AdminOrderDetails = () => {
                 <span className="text-green-light-3">#{order.orderId}</span>
                 <span
                   className={`inline-block px-2 py-1 ml-2 text-xs font-semibold rounded
-    ${order.isUK ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                  ${
+                    order.isUK
+                      ? "bg-green-100 text-green-700"
+                      : "bg-red-100 text-red-700"
+                  }`}
                 >
                   {order.isUK ? "UK" : "NON-UK"}
                 </span>
@@ -265,7 +269,7 @@ const AdminOrderDetails = () => {
 
       {/* User and Shipping Details */}
       <div className="col-span-2 row-span-5 col-start-5 p-4">
-        <div className="bg-dark text-white p-5 rounded-lg text-sm shadow-md max-w-md">
+        <div className="bg-[#1f1f1f] text-white p-5 rounded-lg text-sm shadow-md max-w-md">
           <h2 className="text-lg font-semibold border-hidden border-gray-700 pb-2 mb-4 flex items-center">
             <span className="border-l-4 border-purple-light-2 pl-2">
               User & Shipping Info
@@ -301,9 +305,7 @@ const AdminOrderDetails = () => {
 
           <div className="border-t border-dashed border-gray-700 pt-4 relative">
             <h4 className="font-semibold mb-2">Delivery address</h4>
-            <button className="absolute top-4 right-4 bg-gray-700 p-1 rounded-md hover:bg-gray-600">
-              <Pencil className="w-4 h-4 text-gray-300" />
-            </button>
+            
             <p>
               Phone:{" "}
               <span className="opacity-75">{order.shippingAddress.phone}</span>
@@ -353,7 +355,7 @@ const AdminOrderDetails = () => {
           </div>
         </div>
 
-        <div className="mt-4 border-t border-dashed border-gray-700 pt-4">
+        <div className="mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
           <h4 className="font-semibold mb-2">Payment Info</h4>
           <p>
             Method: <span className="opacity-75">{order.paymentMethod}</span>
@@ -363,7 +365,7 @@ const AdminOrderDetails = () => {
           </p>
         </div>
 
-        <div className="mt-4 border-t border-dashed border-gray-700 pt-4">
+        <div className="mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
           <h4 className="font-semibold mb-2">Additional Info</h4>
           <p>
             Status: <span className="opacity-75">{order.status}</span>

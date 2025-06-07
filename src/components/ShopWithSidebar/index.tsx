@@ -12,11 +12,13 @@ import {
   List,
 } from "lucide-react";
 import SidebarShop from "./SidebarShop";
+import PreLoader from "../Common/PreLoader";
 
 const ShopWithSidebar = () => {
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Record<string, string[]>>({});
 
   //Fetching all Products
@@ -34,6 +36,7 @@ const ShopWithSidebar = () => {
     return `products_cache_page_${page}_filters_${filterKey}`;
   };
   const fetchData = async (page = 1) => {
+    setLoading(true)
     const cacheKey = buildCacheKey(page, selected);
 
     // Try reading from cache
@@ -46,9 +49,11 @@ const ShopWithSidebar = () => {
           setCurrentPage(data.currentPage);
           setTotalPages(data.totalPages);
           setTotalProducts(data.totalProducts);
+           setLoading(false)
           return; // Use cached data, skip fetch
         }
       } catch (e) {
+         setLoading(false)
         // If parsing error, ignore cache and fetch fresh
         console.warn("Invalid cache, fetching fresh data");
       }
@@ -76,6 +81,7 @@ const ShopWithSidebar = () => {
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPages);
         setTotalProducts(data.totalProducts);
+         
 
         // Cache the response with timestamp
         localStorage.setItem(
@@ -85,11 +91,14 @@ const ShopWithSidebar = () => {
             data,
           })
         );
+         setLoading(false)
       } else {
         console.error("❌ API Error:", data.message);
+         setLoading(false)
       }
     } catch (error) {
       console.error("❌ Fetch error:", error);
+       setLoading(false)
     }
   };
 
@@ -132,6 +141,7 @@ const ShopWithSidebar = () => {
 
   return (
     <>
+     {loading && <PreLoader />}
       <Breadcrumb
         title={"Explore All Products"}
         pages={["shop", "/", "shop with sidebar"]}

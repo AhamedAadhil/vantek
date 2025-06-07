@@ -22,14 +22,14 @@ const UserOrders = ({ orderData }) => {
   );
   const router = useRouter();
   return (
-    <div className="m-4 p-6 bg-dark text-sm text-white rounded-lg">
+    <div className="m-4 p-6 bg-[#1f1f1f] border border-dashed text-sm text-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold">Order List</h2>
         <div className="relative">
           <input
             type="text"
             placeholder="Search orders..."
-            className="bg-dark text-white border border-l-red-light-6 px-4 py-2 rounded-lg pl-10 focus:outline-none"
+            className="bg-[#1f1f1f] text-white border border-gray-7 px-4 py-2 rounded-lg pl-10 focus:outline-none"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
