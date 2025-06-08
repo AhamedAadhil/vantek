@@ -16,6 +16,7 @@ import {
   Truck,
   Plus,
   Minus,
+  ThumbsUp,
 } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
@@ -27,6 +28,8 @@ import {
 import { addItemToCart } from "@/redux/features/cart-slice";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
 import PreLoader from "../Common/PreLoader";
+import { toast } from "sonner";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
   const [activeColor, setActiveColor] = useState("");
@@ -66,7 +69,27 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     openPreviewModal();
   };
 
-  // TODO: toaster
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Check out this product!",
+          text: "I found this amazing product on our store.",
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error("Sharing failed:", err);
+      }
+    } else {
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        toast.info("Link copied to clipboard!");
+      } catch (err) {
+        console.error("Clipboard write failed:", err);
+      }
+    }
+  };
+
   const handleAddToCart = async () => {
     if (!user) {
       router.push("/signin");
@@ -107,6 +130,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
       };
 
       dispatch(addItemToCart(payload));
+      toast.success("Item added to cart successfully!");
     } catch (error: any) {
       console.log(error.message);
     }
@@ -125,9 +149,11 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     if (isInWishlist) {
       // Remove from wishlist if item already exists
       dispatch(removeItemFromWishlist(product._id));
+      toast.info("Item removed from wishlist!");
     } else {
       // Add to wishlist if item doesn't exist
       dispatch(addItemToWishlist(product));
+      toast.success("Item added to wishlist!");
     }
 
     try {
@@ -179,7 +205,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
   return (
     <>
-    {loading && <PreLoader/>}
+      {loading && <PreLoader />}
       <Breadcrumb title={"Product Details"} pages={["shop details"]} />
 
       {product?.name === "" ? (
@@ -236,11 +262,17 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                 className="prose prose-sm max-w-none text-gray-800 line-clamp-5"
                 dangerouslySetInnerHTML={{ __html: product?.description }}
               ></div>
-              <div className="text-3xl font-bold text-green-600">
-                ${product?.variants[selectedVariantIndex]?.actualPrice}
-              </div>
-              <div className="text-sm line-through text-gray-400">
-                ${product?.variants[selectedVariantIndex]?.labelPrice}
+              <div className="flex items-center gap-4 mt-2">
+                <div className="text-3xl font-bold text-green-600">
+                  {formatToEuro(
+                    product?.variants[selectedVariantIndex]?.actualPrice
+                  )}
+                </div>
+                <div className="text-sm line-through text-gray-400">
+                  {formatToEuro(
+                    product?.variants[selectedVariantIndex]?.labelPrice
+                  )}
+                </div>
               </div>
 
               <div className="mt-4">
@@ -327,17 +359,20 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                     fill={isInWishlist ? "red" : "white"}
                   />
                 </button>
-                <button className="bg-amber-100 text-amber-500 border-hidden border-green-500 px-4 py-2 rounded-md hover:bg-amber-500 hover:text-white">
+                <button
+                  onClick={handleShare}
+                  className="bg-amber-100 text-amber-500 border-hidden border-green-500 px-4 py-2 rounded-md hover:bg-amber-500 hover:text-white"
+                >
                   <Share2 />
                 </button>
               </div>
 
-              <div className="bg-orange-100 border border-dashed border-orange-300 p-4 rounded-lg mt-4">
+              {/* <div className="bg-orange-100 border border-dashed border-orange-300 p-4 rounded-lg mt-4">
                 <p className="text-sm font-semibold text-orange-700">
                   Mfr. coupon. $3.00 off 5
                 </p>
                 <p className="text-sm text-gray-700 mt-1">Buy 1, Get 1 FREE</p>
-              </div>
+              </div> */}
             </div>
 
             {/* Column 3 - Why Choose Us */}
@@ -435,10 +470,15 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                 </button>
               </div>
 
-              {/* <div className="flex items-center ml-1 space-x-2 text-green-600 text-sm font-semibold">
-                <ThumbsUp size={16} />
-                <span>100% Satisfaction Guaranteed</span>
-              </div> */}
+              {product?.overAllRating > 2 && (
+                <div className="flex items-center ml-1 space-x-2 text-green-600 text-sm font-semibold">
+                  <ThumbsUp size={16} />
+                  <span>
+                    {(product?.overAllRating / 5) * 100}% Satisfaction
+                    Guaranteed
+                  </span>
+                </div>
+              )}
             </div>
 
             {/* Tab Content */}

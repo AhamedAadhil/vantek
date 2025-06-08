@@ -6,7 +6,7 @@ import ProductItem from "@/components/Common/ProductItem";
 import { useDispatch } from "react-redux";
 import { setWishlist } from "@/redux/features/wishlist-slice";
 import { AppDispatch } from "@/redux/store";
-//TODO : Fetch only Featured Products
+
 // FEATURED PRODUCT
 const NewArrival = () => {
   const [products, setProducts] = useState([]);

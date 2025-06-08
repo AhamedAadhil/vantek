@@ -16,6 +16,7 @@ import {
 import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 import { logout } from "@/redux/features/authSlice";
+import { toast } from "sonner";
 
 const Sidebar = () => {
   const [active, setActive] = useState("Dashboard");
@@ -43,9 +44,10 @@ const Sidebar = () => {
     const data = await res.json();
     if (res.ok) {
       dispatch(logout());
+      toast.info("Logging out...");
       router.replace("/");
     }
-    // TODO: implement Toaster to show errors ....
+    toast.error("Logout failed. Please try again.");
     console.log("Logout failed");
   };
 

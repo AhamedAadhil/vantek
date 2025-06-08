@@ -26,6 +26,7 @@ import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
+import { toast } from "sonner";
 
 const MyAccount = () => {
   const router = useRouter();
@@ -77,13 +78,15 @@ const MyAccount = () => {
       }/logout`
     );
     const data = await res.json();
-    if (res.ok) {
+    console.log("Logout response:", data);
+    if (data.success) {
       router.replace("/");
-      dispatch(logout());
       dispatch(removeAllItemsFromWishlist());
       dispatch(removeAllItemsFromCart());
+      dispatch(logout());
+      toast.success("Logging out...");
     }
-    // TODO: implement Toaster to show errors ....
+    // toast.error("Logout failed. Please try again.");
   };
 
   const handleUpdateName = async (name: string) => {
@@ -102,9 +105,10 @@ const MyAccount = () => {
     const data = await res.json();
     if (res.ok) {
       dispatch(updateUserName(data.name));
+      toast.success("Name updated to " + data.name + " successfully!");
     }
-    // TODO: implement Toaster to show errors ....
-    console.log("Logout failed", data.message);
+    toast.error("Name update failed: " + data.message);
+    console.log("Name update failed", data.message);
   };
 
   const handleResetPassword = async (e: React.FormEvent) => {
@@ -141,6 +145,7 @@ const MyAccount = () => {
       }
 
       setMessage("Password updated successfully. Logging out...");
+      toast.success("Password updated successfully. Logging out...");
       // Wait a second before redirecting
       setTimeout(() => {
         handleLogout();

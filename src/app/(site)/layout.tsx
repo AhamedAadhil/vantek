@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
+import { Toaster } from "sonner";
 import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 
@@ -15,7 +16,6 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import PreLoader from "@/components/Common/PreLoader";
-import Script from "next/script";
 import OfflineOverlay from "@/components/Common/OfflineOverlay";
 
 export default function RootLayout({
@@ -32,6 +32,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <body>
+        <Toaster richColors position="top-right" />
         <OfflineOverlay />
         {loading ? (
           <PreLoader />

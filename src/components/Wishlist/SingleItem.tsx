@@ -12,6 +12,7 @@ import { addItemToCart } from "@/redux/features/cart-slice";
 
 import Image from "next/image";
 import { XCircle } from "lucide-react";
+import { toast } from "sonner";
 
 const SingleItem = ({ item }) => {
   const wishlist = useSelector(
@@ -37,9 +38,11 @@ const SingleItem = ({ item }) => {
     if (isInWishlist) {
       // Remove from wishlist if item already exists
       dispatch(removeItemFromWishlist(item?._id));
+      toast.info("Item removed from wishlist!");
     } else {
       // Add to wishlist if item doesn't exist
       dispatch(addItemToWishlist(item));
+      toast.success("Item added to wishlist!");
     }
 
     try {

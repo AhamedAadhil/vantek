@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { ShoppingCart } from "lucide-react";
+import { toast } from "sonner";
 
 const Cart = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -35,11 +36,11 @@ const Cart = () => {
       );
       const response = await res.json();
       if (res.ok) {
-        // TODO: toast
         dispatch(removeAllItemsFromCart());
+        toast.success("Cart cleared successfully!");
       } else {
-        // TODO: toast
         console.error("Error clearing cart:", response.message);
+        toast.error("Failed to clear cart. Please try again.");
       }
     } catch (error) {
       console.error("Error clearing cart:", error);

@@ -3,6 +3,7 @@ import { RootState } from "@/redux/store";
 import { X } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const AddressModal = ({ isOpen, closeModal }) => {
   const dispatch = useDispatch();
@@ -53,16 +54,15 @@ const AddressModal = ({ isOpen, closeModal }) => {
       });
       const data = await res.json();
       if (!data.success) {
-        alert(data.message || "Failed to update address");
+        // alert(data.message || "Failed to update address");
+        toast.error(data.message || "Failed to update address");
       } else {
-        // TODO: toast
-        console.log(data);
         dispatch(updateUserAddress(data.address));
-        console.log(user.address);
+        toast.success("Address updated successfully!");
         closeModal();
       }
     } catch (err) {
-      alert("Something went wrong. Please try again.");
+      toast.error("Failed to update address: ", err.message);
     }
   };
 

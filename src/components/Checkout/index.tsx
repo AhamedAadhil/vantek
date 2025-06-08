@@ -16,6 +16,7 @@ import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { updateUserAddress } from "@/redux/features/authSlice";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+import { toast } from "sonner";
 
 const Checkout = () => {
   const dispatch = useDispatch();
@@ -25,7 +26,9 @@ const Checkout = () => {
   const cart = useSelector((state: RootState) => state.cartReducer);
   const user = useSelector((state: RootState) => state.auth.user);
   const [shippingMethod, setShippingMethod] = useState("standard");
-  const [isUk, setIsUk] = useState(true); // Assume true by default (UK shipping)
+  const [isUk, setIsUk] = useState(
+    user?.address?.[0].country === "OutsideUK" ? false : true
+  ); // Assume true by default (UK shipping)
   const [couponCode, setCouponCode] = useState("");
   const [couponStatus, setCouponStatus] = React.useState(null); // for success/error message
   const [couponPercentage, setCouponPercentage] = React.useState(0);
@@ -70,8 +73,11 @@ const Checkout = () => {
         setCouponStatus("Coupon applied successfully!");
         setCouponPercentage(data.percentage);
         setAppliedCouponCode(data.couponCode);
+        // toast.success("Coupon applied successfully!");
+      } else if (data.error) {
       } else {
         setCouponStatus(data.message || "Failed to apply coupon");
+        // toast.error(data.message || "Failed to apply coupon");
       }
     } catch (error) {
       setCouponStatus("Error validating coupon");
@@ -481,9 +487,11 @@ const Checkout = () => {
                             }
 
                             router.push("/order-success");
-                            alert("✅ Payment successful!");
+                            toast.success(
+                              "✅ Payment successful! Redirecting to order success page..."
+                            );
                           } else {
-                            alert(
+                            toast.error(
                               "❌ Payment was not successful. Please try again."
                             );
                           }
@@ -492,7 +500,7 @@ const Checkout = () => {
                             "❌ Error capturing PayPal payment:",
                             err
                           );
-                          alert(
+                          toast.error(
                             "Something went wrong while capturing your payment. Please try again."
                           );
                         }

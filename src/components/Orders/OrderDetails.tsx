@@ -7,30 +7,11 @@ import { Euro, ExternalLink, Link, Printer, Share } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
+import { toast } from "sonner";
 
 const OrderDetails = ({ orderItem }: any) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  // const handleReviewSubmit = async (rate: number, comment: string) => {
-  //   const res = await fetch("/api/products/reviews", {
-  //     method: "POST",
-  //     headers: { "Content-Type": "application/json", userId: orderItem.userId },
-  //     body: JSON.stringify({
-  //       productId: orderItem.product._id,
-  //       orderId: orderItem.orderId,
-  //       variantId: orderItem.variantId,
-  //       review: { rate, comment },
-  //     }),
-  //   });
-
-  //   const data = await res.json();
-  //   if (data.success) {
-  //     alert("Review submitted!");
-  //   } else {
-  //     alert(data.message || "Failed to submit review");
-  //   }
-  // };
 
   console.log(orderItem);
   return (
@@ -255,11 +236,13 @@ const OrderDetails = ({ orderItem }: any) => {
 
                                   const data = await res.json();
                                   if (data.success) {
-                                    alert("Review submitted!");
+                                    toast.success(
+                                      "Review submitted successfully!"
+                                    );
                                     setIsModalOpen(false);
                                     // Optional: Refetch or update state here
                                   } else {
-                                    alert(
+                                    toast.error(
                                       data.message || "Failed to submit review"
                                     );
                                   }

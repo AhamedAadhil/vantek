@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import vanPartsData from "@/data/van_parts_categories.json";
 import dynamic from "next/dynamic";
 import { quillModules } from "@/lib/quillModule";
+import { toast } from "sonner";
 
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
@@ -118,11 +119,12 @@ const AddProduct = () => {
       const data = await res.json();
 
       if (res.ok) {
-        // TODO: do something
+        toast.success("Product added successfully!");
       }
 
       if (!res.ok) {
         console.log(data.message);
+        toast.error(data.message || "Failed to add product");
         return;
       }
 

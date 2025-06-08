@@ -6,6 +6,7 @@ import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
 import { Printer, Share, BadgeCheck, Pencil } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const AdminOrderDetails = () => {
   const [order, setOrder] = useState<any>(null);
@@ -70,9 +71,8 @@ const AdminOrderDetails = () => {
         const errorData = await res.json();
         throw new Error(errorData.message || "Failed to update order status");
       }
-      // TODO:toast
+
       const updatedOrder = await res.json();
-      console.log("data from backend after success", updatedOrder);
       sessionStorage.removeItem("selectedOrder");
       setOrder(updatedOrder.data); // Update UI
       if (updatedOrder?.data) {
@@ -80,19 +80,12 @@ const AdminOrderDetails = () => {
           "selectedOrder",
           JSON.stringify(updatedOrder.data)
         );
-        console.log("data from backend after success", updatedOrder);
-        console.log(
-          "after updat session",
-          JSON.parse(sessionStorage.getItem("selectedOrder"))
-        );
       }
-      alert("Order updated successfully");
+      toast.info("Order status updated successfully!");
       // window.location.reload();
     } catch (error) {
       console.error(error);
-      alert(
-        error.message || "An error occurred while updating the order status"
-      );
+      toast.error("Failed to update order status: " + error.message);
     }
   };
 
@@ -305,7 +298,7 @@ const AdminOrderDetails = () => {
 
           <div className="border-t border-dashed border-gray-700 pt-4 relative">
             <h4 className="font-semibold mb-2">Delivery address</h4>
-            
+
             <p>
               Phone:{" "}
               <span className="opacity-75">{order.shippingAddress.phone}</span>

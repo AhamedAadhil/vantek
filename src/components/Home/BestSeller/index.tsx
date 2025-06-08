@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
 
-//TODO : Fetch only best selling
 const BestSeller = () => {
   const [products, setProducts] = useState([]);
 

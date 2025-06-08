@@ -15,6 +15,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import Link from "next/link";
 import { Eye, Heart, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 
 const ProductItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -53,9 +54,11 @@ const ProductItem = ({ item }: { item: Product }) => {
     if (isInWishlist) {
       // Remove from wishlist if item already exists
       dispatch(removeItemFromWishlist(item._id));
+      toast.info("Item removed from wishlist!");
     } else {
       // Add to wishlist if item doesn't exist
       dispatch(addItemToWishlist(item));
+      toast.success("Item added to wishlist!");
     }
 
     try {
