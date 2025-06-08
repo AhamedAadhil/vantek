@@ -108,6 +108,17 @@ export const ORDER_PLACED_TEMPLATE = (
   couponCode: any,
   total: any
 ) => {
+  // Helper function to safely format prices or display strings as-is
+  const formatPrice = (value: any) => {
+    if (typeof value === "number") {
+      return `€${value.toFixed(2)}`;
+    }
+    if (typeof value === "string" && value.trim() !== "") {
+      return value;
+    }
+    return "-"; // fallback for null/undefined/empty
+  };
+
   const itemsHtml = items
     .map(
       (item) => `
@@ -118,8 +129,8 @@ export const ORDER_PLACED_TEMPLATE = (
           <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
             item.quantity
           }</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">€${item.price.toFixed(
-            2
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${formatPrice(
+            item.price
           )}</td>
         </tr>
       `
@@ -157,29 +168,31 @@ export const ORDER_PLACED_TEMPLATE = (
       <table style="width: 100%; font-size: 15px;">
         <tr>
           <td style="padding: 5px;">Subtotal:</td>
-          <td style="padding: 5px; text-align: right;">€${subtotal.toFixed(
-            2
+          <td style="padding: 5px; text-align: right;">${formatPrice(
+            subtotal
           )}</td>
         </tr>
         <tr>
           <td style="padding: 5px;">Shipping Fee:</td>
-          <td style="padding: 5px; text-align: right;">€${shippingFee.toFixed(
-            2
+          <td style="padding: 5px; text-align: right;">${formatPrice(
+            shippingFee
           )}</td>
         </tr>
         ${
           couponCode
             ? `<tr>
                 <td style="padding: 5px;">Coupon (${couponCode}):</td>
-                <td style="padding: 5px; text-align: right;">- €${discount.toFixed(
-                  2
+                <td style="padding: 5px; text-align: right;">- ${formatPrice(
+                  discount
                 )}</td>
               </tr>`
             : ""
         }
         <tr style="font-weight: bold;">
           <td style="padding: 5px;">Total:</td>
-          <td style="padding: 5px; text-align: right;">€${total.toFixed(2)}</td>
+          <td style="padding: 5px; text-align: right;">${formatPrice(
+            total
+          )}</td>
         </tr>
       </table>
 
