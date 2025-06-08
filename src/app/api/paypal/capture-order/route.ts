@@ -7,6 +7,8 @@ import { ICart } from "@/lib/models/cart";
 import Product, { IProduct } from "@/lib/models/product";
 import { IUser } from "@/lib/models/user";
 import User from "@/lib/models/user";
+import { sendMail } from "@/lib/nodemailer/nodemailer";
+import { ORDER_PLACED_TEMPLATE } from "@/lib/nodemailer/emailTemplates";
 
 // /api/paypal/capture-order
 export const POST = async (req: NextRequest) => {
@@ -172,6 +174,36 @@ export const POST = async (req: NextRequest) => {
           { status: 404 }
         );
       }
+
+      const orderInfoToSendInMail = await (Order as mongoose.Model<IOrder>)
+        .findOne({
+          orderId: updatedOrder.orderId,
+        })
+        .populate("items.product")
+        .populate("items.variant");
+
+      // STEP6- send email to user
+      await sendMail({
+        to: user?.email || "",
+        subject: "Order Placed Successfully",
+        html: ORDER_PLACED_TEMPLATE(
+          user?.name || "Customer",
+          orderInfoToSendInMail.orderId,
+          orderInfoToSendInMail.items,
+          user?.address?.[0] || "No address provided",
+          orderInfoToSendInMail.totalAmount,
+          orderInfoToSendInMail.isUK &&
+            orderInfoToSendInMail.shippingMethod === "standard"
+            ? 4.5
+            : orderInfoToSendInMail.isUK &&
+              orderInfoToSendInMail.shippingMethod === "express"
+            ? 8.5
+            : "Vantek will contact you for shipping",
+          orderInfoToSendInMail.discountAmount || 0,
+          orderInfoToSendInMail.couponCode || "No coupon applied",
+          orderInfoToSendInMail.totalAmount
+        ),
+      });
 
       return NextResponse.json({
         message: "Payment captured and order updated successfully.",

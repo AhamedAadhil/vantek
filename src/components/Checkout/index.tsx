@@ -25,9 +25,10 @@ const Checkout = () => {
   const orderDataRef = useRef(null);
   const cart = useSelector((state: RootState) => state.cartReducer);
   const user = useSelector((state: RootState) => state.auth.user);
+  console.log(user);
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [isUk, setIsUk] = useState(
-    user?.address?.[0].country === "OutsideUK" ? false : true
+    user?.address?.[0]?.country === "OutsideUK" ? false : true
   ); // Assume true by default (UK shipping)
   const [couponCode, setCouponCode] = useState("");
   const [couponStatus, setCouponStatus] = React.useState(null); // for success/error message

@@ -96,3 +96,105 @@ export const PASSWORD_RESET_SUCCESS_TEMPLATE = (name: string) => `
     </p>
   </div>
 `;
+
+export const ORDER_PLACED_TEMPLATE = (
+  customerName: any,
+  orderId: any,
+  items: any,
+  deliveryAddress: any,
+  subtotal: any,
+  shippingFee: any,
+  discount: any,
+  couponCode: any,
+  total: any
+) => {
+  const itemsHtml = items
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;">${
+            item.product.name
+          }</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
+            item.quantity
+          }</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${item.price.toFixed(
+            2
+          )}</td>
+        </tr>
+      `
+    )
+    .join("");
+
+  return `
+    <div style="max-width: 700px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #2E86C1;">Hi ${customerName},</h2>
+      <p style="font-size: 16px; color: #333;">Thank you for your order! Your order <strong>#${orderId}</strong> has been placed successfully.</p>
+
+      <h3 style="color: #444; margin-top: 30px;">Order Summary</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+        <thead>
+          <tr>
+            <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Product</th>
+            <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Quantity</th>
+            <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Price</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 30px; color: #444;">Delivery Address</h3>
+      <p style="font-size: 15px; color: #555; line-height: 1.6;">
+        ${customerName}<br/>
+        ${deliveryAddress.street}, ${deliveryAddress.city}<br/>
+        ${deliveryAddress.zipCode}, ${deliveryAddress.country}<br/>
+        Phone: ${deliveryAddress.phone}
+      </p>
+
+      <h3 style="margin-top: 30px; color: #444;">Payment Details</h3>
+      <table style="width: 100%; font-size: 15px;">
+        <tr>
+          <td style="padding: 5px;">Subtotal:</td>
+          <td style="padding: 5px; text-align: right;">$${subtotal.toFixed(
+            2
+          )}</td>
+        </tr>
+        <tr>
+          <td style="padding: 5px;">Shipping Fee:</td>
+          <td style="padding: 5px; text-align: right;">$${shippingFee.toFixed(
+            2
+          )}</td>
+        </tr>
+        ${
+          couponCode
+            ? `<tr>
+                <td style="padding: 5px;">Coupon (${couponCode}):</td>
+                <td style="padding: 5px; text-align: right;">- $${discount.toFixed(
+                  2
+                )}</td>
+              </tr>`
+            : ""
+        }
+        <tr style="font-weight: bold;">
+          <td style="padding: 5px;">Total:</td>
+          <td style="padding: 5px; text-align: right;">$${total.toFixed(2)}</td>
+        </tr>
+      </table>
+
+      <p style="font-size: 14px; color: #888; margin-top: 30px;">
+        You'll receive another email when your order is shipped.
+      </p>
+
+      <p style="font-size: 14px; color: #888;">
+        If you have any questions, feel free to contact our support team.
+      </p>
+
+      <p style="font-size: 14px; color: #888;">
+        Thank you,<br/>
+        <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};
