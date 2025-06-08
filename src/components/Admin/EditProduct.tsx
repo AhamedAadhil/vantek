@@ -462,7 +462,7 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
                     <Image
                       className="rounded-lg bg-meta-5 bg-opacity-50"
                       src={src}
-                      alt={`product image ${idx + 1}`}
+                      alt={productName}
                       width={100}
                       height={100}
                     />
