@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Breadcrumb from "@/components/Common/Breadcrumb";
+import { Eye, EyeOff } from "lucide-react";
 
 const ResetPassword = () => {
   const searchParams = useSearchParams();
@@ -15,6 +16,8 @@ const ResetPassword = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -69,34 +72,52 @@ const ResetPassword = () => {
             </div>
 
             <form onSubmit={handleReset}>
-              <div className="mb-5">
+              <div className="mb-5 relative">
                 <label htmlFor="password" className="block mb-2.5">
                   New Password
                 </label>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="New password"
-                  className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 outline-none focus:ring-2 focus:ring-blue/20"
+                  className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 pr-12 outline-none focus:ring-2 focus:ring-blue/20"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-11 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5 relative">
                 <label htmlFor="confirmPassword" className="block mb-2.5">
                   Confirm New Password
                 </label>
                 <input
-                  type="password"
+                  type={showConfirmPassword ? "text" : "password"}
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Confirm new password"
-                  className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 outline-none focus:ring-2 focus:ring-blue/20"
+                  className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 pr-12 outline-none focus:ring-2 focus:ring-blue/20"
                   required
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-11 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
               </div>
 
               {message && (

@@ -21,6 +21,8 @@ import {
   ShoppingBasket,
   User,
   User2,
+  Eye,
+  EyeOff,
 } from "lucide-react";
 import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
@@ -34,6 +36,9 @@ const MyAccount = () => {
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("account-details");
   const [addressModal, setAddressModal] = useState(false);
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: user?.name,
     email: user?.email,
@@ -420,35 +425,57 @@ const MyAccount = () => {
                 </p>
 
                 <div className="bg-white shadow-1 rounded-xl p-4 sm:p-8.5">
-                  <div className="mb-5">
+                  <div className="mb-5 relative">
                     <label htmlFor="oldPassword" className="block mb-2.5">
                       Old Password
                     </label>
                     <input
-                      type="password"
+                      type={showOldPassword ? "text" : "password"}
                       name="oldPassword"
                       id="oldPassword"
                       value={passwordFormData.oldPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 pr-12 outline-none"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowOldPassword(!showOldPassword)}
+                      className="absolute right-4 top-[50px] text-gray-500 hover:text-gray-700"
+                    >
+                      {showOldPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
                   </div>
 
-                  <div className="mb-5">
+                  <div className="mb-5 relative">
                     <label htmlFor="newPassword" className="block mb-2.5">
                       New Password
                     </label>
                     <input
-                      type="password"
+                      type={showNewPassword ? "text" : "password"}
                       name="newPassword"
                       id="newPassword"
                       value={passwordFormData.newPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 pr-12 outline-none"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      className="absolute right-4 top-[50px] text-gray-500 hover:text-gray-700"
+                    >
+                      {showNewPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
                   </div>
 
-                  <div className="mb-5">
+                  <div className="mb-5 relative">
                     <label
                       htmlFor="confirmNewPassword"
                       className="block mb-2.5"
@@ -456,14 +483,28 @@ const MyAccount = () => {
                       Confirm New Password
                     </label>
                     <input
-                      type="password"
+                      type={showConfirmNewPassword ? "text" : "password"}
                       name="confirmNewPassword"
                       id="confirmNewPassword"
                       value={passwordFormData.confirmNewPassword}
                       onChange={handlePasswordChange}
-                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 outline-none"
+                      className="rounded-md border border-gray-3 bg-gray-1 placeholder:text-dark-5 w-full py-2.5 px-5 pr-12 outline-none"
                     />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmNewPassword(!showConfirmNewPassword)
+                      }
+                      className="absolute right-4 top-[50px] text-gray-500 hover:text-gray-700"
+                    >
+                      {showConfirmNewPassword ? (
+                        <EyeOff size={18} />
+                      ) : (
+                        <Eye size={18} />
+                      )}
+                    </button>
                   </div>
+
                   {message && (
                     <p className="text-red-500 mb-4 font-medium">*{message}</p>
                   )}
