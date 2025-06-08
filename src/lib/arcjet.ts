@@ -8,7 +8,10 @@ import arcjet, {
 } from "@arcjet/next";
 
 const aj = arcjet({
-  key: process.env.ARCJET_KEY!,
+  key:
+    process.env.NODE_ENV === "production"
+      ? process.env.ARCJET_KEY_PRODUCTION!
+      : process.env.ARCJET_KEY!,
   characteristics: ["ip.src"],
   rules: [
     shield({ mode: "LIVE" }),

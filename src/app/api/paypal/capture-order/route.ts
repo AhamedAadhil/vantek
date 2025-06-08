@@ -8,7 +8,10 @@ import Product, { IProduct } from "@/lib/models/product";
 import { IUser } from "@/lib/models/user";
 import User from "@/lib/models/user";
 import { sendMail } from "@/lib/nodemailer/nodemailer";
-import { ORDER_PLACED_TEMPLATE } from "@/lib/nodemailer/emailTemplates";
+import {
+  NEW_ORDER_ADMIN_TEMPLATE,
+  ORDER_PLACED_TEMPLATE,
+} from "@/lib/nodemailer/emailTemplates";
 
 // /api/paypal/capture-order
 export const POST = async (req: NextRequest) => {
@@ -202,6 +205,35 @@ export const POST = async (req: NextRequest) => {
           orderInfoToSendInMail.discountAmount || 0,
           orderInfoToSendInMail.couponCode || "No coupon applied",
           orderInfoToSendInMail.totalAmount
+        ),
+      });
+
+      const itemsForEmail = orderInfoToSendInMail.items.map((item) => ({
+        product: { name: (item.product as any).name || "Unknown Product" },
+        variant: (item.variant as any).name || "Unknown Variant",
+        quantity: item.quantity,
+        price: item.price,
+      }));
+
+      // STEP7- send email to admin
+      await sendMail({
+        to:
+          process.env.NODE_ENV === "production"
+            ? process.env.ADMIN_EMAIL_PRODUCTION
+            : process.env.ADMIN_EMAIL || "",
+        subject: `New Order Placed: ${orderInfoToSendInMail.orderId}`,
+        html: NEW_ORDER_ADMIN_TEMPLATE(
+          user?.name || "Customer Name",
+          user?.email || "Customer Email",
+          orderInfoToSendInMail.orderId,
+          itemsForEmail,
+          orderInfoToSendInMail.totalAmount,
+          orderInfoToSendInMail.paymentMethod,
+          orderInfoToSendInMail.shippingMethod,
+          user?.address?.[0],
+          (orderInfoToSendInMail.deliveryNote !== "" &&
+            orderInfoToSendInMail.deliveryNote) ||
+            "No delivery note provided"
         ),
       });
 

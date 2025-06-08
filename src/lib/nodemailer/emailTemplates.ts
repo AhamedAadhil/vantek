@@ -118,7 +118,7 @@ export const ORDER_PLACED_TEMPLATE = (
           <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
             item.quantity
           }</td>
-          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">$${item.price.toFixed(
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">€${item.price.toFixed(
             2
           )}</td>
         </tr>
@@ -157,13 +157,13 @@ export const ORDER_PLACED_TEMPLATE = (
       <table style="width: 100%; font-size: 15px;">
         <tr>
           <td style="padding: 5px;">Subtotal:</td>
-          <td style="padding: 5px; text-align: right;">$${subtotal.toFixed(
+          <td style="padding: 5px; text-align: right;">€${subtotal.toFixed(
             2
           )}</td>
         </tr>
         <tr>
           <td style="padding: 5px;">Shipping Fee:</td>
-          <td style="padding: 5px; text-align: right;">$${shippingFee.toFixed(
+          <td style="padding: 5px; text-align: right;">€${shippingFee.toFixed(
             2
           )}</td>
         </tr>
@@ -171,7 +171,7 @@ export const ORDER_PLACED_TEMPLATE = (
           couponCode
             ? `<tr>
                 <td style="padding: 5px;">Coupon (${couponCode}):</td>
-                <td style="padding: 5px; text-align: right;">- $${discount.toFixed(
+                <td style="padding: 5px; text-align: right;">- €${discount.toFixed(
                   2
                 )}</td>
               </tr>`
@@ -179,7 +179,7 @@ export const ORDER_PLACED_TEMPLATE = (
         }
         <tr style="font-weight: bold;">
           <td style="padding: 5px;">Total:</td>
-          <td style="padding: 5px; text-align: right;">$${total.toFixed(2)}</td>
+          <td style="padding: 5px; text-align: right;">€${total.toFixed(2)}</td>
         </tr>
       </table>
 
@@ -194,6 +194,171 @@ export const ORDER_PLACED_TEMPLATE = (
       <p style="font-size: 14px; color: #888;">
         Thank you,<br/>
         <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};
+
+export const ORDER_STATUS_UPDATE_TEMPLATE = (
+  customerName,
+  orderId,
+  status,
+  total,
+  note // optional
+) => {
+  let statusMessage = "";
+  let extraNote = "";
+  let color = "#2E86C1";
+
+  switch (status.toLowerCase()) {
+    case "shipped":
+      statusMessage = "has been shipped and is on its way to you!";
+      color = "#27ae60";
+      extraNote = `
+        <p style="font-size: 15px; color: #555;">
+          Once you receive your order, we’d love to hear your feedback! Please go to <strong>Account → Orders</strong>,
+          find order <strong>#${orderId}</strong>, and leave a review for each product.
+        </p>
+      `;
+      break;
+    case "delivered":
+      statusMessage = "has been delivered successfully!";
+      color = "#2980b9";
+      break;
+    case "cancelled":
+      statusMessage = "has been cancelled.";
+      color = "#e74c3c";
+      break;
+    default:
+      statusMessage = `status has been updated to <strong>${status}</strong>.`;
+  }
+
+  return `
+    <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: ${color};">Hi ${customerName},</h2>
+
+      <p style="font-size: 16px; color: #333;">
+        We wanted to let you know that your order <strong>#${orderId}</strong> totaling <strong>€${total.toFixed(
+    2
+  )}</strong> ${statusMessage}
+      </p>
+
+      ${extraNote}
+
+      ${
+        note
+          ? `<p style="font-size: 15px; color: #555;">Delivery Note: ${note}</p>`
+          : ""
+      }
+
+      <p style="font-size: 14px; color: #888; margin-top: 30px;">
+        If you have any questions, feel free to reach out to our support team.
+      </p>
+
+      <p style="font-size: 14px; color: #888;">
+        Thank you,<br/>
+        <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};
+
+export const NEW_ORDER_ADMIN_TEMPLATE = (
+  customerName: string,
+  customerEmail: string,
+  orderId: string,
+  items: {
+    product: { name: string };
+    variant: string;
+    quantity: number;
+    price: number;
+  }[],
+  totalAmount: number,
+  paymentMethod: string,
+  shippingMethod: string,
+  shippingAddress: {
+    phone?: string;
+    houseNumber?: string;
+    street?: string;
+    city?: string;
+    province?: string;
+    zipCode?: string;
+    country?: string;
+  },
+  deliveryNote?: string
+) => {
+  const itemsHtml = items
+    .map(
+      (item) => `
+        <tr>
+          <td style="padding: 8px; border: 1px solid #ddd;">${
+            item.product.name
+          }</td>
+           <td style="padding: 8px; border: 1px solid #ddd;">${
+             item.variant
+           }</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${
+            item.quantity
+          }</td>
+          <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">€${item.price.toFixed(
+            2
+          )}</td>
+        </tr>
+      `
+    )
+    .join("");
+
+  return `
+    <div style="max-width: 700px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #C0392B;">New Order Received</h2>
+      <p style="font-size: 16px; color: #333;">A new order has been placed by <strong>${customerName}</strong> (${customerEmail}).</p>
+      <p style="font-size: 15px; color: #444;">Order ID: <strong>#${orderId}</strong></p>
+
+      <h3 style="color: #444; margin-top: 30px;">Order Items</h3>
+      <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+       <thead>
+  <tr>
+    <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Product</th>
+    <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Variant</th>
+    <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Qty</th>
+    <th style="padding: 10px; background-color: #f2f2f2; border: 1px solid #ddd;">Price</th>
+  </tr>
+</thead>
+        <tbody>
+          ${itemsHtml}
+        </tbody>
+      </table>
+
+      <h3 style="margin-top: 30px; color: #444;">Shipping Address</h3>
+      <p style="font-size: 15px; color: #555; line-height: 1.6;">
+        ${shippingAddress.houseNumber}, ${shippingAddress.street},<br/>
+        ${shippingAddress.city}${
+    shippingAddress.province ? `, ${shippingAddress.province}` : ""
+  }<br/>
+        ${shippingAddress.zipCode}, ${shippingAddress.country}<br/>
+        Phone: ${shippingAddress.phone}
+      </p>
+
+      ${
+        deliveryNote
+          ? `<p style="margin-top: 10px; font-size: 15px;"><strong>Delivery Note:</strong> ${deliveryNote}</p>`
+          : ""
+      }
+
+      <h3 style="margin-top: 30px; color: #444;">Payment & Shipping</h3>
+      <p style="font-size: 15px;">
+        Payment Method: <strong>${paymentMethod}</strong><br/>
+        Shipping Method: <strong>${shippingMethod}</strong><br/>
+        Order Total: <strong>€${totalAmount.toFixed(2)}</strong>
+      </p>
+
+      <p style="font-size: 14px; color: #888; margin-top: 30px;">
+        Please review and process this order accordingly in the admin dashboard.
+      </p>
+
+      <p style="font-size: 14px; color: #888;">
+        Thank you,<br/>
+        <strong>Your Website System</strong>
       </p>
     </div>
   `;

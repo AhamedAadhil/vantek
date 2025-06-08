@@ -138,8 +138,6 @@ export const PATCH = async (req: NextRequest) => {
       subCategory2,
       deletedImages,
       newImages,
-      topSellingProduct,
-      featuredProduct,
       action,
     } = await req.json();
     const product = await (Product as mongoose.Model<IProduct>).findById(id);

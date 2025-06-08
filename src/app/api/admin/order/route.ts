@@ -1,6 +1,9 @@
 import connectDB from "@/lib/db";
 import { isAdmin } from "@/lib/middleware";
 import Order, { IOrder } from "@/lib/models/order";
+import { IUser } from "@/lib/models/user";
+import { ORDER_STATUS_UPDATE_TEMPLATE } from "@/lib/nodemailer/emailTemplates";
+import { sendMail } from "@/lib/nodemailer/nodemailer";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -129,6 +132,21 @@ export const PATCH = async (req: NextRequest) => {
       .findById(orderId)
       .populate("user")
       .populate("items.product");
+
+    const user = orderToSend.user as IUser;
+
+    await sendMail({
+      to: user.email,
+      subject: `Order Status Update: #${orderToSend.orderId}`,
+      html: ORDER_STATUS_UPDATE_TEMPLATE(
+        user.name,
+        orderToSend.orderId,
+        orderToSend.status,
+        orderToSend.totalAmount,
+        orderToSend.deliveryNote
+      ),
+    });
+
     return NextResponse.json(
       {
         success: true,
