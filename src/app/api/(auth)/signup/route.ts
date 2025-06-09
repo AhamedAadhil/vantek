@@ -1,6 +1,8 @@
 import connectDB from "@/lib/db";
 import { authMiddleware } from "@/lib/middleware";
 import User, { IUser } from "@/lib/models/user";
+import { ACCOUNT_CREATED_TEMPLATE } from "@/lib/nodemailer/emailTemplates";
+import { sendMail } from "@/lib/nodemailer/nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -73,6 +75,12 @@ export const POST = async (req: Request) => {
 
     await newUser.save();
     const { password: _, ...user } = newUser._doc;
+
+    await sendMail({
+      to: email,
+      subject: "Account Created Successfully",
+      html: ACCOUNT_CREATED_TEMPLATE(name, email),
+    });
 
     return NextResponse.json(
       { message: "Account created", user, success: true },

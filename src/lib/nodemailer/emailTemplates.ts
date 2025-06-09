@@ -376,3 +376,36 @@ export const NEW_ORDER_ADMIN_TEMPLATE = (
     </div>
   `;
 };
+
+export const ACCOUNT_CREATED_TEMPLATE = (
+  customerName: string,
+  email: string
+) => {
+  return `
+    <div style="max-width: 700px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #2E86C1;">Welcome, ${customerName}!</h2>
+      <p style="font-size: 16px; color: #333;">
+        Your account has been successfully created with the email address <strong>${email}</strong>.
+      </p>
+
+      <p style="font-size: 15px; color: #555;">
+        You can now sign in, browse our products, place orders, and enjoy a personalized experience on our platform.
+      </p>
+
+      <div style="margin: 30px 0;">
+        <a href="https://yourwebsite.com/login" style="background-color: #2E86C1; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+          Login to Your Account
+        </a>
+      </div>
+
+      <p style="font-size: 14px; color: #888;">
+        If you did not create this account, please contact our support team immediately.
+      </p>
+
+      <p style="font-size: 14px; color: #888;">
+        Thank you,<br/>
+        <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};

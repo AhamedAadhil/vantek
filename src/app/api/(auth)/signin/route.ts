@@ -1,6 +1,5 @@
 import connectDB from "@/lib/db";
 import User, { IUser } from "@/lib/models/user";
-import { sendMail } from "@/lib/nodemailer/nodemailer";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -48,7 +47,12 @@ export const POST = async (req: Request) => {
 
     // Generate JWT
     const token = jwt.sign(
-      { userId: user._id, email: user.email, role: user.role },
+      {
+        userId: user._id,
+        email: user.email,
+        role: user.role,
+        isActive: user.isActive,
+      },
       process.env.JWT_SECRET!,
       { expiresIn: "7d" }
     );
@@ -67,12 +71,6 @@ export const POST = async (req: Request) => {
       sameSite: "strict", // Prevents CSRF attacks
       maxAge: 7 * 24 * 60 * 60, // 7 days expiration
     });
-
-    // await sendMail(
-    //   user.email,
-    //   "Login Notification",
-    //   `<p>Hello ${user.name},<br><br>Your account was just logged into from a new device. If this was you, you can safely ignore this email. If you suspect any suspicious activity on your account, please contact support immediately.</p>`
-    // );
 
     return response;
   } catch (error) {

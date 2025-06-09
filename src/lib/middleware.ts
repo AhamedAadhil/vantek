@@ -14,6 +14,7 @@ export const authMiddleware = async (req: NextRequest) => {
       userId: string;
       email: string;
       role: string;
+      isActive: boolean;
     };
     if (!decoded) {
       return NextResponse.json(
@@ -21,10 +22,21 @@ export const authMiddleware = async (req: NextRequest) => {
         { status: 401 }
       );
     }
+    if (!decoded.isActive) {
+      return NextResponse.json(
+        {
+          message: "Unauthorized: Account Locked",
+          reason: "accountLocked",
+          success: false,
+        },
+        { status: 401 }
+      );
+    }
     // ✅ Manually attach user details to request headers
     req.headers.set("userId", decoded.userId);
     req.headers.set("email", decoded.email);
     req.headers.set("role", decoded.role);
+    req.headers.set("isActive", decoded.isActive.toString());
 
     // If authentication is successful, return null (no error response)
     return null;
