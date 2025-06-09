@@ -40,7 +40,10 @@ export const POST = async (req: Request) => {
     // Check if user is active
     if (!user.isActive) {
       return NextResponse.json(
-        { message: "User is inactive", success: false },
+        {
+          message: "Account Disabled: Contact Vantek team at help@vantek.com",
+          success: false,
+        },
         { status: 401 }
       );
     }

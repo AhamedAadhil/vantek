@@ -5,26 +5,6 @@ import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
-// const userData = [
-//   {
-//     avatar: "/images/users/cus1.jpg",
-//     name: "Aadhil Shihabdeen",
-//     email: "aadhilshelby@gmail.com",
-//     landmark: "166/16",
-//     street: "Groove Street",
-//     city: "Ontario",
-//     state: "New York",
-//     country: "USA",
-//     zipCode: "002584",
-//     phone: "+94752203374",
-//     lastOrderDate: "24/11/2024",
-//     lastOrderTime: "11.25AM",
-//     lastOrderAmount: "158.58",
-//     lastPaymentMethod: "VISA",
-//     totalPurchase: "285",
-//   },
-// ];
-
 const UserDetails = ({ user }) => {
   console.log(user, "user details");
 
@@ -64,7 +44,7 @@ const UserDetails = ({ user }) => {
       {/* Delivery Address */}
       <div className="mt-6 pt-4 border-t border-dashed border-gray-700 relative">
         <h4 className="font-semibold mb-2">Delivery address:</h4>
-        
+
         <ul className="space-y-1 text-sm">
           <li>
             houseNumber:{" "}

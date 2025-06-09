@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Search, Eye, Trash2, Upload } from "lucide-react";
+import { Search, Eye, Trash2, Upload, Circle } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { utils, writeFile } from "xlsx";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
+import { toast } from "sonner";
 
 const Customers = () => {
   const router = useRouter();
@@ -13,30 +14,27 @@ const Customers = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 10;
-  const [loading, setLoading] = useState(true);
+  const [initialLoading, setInitialLoading] = useState(true);
+  const [activeToggleId, setActiveToggleId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
 
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await fetch("/api/admin/user");
-        const data = await res.json();
-        if (data.success) {
-          setUsers(data.data);
-          console.log("Fetched users:", data.data);
-        } else {
-          console.error("Failed to fetch users:", data.message);
-        }
-      } catch (error) {
-        console.error("Error fetching users:", error);
-      } finally {
-        setLoading(false);
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("/api/admin/user");
+      const data = await res.json();
+      if (data.success) {
+        setUsers(data.data);
+        // console.log("Fetched users:", data.data);
+      } else {
+        console.error("Failed to fetch users:", data.message);
       }
-    };
-
-    fetchUsers();
-  }, []);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setInitialLoading(false);
+    }
+  };
 
   const filteredUsers = users.filter(
     (user) =>
@@ -53,6 +51,26 @@ const Customers = () => {
   const handleDeleteClick = (id) => {
     setSelectedId(id);
     setShowModal(true);
+  };
+
+  const handleToggle = async (user) => {
+    setActiveToggleId(user._id);
+    try {
+      const res = await fetch(`/api/admin/user/${user._id}`, {
+        method: "PATCH",
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        await fetchUsers();
+        toast.success("Status updated successfully!");
+      } else {
+        toast.error("Failed to update status: " + data.message);
+      }
+    } catch (error) {
+      toast.error("Error updating user status: " + error.message);
+    } finally {
+      setActiveToggleId(null);
+    }
   };
 
   const confirmDelete = async () => {
@@ -75,13 +93,14 @@ const Customers = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="m-4 p-6 bg-[#202020] text-white rounded-lg">
-        Loading...
-      </div>
-    );
-  }
+  // console.log("init load", initialLoading);
+  // if (initialLoading) {
+  //   return (
+  //     <div className="m-4 p-6 bg-[#202020] text-white rounded-lg">
+  //       Loading...
+  //     </div>
+  //   );
+  // }
 
   // Export To Excel Function
   const exportToExcel = () => {
@@ -104,6 +123,10 @@ const Customers = () => {
     utils.book_append_sheet(workbook, worksheet, "Customers");
     writeFile(workbook, "Customer_List.xlsx");
   };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
 
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-white rounded-lg">
@@ -154,12 +177,25 @@ const Customers = () => {
               <td className="p-3">{user.name}</td>
               <td className="p-3">{user.email}</td>
               <td className="p-3 capitalize">{user.role}</td>
-              <td className="p-3">
-                {user.isActive ? (
-                  <span className="text-green-500 font-semibold">Active</span>
-                ) : (
-                  <span className="text-red-500 font-semibold">Inactive</span>
-                )}
+              <td className="p-3 flex items-center gap-3">
+                <Circle
+                  size={12}
+                  className={user.isActive ? "text-green-500" : "text-red-500"}
+                  fill={user.isActive ? "green" : "red"}
+                />
+                <label className="inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    className="sr-only peer"
+                    checked={user.isActive}
+                    onChange={() => handleToggle(user)}
+                    disabled={activeToggleId === user._id}
+                  />
+
+                  <div className="w-11 h-6 bg-gray-300 peer-checked:bg-green-500 rounded-full peer peer-focus:ring-2 ring-green-400 transition-all relative">
+                    <div className="absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform peer-checked:translate-x-5" />
+                  </div>
+                </label>
               </td>
               <td className="p-3">
                 {user.createdAt ? formatDateTime(user.createdAt) : "N/A"}
