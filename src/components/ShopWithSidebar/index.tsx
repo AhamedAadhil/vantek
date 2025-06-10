@@ -13,8 +13,23 @@ import {
 } from "lucide-react";
 import SidebarShop from "./SidebarShop";
 import PreLoader from "../Common/PreLoader";
+import { useSearchParams } from "next/navigation"; // ✅ Correct
+
 
 const ShopWithSidebar = () => {
+    const searchParams = useSearchParams();
+const apiUrl = searchParams.get("apiUrl");
+  const [currentApiUrl, setCurrentApiUrl] = useState(null); // State to store the apiUrl
+
+  useEffect(() => {
+    // This effect runs after the component has mounted and hydrated
+    const receivedApiUrl = searchParams.get("apiUrl");
+    if (receivedApiUrl) {
+      setCurrentApiUrl(receivedApiUrl);
+      console.log("Received apiUrl:", receivedApiUrl); // Log it here
+    }
+  }, [searchParams]); // Re-run if searchParams change
+
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -27,6 +42,24 @@ const ShopWithSidebar = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
+  console.log("api ulr===",currentApiUrl)
+  
+useEffect(() => {
+  if (!apiUrl) return;
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(apiUrl);
+      const data = await res.json();
+      setProducts(data.products || []);
+    } catch (err) {
+      console.error("Failed to fetch:", err);
+    }
+  };
+
+  fetchProducts();
+}, [apiUrl]);
+
   // LocalStorage
   const CACHE_EXPIRY_MS = 1000 * 60 * 30; // 30 minutes cache (1000 ms * 60 sec * 30 min)
 
@@ -35,6 +68,8 @@ const ShopWithSidebar = () => {
     const filterKey = JSON.stringify(filters);
     return `products_cache_page_${page}_filters_${filterKey}`;
   };
+
+
   const fetchData = async (page = 1) => {
     setLoading(true)
     const cacheKey = buildCacheKey(page, selected);
@@ -138,6 +173,8 @@ const ShopWithSidebar = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   });
+
+
 
   return (
     <>
