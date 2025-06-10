@@ -19,16 +19,7 @@ const data = [
     id: 4,
     img: "/images/categories/universal.png",
   },
-  {
-    title: "Audio Upgrades",
-    id: 5,
-    img: "/images/categories/audio.png",
-  },
-  {
-    title: "Detailing",
-    id: 6,
-    img: "/images/categories/detailing.png",
-  },
+  
 ];
 
 export default data;
