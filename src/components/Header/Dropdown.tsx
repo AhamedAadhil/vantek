@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { clearApiUrl, setApiUrl } from "@/redux/features/shopFilter-slice";
 
 const Dropdown = ({ menuItem, stickyMenu }) => {
+  const dispatch = useDispatch();
   const [dropdownToggler, setDropdownToggler] = useState(false);
   const pathUrl = usePathname();
 
@@ -51,9 +54,9 @@ const Dropdown = ({ menuItem, stickyMenu }) => {
               href={item.path}
               onClick={() => {
                 if (item.apiUrl) {
-                  sessionStorage.setItem("menuApiUrl", item.apiUrl);
+                  dispatch(setApiUrl(item.apiUrl));
                 } else {
-                  sessionStorage.removeItem("menuApiUrl");
+                  dispatch(clearApiUrl());
                 }
               }}
               className={`flex text-custom-sm hover:text-blue hover:bg-gray-1 py-[7px] px-4.5 ${

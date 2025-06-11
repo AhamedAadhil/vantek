@@ -8,6 +8,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import authReducer from "./features/authSlice";
 import { TypedUseSelectorHook, useSelector } from "react-redux";
+import { shopFilterSlice } from "./features/shopFilter-slice";
 
 const persistConfig = { key: "auth", storage };
 const persistedAuthReducer = persistReducer(persistConfig, authReducer);
@@ -20,6 +21,7 @@ export const store = configureStore({
     productDetailsReducer,
     // auth: authReducer,
     auth: persistedAuthReducer,
+    shopFilter: shopFilterSlice.reducer,
   },
 });
 

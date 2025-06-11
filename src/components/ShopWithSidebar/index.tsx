@@ -13,8 +13,13 @@ import {
 } from "lucide-react";
 import SidebarShop from "./SidebarShop";
 import PreLoader from "../Common/PreLoader";
+import { parseCategoriesFromApiUrl } from "@/helper/parseCategoryFromApiUrl";
+import { useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
 
 const ShopWithSidebar = () => {
+  const apiUrl = useSelector((state: RootState) => state.shopFilter.apiUrl);
+  console.log("API URL:", apiUrl);
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -27,27 +32,32 @@ const ShopWithSidebar = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
+  // 2. When apiUrl changes, fetch products
   useEffect(() => {
-    const apiUrl = sessionStorage.getItem("menuApiUrl");
-    console.log(apiUrl, "from session");
-    if (!apiUrl) return;
+    if (!apiUrl || apiUrl === "") {
+      setLoading(false);
+      return; // no apiUrl, no fetch
+    }
 
     const fetchProducts = async () => {
+      setLoading(true);
       try {
         const res = await fetch(apiUrl);
         const data = await res.json();
+
         setProducts(data.products || []);
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPages);
         setTotalProducts(data.totalProducts);
-        setLoading(false);
       } catch (err) {
         console.error("Failed to fetch:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchProducts();
-  }, []);
+  }, [apiUrl]);
 
   // LocalStorage
   const CACHE_EXPIRY_MS = 1000 * 60 * 30; // 30 minutes cache (1000 ms * 60 sec * 30 min)
@@ -161,12 +171,18 @@ const ShopWithSidebar = () => {
     };
   });
 
+  const categories = parseCategoriesFromApiUrl(apiUrl);
+
   return (
     <>
       {loading && <PreLoader />}
       <Breadcrumb
-        title={"Explore All Products"}
-        pages={["shop", "/", "shop with sidebar"]}
+        title={
+          categories
+            ? `Result for ${categories.subCategory1} in ${categories.mainCategory}`
+            : "Explore All Products"
+        }
+        pages={["shop"]}
       />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 bg-[#f3f4f6]">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">

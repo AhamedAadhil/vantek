@@ -68,7 +68,7 @@ const SearchWithSidebar = () => {
     }
 
     try {
-      const searchQuery = new URLSearchParams({ page: String(page)});
+      const searchQuery = new URLSearchParams({ page: String(page) });
 
       if (search) searchQuery.set("search", search);
       if (mainCategory) searchQuery.set("mainCategory", mainCategory);
@@ -149,10 +149,7 @@ const SearchWithSidebar = () => {
 
   return (
     <>
-      <Breadcrumb
-        title={`Search Results for "${search}"`}
-        pages={["home", "/", "search"]}
-      />
+      <Breadcrumb title={`Search Results for "${search}"`} pages={["search"]} />
       <section className="overflow-hidden relative pb-20 pt-5 lg:pt-20 xl:pt-28 bg-[#f3f4f6]">
         <div className="max-w-[1170px] w-full mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-7.5">

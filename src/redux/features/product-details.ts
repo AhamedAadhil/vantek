@@ -16,7 +16,7 @@ const initialState = {
     id: 0,
     imgs: { thumbnails: [], previews: [] },
   },
-} as InitialState;
+} as unknown as InitialState;
 
 export const productDetails = createSlice({
   name: "productDetails",

@@ -1,20 +1,22 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import CustomSelect from "./CustomSelect";
 import { menuData } from "./menuData";
 import Dropdown from "./Dropdown";
 import { RootState, useAppSelector } from "@/redux/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectTotalPrice } from "@/redux/features/cart-slice";
 import { useCartModalContext } from "@/app/context/CartSidebarModalContext";
 import Image from "next/image";
 import { Heart, Lock, Phone, Search, ShoppingCart, User } from "lucide-react";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
+import { clearApiUrl, setApiUrl } from "@/redux/features/shopFilter-slice";
 
 const Header = () => {
   const router = useRouter();
+  const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
@@ -287,13 +289,10 @@ const Header = () => {
                         <Link href={menuItem.path}>
                           <span
                             onClick={() => {
-                              if (menuItem.apiUrl) {
-                                sessionStorage.setItem(
-                                  "menuApiUrl",
-                                  menuItem.apiUrl
-                                );
+                              if (!menuItem.apiUrl) {
+                                dispatch(clearApiUrl());
                               } else {
-                                sessionStorage.removeItem("menuApiUrl"); // optionally clear stale url
+                                dispatch(setApiUrl(menuItem.apiUrl));
                               }
                             }}
                             className={`hover:text-blue text-custom-sm font-medium text-dark flex ${
