@@ -13,23 +13,8 @@ import {
 } from "lucide-react";
 import SidebarShop from "./SidebarShop";
 import PreLoader from "../Common/PreLoader";
-import { useSearchParams } from "next/navigation"; // ✅ Correct
-
 
 const ShopWithSidebar = () => {
-    const searchParams = useSearchParams();
-const apiUrl = searchParams.get("apiUrl");
-  const [currentApiUrl, setCurrentApiUrl] = useState(null); // State to store the apiUrl
-
-  useEffect(() => {
-    // This effect runs after the component has mounted and hydrated
-    const receivedApiUrl = searchParams.get("apiUrl");
-    if (receivedApiUrl) {
-      setCurrentApiUrl(receivedApiUrl);
-      console.log("Received apiUrl:", receivedApiUrl); // Log it here
-    }
-  }, [searchParams]); // Re-run if searchParams change
-
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -42,23 +27,27 @@ const apiUrl = searchParams.get("apiUrl");
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  console.log("api ulr===",currentApiUrl)
-  
-useEffect(() => {
-  if (!apiUrl) return;
+  useEffect(() => {
+    const apiUrl = sessionStorage.getItem("menuApiUrl");
+    console.log(apiUrl, "from session");
+    if (!apiUrl) return;
 
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch(apiUrl);
-      const data = await res.json();
-      setProducts(data.products || []);
-    } catch (err) {
-      console.error("Failed to fetch:", err);
-    }
-  };
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(apiUrl);
+        const data = await res.json();
+        setProducts(data.products || []);
+        setCurrentPage(data.currentPage);
+        setTotalPages(data.totalPages);
+        setTotalProducts(data.totalProducts);
+        setLoading(false);
+      } catch (err) {
+        console.error("Failed to fetch:", err);
+      }
+    };
 
-  fetchProducts();
-}, [apiUrl]);
+    fetchProducts();
+  }, []);
 
   // LocalStorage
   const CACHE_EXPIRY_MS = 1000 * 60 * 30; // 30 minutes cache (1000 ms * 60 sec * 30 min)
@@ -69,9 +58,8 @@ useEffect(() => {
     return `products_cache_page_${page}_filters_${filterKey}`;
   };
 
-
   const fetchData = async (page = 1) => {
-    setLoading(true)
+    setLoading(true);
     const cacheKey = buildCacheKey(page, selected);
 
     // Try reading from cache
@@ -84,11 +72,11 @@ useEffect(() => {
           setCurrentPage(data.currentPage);
           setTotalPages(data.totalPages);
           setTotalProducts(data.totalProducts);
-           setLoading(false)
+          setLoading(false);
           return; // Use cached data, skip fetch
         }
       } catch (e) {
-         setLoading(false)
+        setLoading(false);
         // If parsing error, ignore cache and fetch fresh
         console.warn("Invalid cache, fetching fresh data");
       }
@@ -116,7 +104,6 @@ useEffect(() => {
         setCurrentPage(data.currentPage);
         setTotalPages(data.totalPages);
         setTotalProducts(data.totalProducts);
-         
 
         // Cache the response with timestamp
         localStorage.setItem(
@@ -126,14 +113,14 @@ useEffect(() => {
             data,
           })
         );
-         setLoading(false)
+        setLoading(false);
       } else {
         console.error("❌ API Error:", data.message);
-         setLoading(false)
+        setLoading(false);
       }
     } catch (error) {
       console.error("❌ Fetch error:", error);
-       setLoading(false)
+      setLoading(false);
     }
   };
 
@@ -174,11 +161,9 @@ useEffect(() => {
     };
   });
 
-
-
   return (
     <>
-     {loading && <PreLoader />}
+      {loading && <PreLoader />}
       <Breadcrumb
         title={"Explore All Products"}
         pages={["shop", "/", "shop with sidebar"]}
