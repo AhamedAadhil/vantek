@@ -65,7 +65,7 @@ const PromoBanner = () => {
                 Flat 20% off
               </p>
               <Link
-              href="/shop-vw-t5"
+              href="/shop"
               className="inline-flex font-medium text-custom-sm text-white bg-teal py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-teal-dark mt-9"
               >
               Grab Now
@@ -97,7 +97,7 @@ const PromoBanner = () => {
                 Gadgets for this summer season
               </p>
               <Link
-              href="/shop-vw-t7"
+              href="/shop"
               className="inline-flex font-medium text-custom-sm text-white bg-orange py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-orange-dark mt-7.5"
               >
               Buy Now
