@@ -1,6 +1,7 @@
 "use client"; // Use this in Next.js App Router (for client components)
 
 import Breadcrumb from "@/components/Common/Breadcrumb";
+import { Eye, EyeOff } from "lucide-react";
 import { loginSuccess } from "@/redux/features/authSlice";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -19,6 +20,8 @@ const Signup = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Handle input changes
   const handleChange = (e) => {
@@ -58,7 +61,7 @@ const Signup = () => {
       const data = await res.json();
       if (res.ok) {
         // dispatch(loginSuccess({ user: data.user, token: data.token }))
-        setTimeout(() => (window.location.href = "/signin"), 2000);
+        setTimeout(() => (window.location.href = "/verify-account"), 2000);
       }
 
       if (!res.ok) {
@@ -85,9 +88,6 @@ const Signup = () => {
               </h2>
               <p>Enter your details below</p>
             </div>
-
-            {error && <p className="text-red-500 text-center">{error}</p>}
-            {success && <p className="text-green-500 text-center">{success}</p>}
 
             <div className="mt-5.5">
               <form onSubmit={handleSubmit}>
@@ -122,36 +122,63 @@ const Signup = () => {
                   />
                 </div>
 
-                <div className="mb-5">
+                {/* Password */}
+                <div className="mb-5 relative">
                   <label htmlFor="password" className="block mb-2.5">
                     Password <span className="text-red">*</span>
                   </label>
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    minLength={6}
                     placeholder="Enter your password"
+                    minLength={6}
                     required
-                    className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5"
+                    className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 pr-12"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-14 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  </button>
                 </div>
 
-                <div className="mb-5.5">
+                {/* Confirm Password */}
+                <div className="mb-5.5 relative">
                   <label htmlFor="confirmPassword" className="block mb-2.5">
                     Re-type Password <span className="text-red">*</span>
                   </label>
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Re-type your password"
                     minLength={6}
                     required
-                    className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5"
+                    className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 pr-12"
                   />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-14 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  >
+                    {showConfirmPassword ? (
+                      <EyeOff size={20} />
+                    ) : (
+                      <Eye size={20} />
+                    )}
+                  </button>
+                </div>
+
+                <div className="mb-5">
+                  {error && <p className="text-red-500 text-center">{error}</p>}
+                  {success && (
+                    <p className="text-green-500 text-center">{success}</p>
+                  )}
                 </div>
 
                 <button

@@ -1,16 +1,19 @@
 import connectDB from "@/lib/db";
-import { authMiddleware } from "@/lib/middleware";
 import User, { IUser } from "@/lib/models/user";
-import { ACCOUNT_CREATED_TEMPLATE } from "@/lib/nodemailer/emailTemplates";
+import {
+  ACCOUNT_CREATED_TEMPLATE,
+  SEND_VERIFICATION_OTP_TEMPLATE,
+} from "@/lib/nodemailer/emailTemplates";
 import { sendMail } from "@/lib/nodemailer/nodemailer";
 import bcrypt from "bcryptjs";
-import jwt from "jsonwebtoken";
+import crypto from "crypto";
 import mongoose from "mongoose";
 import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
   const { email, password, name } = await req.json();
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const normalizedEmail = email.toLowerCase();
 
   if (!email || !password || !name) {
     return NextResponse.json(
@@ -44,61 +47,59 @@ export const POST = async (req: Request) => {
 
   try {
     await connectDB();
-    const isUserExist = await (User as mongoose.Model<IUser>)
-      .findOne({ email })
+    // Check if user with email exists
+    const existingUser = await (User as mongoose.Model<IUser>)
+      .findOne({ email: normalizedEmail })
       .exec();
-    if (isUserExist) {
-      return NextResponse.json(
-        { message: "User already exists", success: false },
-        { status: 400 }
-      );
+
+    if (existingUser) {
+      if (existingUser.isVerified) {
+        return NextResponse.json(
+          { message: "User already exists", success: false },
+          { status: 400 }
+        );
+      } else {
+        // Delete unverified user
+        await (User as mongoose.Model<IUser>).deleteOne({
+          email: normalizedEmail,
+        });
+      }
     }
     // hash password
     const hashedPassword = await bcrypt.hash(password, 12);
 
+    // Generate OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
+
     const newUser = new User({
-      email,
+      email: normalizedEmail,
       password: hashedPassword,
       name,
+      isVerified: false,
+      emailVerificationOTP: hashedOTP,
+      emailVerificationExpires: new Date(Date.now() + 10 * 60 * 1000), // 10 mins
     });
 
-    // gen jwt
-    // const token = jwt.sign(
-    //   {
-    //     email: newUser.email,
-    //     id: newUser._id,
-    //     role: newUser.role,
-    //   },
-    //   process.env.JWT_SECRET,
-    //   { expiresIn: "7d" }
-    // );
-
     await newUser.save();
-    const { password: _, ...user } = newUser._doc;
+    const {
+      password: _,
+      emailVerificationOTP,
+      emailVerificationExpires,
+      ...user
+    } = newUser._doc;
 
+    // Send OTP email
     await sendMail({
-      to: email,
-      subject: "Account Created Successfully",
-      html: ACCOUNT_CREATED_TEMPLATE(name, email),
+      to: normalizedEmail,
+      subject: "Verify Your Email",
+      html: SEND_VERIFICATION_OTP_TEMPLATE(name, otp),
     });
 
     return NextResponse.json(
       { message: "Account created", user, success: true },
       { status: 201 }
     );
-
-    // set cookie
-    // response.cookies.set("token", token, {
-    //   httpOnly: true, // Prevents client-side access
-    //   secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-    //   sameSite: "strict", // Prevents CSRF attacks
-    //   maxAge: 7 * 24 * 60 * 60, // 7 days expiration
-    // });
-
-    // ✅ Manually attach user details to request headers
-    // req.headers.set("userId", newUser.userId);
-    // req.headers.set("email", newUser.email);
-    // req.headers.set("role", newUser.role);
   } catch (error) {
     return NextResponse.json(
       {

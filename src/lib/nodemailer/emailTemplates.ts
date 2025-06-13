@@ -393,7 +393,7 @@ export const ACCOUNT_CREATED_TEMPLATE = (
       </p>
 
       <div style="margin: 30px 0;">
-        <a href="https://yourwebsite.com/login" style="background-color: #2E86C1; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
+        <a href="https://vantekid.com/signin" style="background-color: #2E86C1; color: white; padding: 12px 20px; border-radius: 5px; text-decoration: none; font-weight: bold;">
           Login to Your Account
         </a>
       </div>
@@ -402,6 +402,50 @@ export const ACCOUNT_CREATED_TEMPLATE = (
         If you did not create this account, please contact our support team immediately.
       </p>
 
+      <p style="font-size: 14px; color: #888;">
+        Thank you,<br/>
+        <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};
+
+export const SEND_VERIFICATION_OTP_TEMPLATE = (name: string, otp: string) => {
+  return `
+    <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #2E86C1;">Email Verification</h2>
+      <p style="font-size: 16px; color: #333;">Hi ${name},</p>
+      <p style="font-size: 15px; color: #555;">
+        Thank you for signing up! To verify your email address, please use the OTP (One-Time Password) below:
+      </p>
+      <div style="font-size: 24px; font-weight: bold; color: #2E86C1; background-color: #f2f2f2; padding: 15px 30px; width: fit-content; border-radius: 6px; margin: 20px auto;">
+        ${otp}
+      </div>
+      <p style="font-size: 14px; color: #888;">
+        This code will expire in 10 minutes shortly. If you didn’t request this, please ignore this email.
+      </p>
+      <p style="font-size: 14px; color: #888;">
+        Thanks,<br/>
+        <strong>The VANTEK Team</strong>
+      </p>
+    </div>
+  `;
+};
+
+export const RESEND_VERIFICATION_OTP_TEMPLATE = (name: string, otp: string) => {
+  return `
+    <div style="max-width: 600px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #2E86C1;">Verification Code Resent</h2>
+      <p style="font-size: 16px; color: #333;">Hi ${name},</p>
+      <p style="font-size: 15px; color: #555;">
+        As requested, we’ve sent you a new OTP (One-Time Password) for email verification:
+      </p>
+      <div style="font-size: 24px; font-weight: bold; color: #2E86C1; background-color: #f2f2f2; padding: 15px 30px; width: fit-content; border-radius: 6px; margin: 20px auto;">
+        ${otp}
+      </div>
+      <p style="font-size: 14px; color: #888;">
+        Please enter this code to verify your email. If you didn’t request this, you can safely ignore it.
+      </p>
       <p style="font-size: 14px; color: #888;">
         Thank you,<br/>
         <strong>The VANTEK Team</strong>
