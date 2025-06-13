@@ -3,6 +3,7 @@
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { Eye, EyeOff } from "lucide-react";
 import { loginSuccess } from "@/redux/features/authSlice";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -10,6 +11,9 @@ import { useDispatch } from "react-redux";
 
 const Signup = () => {
   const router = useRouter();
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,6 +27,13 @@ const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  // Validate Strong Password
+  const isStrongPassword = (password: string) => {
+    const regex =
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+{}[\]:;<>,.?~\\/-]).{6,}$/;
+    return regex.test(password);
+  };
+
   // Handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,6 +44,13 @@ const Signup = () => {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    if (!isStrongPassword(formData.password)) {
+      setError(
+        "Password must include at least 1 uppercase letter, 1 number, 1 special character and be at least 6 characters long."
+      );
+      return;
+    }
 
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
@@ -122,8 +140,10 @@ const Signup = () => {
                   />
                 </div>
 
+
                 {/* Password */}
                 <div className="mb-5 relative">
+
                   <label htmlFor="password" className="block mb-2.5">
                     Password <span className="text-red">*</span>
                   </label>
@@ -137,17 +157,38 @@ const Signup = () => {
                     required
                     className="rounded-lg border border-gray-3 bg-gray-1 w-full py-3 px-5 pr-12"
                   />
+
+                  {formData.password &&
+                    !isStrongPassword(formData.password) && (
+                      <p className="text-sm text-red-500 mt-1">Weak password</p>
+                    )}
+                  {formData.password && isStrongPassword(formData.password) && (
+                    <p className="text-sm text-green-600 mt-1">
+                      Strong password
+                    </p>
+                  )}
+
                   <button
                     type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-14 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                    className="absolute right-4 top-11 translate-y-[-50%] text-gray-500 hover:text-dark mt-4"
+
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
                 </div>
+                <p className="text-xs text-gray-500 mb-2">
+                  Password must include at least:
+                  <br />– 1 uppercase letter
+                  <br />– 1 number
+                  <br />– 1 special character
+                  <br />– Minimum 6 characters
+                </p>
+
 
                 {/* Confirm Password */}
                 <div className="mb-5.5 relative">
+
                   <label htmlFor="confirmPassword" className="block mb-2.5">
                     Re-type Password <span className="text-red">*</span>
                   </label>
@@ -163,8 +204,10 @@ const Signup = () => {
                   />
                   <button
                     type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-14 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+
+                    onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    className="absolute right-4 top-11 translate-y-[-50%] text-gray-500 hover:text-dark mt-4"
+
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={20} />
@@ -172,6 +215,7 @@ const Signup = () => {
                       <Eye size={20} />
                     )}
                   </button>
+
                 </div>
 
                 <div className="mb-5">

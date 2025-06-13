@@ -250,12 +250,13 @@ const ShopDetails = ({ productId }: { productId: string }) => {
               <h2 className="text-2xl font-semibold text-gray-800">
                 {product?.name}
               </h2>
-              <div className="flex items-center gap-2 text-yellow-500 text-sm">
-                <span>⭐</span>
+              <div className="flex justify-between items-center gap-2 text-sm">
+                
                 <span className="text-gray-600">
-                  {product?.overAllRating} Rating ({product?.reviews?.length}{" "}
+                  ⭐ {product?.overAllRating} Rating ({product?.reviews?.length}{" "}
                   Reviews)
                 </span>
+                <span className="font-semibold text-gray-900">SKU : {product?.productCode}</span>
               </div>
               {/* <p className="text-sm text-gray-600">{product?.description}</p> */}
               <div

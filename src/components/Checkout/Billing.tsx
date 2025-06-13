@@ -15,6 +15,7 @@ const Billing = ({
   setIsUk: (val: boolean) => void;
 }) => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const [showOutsideUKNotice, setShowOutsideUKNotice] = React.useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -24,6 +25,9 @@ const Billing = ({
 
     if (name === "countryName") {
       setIsUk(value !== "OutsideUK");
+      if (value === "OutsideUK") {
+        setShowOutsideUKNotice(true);
+      }
     }
   };
 
@@ -270,6 +274,26 @@ const Billing = ({
           className="w-full rounded-md border border-gray-3 bg-gray-1 px-5 py-2.5"
         />
       </div>
+
+      {showOutsideUKNotice && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+          <div className="bg-white max-w-md w-[90%] p-6 rounded-lg shadow-2xl text-center">
+            <h2 className="text-lg font-semibold mb-4">Delivery Information</h2>
+            <p className="text-gray-700 mb-6">
+              As your delivery address is outside the UK, the seller will reach
+              out to you to discuss the applicable delivery fees. At this time,
+              you may proceed with payment for the total product amount. Thank
+              you for your understanding.
+            </p>
+            <button
+              onClick={() => setShowOutsideUKNotice(false)}
+              className="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+            >
+              Got it
+            </button>
+          </div>
+        </div>
+      )}
     </form>
   );
 };

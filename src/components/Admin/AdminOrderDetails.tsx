@@ -3,10 +3,11 @@
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
-import { Printer, Share, BadgeCheck, Pencil } from "lucide-react";
+import { Printer, Share, BadgeCheck, Pencil, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 const AdminOrderDetails = () => {
   const [order, setOrder] = useState<any>(null);
@@ -14,6 +15,7 @@ const AdminOrderDetails = () => {
   const [showTrackingModal, setShowTrackingModal] = useState(false);
   const [trackingId, setTrackingId] = useState("");
   const [trackingUrl, setTrackingUrl] = useState("");
+  const router = useRouter();
 
   useEffect(() => {
     const storedOrder = sessionStorage.getItem("selectedOrder");
@@ -89,7 +91,13 @@ const AdminOrderDetails = () => {
     }
   };
 
-  return (
+  return (<>
+    <div className="flex justify-start">
+    <button onClick={() => router.push("/admin/orders")} className="flex items-center bg-teal-700 hover:bg-teal-900 text-white px-4 py-2 ml-4 mt-4 rounded">
+      <ArrowLeft size={16} className="mr-2"/> Back
+    </button>
+    <div className="bg-teal-700 text-white px-4 py-2 ml-4 mt-4 mr-4 rounded w-full text-center text-lg">ORDER DETAILS</div>
+    </div>
     <div className="grid grid-cols-6 grid-rows-5 gap-2">
       {/* Order Items and Summary */}
       <div className="col-span-4 row-span-5 p-4">
@@ -249,20 +257,20 @@ const AdminOrderDetails = () => {
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 mt-6">
+          {/* <div className="flex justify-end space-x-3 mt-6">
             <button className="flex items-center bg-teal-700 hover:bg-teal-900 text-white px-4 py-2 rounded">
               <Printer size={16} className="mr-2" /> Print
             </button>
             <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
               <Share size={16} className="mr-2" /> Share
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
 
       {/* User and Shipping Details */}
       <div className="col-span-2 row-span-5 col-start-5 p-4">
-        <div className="bg-[#1f1f1f] text-white p-5 rounded-lg text-sm shadow-md max-w-md">
+        <div className="bg-[#1f1f1f] text-white p-5 rounded-lg text-sm shadow-md w-full">
           <h2 className="text-lg font-semibold border-hidden border-gray-700 pb-2 mb-4 flex items-center">
             <span className="border-l-4 border-purple-light-2 pl-2">
               User & Shipping Info
@@ -348,7 +356,7 @@ const AdminOrderDetails = () => {
           </div>
         </div>
 
-        <div className="mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
+        <div className="w-full mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
           <h4 className="font-semibold mb-2">Payment Info</h4>
           <p>
             Method: <span className="opacity-75">{order.paymentMethod}</span>
@@ -358,7 +366,7 @@ const AdminOrderDetails = () => {
           </p>
         </div>
 
-        <div className="mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
+        <div className="w-full mt-4 bg-[#1f1f1f] rounded-md border border-dashed border-gray-700 p-4 text-blueGray-300 text-sm">
           <h4 className="font-semibold mb-2">Additional Info</h4>
           <p>
             Status: <span className="opacity-75">{order.status}</span>
@@ -451,7 +459,7 @@ const AdminOrderDetails = () => {
           </div>
         </div>
       )}
-    </div>
+    </div></>
   );
 };
 

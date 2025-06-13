@@ -198,6 +198,14 @@ const ShopWithSidebar = () => {
               <button
                 onClick={() => setProductSidebar(!productSidebar)}
                 aria-label="button for product sidebar toggle"
+                className={`xl:hidden absolute -bottom-10 -right-94 sm:-right-8 flex items-center justify-center w-8 h-8 rounded-md bg-blues-200 shadow-1`}
+              >
+                <ArrowRightLeft />
+              </button>
+              
+              {/* <button
+                onClick={() => setProductSidebar(!productSidebar)}
+                aria-label="button for product sidebar toggle"
                 className={`xl:hidden absolute -right-12.5 sm:-right-8 flex items-center justify-center w-8 h-8 rounded-md bg-blues-200 shadow-1 ${
                   stickyMenu
                     ? "lg:top-20 sm:top-34.5 top-35"
@@ -205,7 +213,7 @@ const ShopWithSidebar = () => {
                 }`}
               >
                 <ArrowRightLeft />
-              </button>
+              </button> */}
 
               <form onSubmit={(e) => e.preventDefault()}>
                 <div className="flex flex-col gap-6">
