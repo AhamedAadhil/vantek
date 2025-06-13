@@ -2,17 +2,12 @@
 
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { Eye, EyeOff } from "lucide-react";
-import { loginSuccess } from "@/redux/features/authSlice";
-import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
 
 const Signup = () => {
   const router = useRouter();
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -79,7 +74,7 @@ const Signup = () => {
       const data = await res.json();
       if (res.ok) {
         // dispatch(loginSuccess({ user: data.user, token: data.token }))
-        setTimeout(() => (window.location.href = "/verify-account"), 2000);
+        setTimeout(() => (window.location.href = "/verify-account"), 1000);
       }
 
       if (!res.ok) {

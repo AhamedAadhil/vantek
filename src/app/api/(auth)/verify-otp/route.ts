@@ -8,6 +8,8 @@ import { NextResponse } from "next/server";
 
 export const POST = async (req: Request) => {
   const { email, otp } = await req.json();
+  const lowercaseEmail = email.toLowerCase();
+
 
   if (!email || !otp) {
     return NextResponse.json(
@@ -21,7 +23,7 @@ export const POST = async (req: Request) => {
   const hashedOTP = crypto.createHash("sha256").update(otp).digest("hex");
 
   const user = await (User as mongoose.Model<IUser>).findOne({
-    email: new RegExp(`^${email}$`, "i"),
+    email: lowercaseEmail,
     emailVerificationOTP: hashedOTP,
     emailVerificationExpires: { $gt: new Date() },
   });

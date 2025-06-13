@@ -95,7 +95,7 @@ export const POST = async (req: Request) => {
       subject: "Verify Your Email",
       html: SEND_VERIFICATION_OTP_TEMPLATE(name, otp),
     });
-
+   
     return NextResponse.json(
       { message: "Account created", user, success: true },
       { status: 201 }
