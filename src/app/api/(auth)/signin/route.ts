@@ -9,6 +9,7 @@ export const POST = async (req: Request) => {
   try {
     await connectDB();
     const { email, password } = await req.json();
+    const normalizedEmail = email.toLowerCase();
 
     if (!email || !password) {
       return NextResponse.json(
@@ -19,7 +20,7 @@ export const POST = async (req: Request) => {
 
     // Check if user exists
     const user = await (User as mongoose.Model<IUser>)
-      .findOne({ email })
+      .findOne({ email: normalizedEmail })
       .exec();
     if (!user) {
       return NextResponse.json(
@@ -42,6 +43,16 @@ export const POST = async (req: Request) => {
       return NextResponse.json(
         {
           message: "Account Disabled: Contact Vantek team at help@vantek.com",
+          success: false,
+        },
+        { status: 401 }
+      );
+    }
+
+    if (!user.isVerified) {
+      return NextResponse.json(
+        {
+          message: "Email not verified. Please check your inbox.",
           success: false,
         },
         { status: 401 }

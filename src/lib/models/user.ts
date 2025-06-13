@@ -27,6 +27,9 @@ export interface IUser extends Document {
   reviews: mongoose.Types.ObjectId[];
   resetToken?: string;
   resetTokenexpiresAt?: Date;
+  isVerified?: boolean;
+  emailVerificationOTP: string;
+  emailVerificationExpires: Date;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -100,6 +103,16 @@ const userSchema = new Schema<IUser>(
       type: String,
     },
     resetTokenexpiresAt: {
+      type: Date,
+    },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+    emailVerificationOTP: {
+      type: String,
+    },
+    emailVerificationExpires: {
       type: Date,
     },
   },
