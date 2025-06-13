@@ -169,12 +169,12 @@ const Orders = () => {
                 >
                   <Eye size={16} />
                 </button>
-                <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-400 hover:bg-green-500 text-black hover:text-white">
+                {/* <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-green-400 hover:bg-green-500 text-black hover:text-white">
                   <Pencil size={16} />
                 </button>
                 <button className="flex items-center justify-center rounded-lg w-9 h-9 bg-red-400 hover:bg-red-500 text-black hover:text-white">
                   <Trash2 size={16} />
-                </button>
+                </button> */}
               </td>
             </tr>
           ))}
