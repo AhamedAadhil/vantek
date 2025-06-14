@@ -14,7 +14,7 @@ const NewArrival = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        `/products?featuredProduct=true&limit=10`
+        `/api/products?featuredProduct=true&limit=10`
       );
       const data = await res.json();
 

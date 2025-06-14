@@ -74,7 +74,7 @@ const ProductList = () => {
     try {
       setIsLoading(true); // Start spinner
       const res = await fetch(
-        `/products`
+        `/api/products`
       );
       const data = await res.json();
 
