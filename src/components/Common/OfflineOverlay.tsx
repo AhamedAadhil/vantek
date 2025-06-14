@@ -1,15 +1,19 @@
 "use client";
 import { useEffect, useState } from "react";
-import { WifiOff } from "lucide-react"; // optional icon library
+import { WifiOff } from "lucide-react";
 
 const OfflineOverlay = () => {
-  const [isOffline, setIsOffline] = useState(
-    () => typeof navigator !== "undefined" && !navigator.onLine
-  );
+  const [isOffline, setIsOffline] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
+    setIsMounted(true); // mark as mounted on client
+
     const handleOffline = () => setIsOffline(true);
     const handleOnline = () => setIsOffline(false);
+
+    // Set initial offline status on client
+    setIsOffline(!navigator.onLine);
 
     window.addEventListener("offline", handleOffline);
     window.addEventListener("online", handleOnline);
@@ -20,7 +24,7 @@ const OfflineOverlay = () => {
     };
   }, []);
 
-  if (!isOffline) return null;
+  if (!isMounted || !isOffline) return null;
 
   return (
     <div className="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-md flex items-center justify-center p-6">
