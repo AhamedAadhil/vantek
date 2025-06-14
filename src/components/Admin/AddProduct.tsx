@@ -197,7 +197,7 @@ const AddProduct = () => {
                 required
                 className="w-full p-2 rounded bg-meta-2 text-white"
                 placeholder="Product Name"
-                maxLength={100}
+                maxLength={200}
                 value={productName}
                 onChange={(e) => setProductName(e.target.value)}
               />
@@ -270,19 +270,46 @@ const AddProduct = () => {
             <small className="text-gray-400">
               *Add a rich description about the product (1500 characters max)
             </small>
-            <div>
-              <label className="block mb-1">Tags</label>
-              <input
-                required
-                type="text"
-                className="w-full p-2 rounded bg-meta-2 text-white"
-                placeholder="Comma-separated tags (e.g. camper,bumper,roof)"
-                maxLength={100}
-                onChange={(e) =>
-                  setTags(e.target.value.split(",").map((tag) => tag.trim()))
-                }
-              />
-            </div>
+            
+            <div className="mb-4">
+  <label className="block mb-1 font-medium">Tags</label>
+  <div className="flex flex-wrap gap-2 mb-2">
+    {tags.map((tag, index) => (
+      <span
+        key={index}
+        className="bg-dark-3 text-white px-2 py-1 rounded-md flex items-center text-xs"
+      >
+        {tag}
+        <X
+          size={16}
+          className="ml-2 cursor-pointer"
+          onClick={() =>
+            setTags(tags.filter((_, i) => i !== index))
+          }
+        />
+      </span>
+    ))}
+  </div>
+  <input
+    type="text"
+    className="w-full p-2 rounded bg-meta-2 text-white"
+    placeholder="Type a tag and press Enter or Comma"
+    onKeyDown={(e) => {
+      if (
+        (e.key === "Enter" || e.key === ",") &&
+        e.currentTarget.value.trim()
+      ) {
+        e.preventDefault();
+        const newTag = e.currentTarget.value.trim();
+        if (!tags.includes(newTag)) {
+          setTags([...tags, newTag]);
+        }
+        e.currentTarget.value = "";
+      }
+    }}
+  />
+</div>
+
           </div>
 
           {/* Right Column */}
