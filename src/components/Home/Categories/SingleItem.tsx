@@ -1,12 +1,24 @@
 import { Category } from "@/types/category";
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
+import { setApiUrl } from "@/redux/features/shopFilter-slice";
 
 const SingleItem = ({ item }: { item: Category }) => {
+  const dispatch = useDispatch();
+  const handleClick = (item) => {
+    dispatch(setApiUrl(item.apiUrl));
+  };
+
   return (
-    <a href="#" className="group flex flex-col items-center">
+    <Link
+      href="/shop"
+      onClick={() => handleClick(item)}
+      className="group flex flex-col items-center"
+    >
       <div className="max-w-[130px] w-full bg-[#F2F3F8] h-32.5 rounded-full flex items-center justify-center mb-4">
-        <Image src={item.img} alt="Category" width={100} height={100} />
+        <Image src={item.img} alt={item.title} width={100} height={100} />
       </div>
 
       <div className="flex justify-center">
@@ -14,7 +26,7 @@ const SingleItem = ({ item }: { item: Category }) => {
           {item.title}
         </h3>
       </div>
-    </a>
+    </Link>
   );
 };
 

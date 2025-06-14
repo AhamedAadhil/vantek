@@ -14,9 +14,12 @@ import {
 } from "lucide-react";
 import SidebarShop from "../ShopWithSidebar/SidebarShop";
 import { useSearchParams } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 const SearchWithSidebar = () => {
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
   // Get query params
   const search = searchParams.get("search") || "";
@@ -46,8 +49,18 @@ const SearchWithSidebar = () => {
     return `search_cache_${search}_${mainCategory}_page_${page}_filters_${filterKey}`;
   };
 
+  const clearAllFilters = () => {
+    setSelected({});
+    setCurrentPage(1);
+
+    const newParams = new URLSearchParams(); // Empty params
+    router.replace(`${pathname}?${newParams.toString()}`);
+  };
+
   // Fetch products based on search, mainCategory, page, and filters
   const fetchData = async (page = 1) => {
+    if (page < 1) page = 1;
+
     const cacheKey = buildCacheKey(page, selected, search, mainCategory);
 
     // Check cache first
@@ -180,7 +193,7 @@ const SearchWithSidebar = () => {
                       <p>Filters:</p>
                       <button
                         className="text-blue"
-                        onClick={() => setSelected({})}
+                        onClick={clearAllFilters}
                         type="button"
                       >
                         Clean All
