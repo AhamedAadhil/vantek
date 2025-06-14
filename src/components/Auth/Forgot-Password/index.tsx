@@ -17,7 +17,11 @@ const ForgotPassword = () => {
 
     try {
       const res = await fetch(
-        `/forgot-password`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/forgot-password`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

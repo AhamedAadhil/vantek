@@ -3,7 +3,11 @@ export const fetchCartHelper = async (user, dispatch, setCart) => {
   if (user) {
     try {
       const res = await fetch(
-        `/cart/${user._id}`
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/cart/${user._id}`
       );
       const data = await res.json();
 

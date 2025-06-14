@@ -484,7 +484,7 @@ export const menuData: Menu[] = rawMenu.map((main) => ({
       ? main.submenu.map((sub) => ({
           ...sub,
           path: "/shop",
-          apiUrl: `/api/products?mainCategory=${encodeURIComponent(
+          apiUrl: `/products?mainCategory=${encodeURIComponent(
             main.title
           )}&subCategory1=${encodeURIComponent(sub.title)}`,
         }))

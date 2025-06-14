@@ -42,7 +42,13 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
 
   useEffect(() => {
     const fetchProduct = async () => {
-      const res = await fetch(`/api/products/${productId}`);
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/${productId}`
+      );
       const data = await res.json();
       if (res.ok) {
         const product = data.product;
@@ -160,11 +166,18 @@ const EditProduct = ({ productId }: { productId: string; onClose }) => {
       variantDeletes,
     };
 
-    const res = await fetch("/api/admin/product", {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+    const res = await fetch(
+      `${
+        process.env.NODE_ENV === "production"
+          ? process.env.NEXT_PUBLIC_BASEURL
+          : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+      }/admin/product`,
+      {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
 
     const result = await res.json();
     if (res.ok) {

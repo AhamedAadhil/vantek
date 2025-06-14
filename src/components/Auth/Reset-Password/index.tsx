@@ -33,11 +33,18 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      const res = await fetch("/api/reset-password", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token, userId, password }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/reset-password`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token, userId, password }),
+        }
+      );
 
       const data = await res.json();
       setLoading(false);

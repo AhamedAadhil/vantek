@@ -44,14 +44,21 @@ const AddressModal = ({ isOpen, closeModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch("/api/me/update-address", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          userId: user?._id,
-        },
-        body: JSON.stringify({ address: formData }),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/me/update-address`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            userId: user?._id,
+          },
+          body: JSON.stringify({ address: formData }),
+        }
+      );
       const data = await res.json();
       if (!data.success) {
         // alert(data.message || "Failed to update address");

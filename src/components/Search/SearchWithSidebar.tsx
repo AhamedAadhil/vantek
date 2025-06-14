@@ -96,7 +96,13 @@ const SearchWithSidebar = () => {
         }
       });
 
-      const res = await fetch(`/api/products?${searchQuery.toString()}`);
+      const res = await fetch(
+        `/${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products?${searchQuery.toString()}`
+      );
       const data = await res.json();
 
       if (res.ok) {

@@ -53,7 +53,11 @@ const SingleGridItem = ({ item }: { item: Product }) => {
 
     try {
       const res = await fetch(
-        `/products/wishlist`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -130,8 +134,11 @@ const SingleGridItem = ({ item }: { item: Product }) => {
         </p>
       </div>
 
-      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 cursor-pointer" onClick={() => router.push(`/product/${item?._id}`)}>
-         {item?.name} 
+      <h3
+        className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 cursor-pointer"
+        onClick={() => router.push(`/product/${item?._id}`)}
+      >
+        {item?.name}
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">

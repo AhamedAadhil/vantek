@@ -55,7 +55,11 @@ const Signup = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `/signup`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -131,10 +135,8 @@ const Signup = () => {
                   />
                 </div>
 
-
                 {/* Password */}
                 <div className="mb-5 relative">
-
                   <label htmlFor="password" className="block mb-2.5">
                     Password <span className="text-red">*</span>
                   </label>
@@ -163,7 +165,6 @@ const Signup = () => {
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
                     className="absolute right-4 top-11 translate-y-[-50%] text-gray-500 hover:text-dark mt-4"
-
                   >
                     {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                   </button>
@@ -176,10 +177,8 @@ const Signup = () => {
                   <br />– Minimum 6 characters
                 </p>
 
-
                 {/* Confirm Password */}
                 <div className="mb-5.5 relative">
-
                   <label htmlFor="confirmPassword" className="block mb-2.5">
                     Re-type Password <span className="text-red">*</span>
                   </label>
@@ -195,10 +194,8 @@ const Signup = () => {
                   />
                   <button
                     type="button"
-
                     onClick={() => setShowConfirmPassword((prev) => !prev)}
                     className="absolute right-4 top-11 translate-y-[-50%] text-gray-500 hover:text-dark mt-4"
-
                   >
                     {showConfirmPassword ? (
                       <EyeOff size={20} />
@@ -206,7 +203,6 @@ const Signup = () => {
                       <Eye size={20} />
                     )}
                   </button>
-
                 </div>
 
                 <div className="mb-5">

@@ -20,7 +20,13 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await fetch("/api/admin/order");
+        const res = await fetch(
+          `${
+            process.env.NODE_ENV === "production"
+              ? process.env.NEXT_PUBLIC_BASEURL
+              : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+          }/admin/order`
+        );
         if (!res.ok) throw new Error("Failed to fetch orders");
         const data = await res.json();
         setOrders(data.data || []);

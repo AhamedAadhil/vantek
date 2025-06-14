@@ -153,7 +153,11 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     }
     try {
       const res = await fetch(
-        `/cart`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/cart`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -210,7 +214,11 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
     try {
       const res = await fetch(
-        `/products/wishlist`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -233,7 +241,13 @@ const ShopDetails = ({ productId }: { productId: string }) => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await fetch(`/api/products/${productId}`);
+        const res = await fetch(
+          `${
+            process.env.NODE_ENV === "production"
+              ? process.env.NEXT_PUBLIC_BASEURL
+              : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+          }/products/${productId}`
+        );
         const data = await res.json();
 
         if (res.ok) {

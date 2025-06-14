@@ -52,7 +52,13 @@ const ShopWithSidebar = () => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await fetch(apiUrl);
+        const res = await fetch(
+          `${
+            process.env.NODE_ENV === "production"
+              ? process.env.NEXT_PUBLIC_BASEURL
+              : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+          }${apiUrl}` || apiUrl
+        );
         const data = await res.json();
 
         setProducts(data.products || []);
@@ -117,7 +123,13 @@ const ShopWithSidebar = () => {
         }
       });
 
-      const res = await fetch(`/api/products?${searchParams.toString()}`);
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products?${searchParams.toString()}`
+      );
       const data = await res.json();
 
       if (res.ok) {

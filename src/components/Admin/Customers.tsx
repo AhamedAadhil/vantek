@@ -21,7 +21,13 @@ const Customers = () => {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("/api/admin/user");
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/user`
+      );
       const data = await res.json();
       if (data.success) {
         setUsers(data.data);
@@ -56,9 +62,16 @@ const Customers = () => {
   const handleToggle = async (user) => {
     setActiveToggleId(user._id);
     try {
-      const res = await fetch(`/api/admin/user/${user._id}`, {
-        method: "PATCH",
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/user/${user._id}`,
+        {
+          method: "PATCH",
+        }
+      );
       const data = await res.json();
       if (res.ok && data.success) {
         await fetchUsers();
@@ -76,9 +89,16 @@ const Customers = () => {
   const confirmDelete = async () => {
     try {
       // Replace with your actual delete API endpoint
-      const res = await fetch(`/api/admin/user/${selectedId}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/user/${selectedId}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
       if (data.success) {
         setUsers((prev) => prev.filter((user) => user._id !== selectedId));

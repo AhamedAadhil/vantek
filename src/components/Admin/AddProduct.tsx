@@ -104,7 +104,11 @@ const AddProduct = () => {
 
     try {
       const res = await fetch(
-        `/admin/product`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/product`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -266,46 +270,45 @@ const AddProduct = () => {
             <small className="text-gray-400">
               *Add a rich description about the product (1500 characters max)
             </small>
-            
-            <div className="mb-4">
-  <label className="block mb-1 font-medium">Tags</label>
-  <div className="flex flex-wrap gap-2 mb-2">
-    {tags.map((tag, index) => (
-      <span
-        key={index}
-        className="bg-dark-3 text-white px-2 py-1 rounded-md flex items-center text-xs"
-      >
-        {tag}
-        <X
-          size={16}
-          className="ml-2 cursor-pointer"
-          onClick={() =>
-            setTags(tags.filter((_, i) => i !== index))
-          }
-        />
-      </span>
-    ))}
-  </div>
-  <input
-    type="text"
-    className="w-full p-2 rounded bg-meta-2 text-white"
-    placeholder="Type a tag and press Enter or Comma"
-    onKeyDown={(e) => {
-      if (
-        (e.key === "Enter" || e.key === ",") &&
-        e.currentTarget.value.trim()
-      ) {
-        e.preventDefault();
-        const newTag = e.currentTarget.value.trim();
-        if (!tags.includes(newTag)) {
-          setTags([...tags, newTag]);
-        }
-        e.currentTarget.value = "";
-      }
-    }}
-  />
-</div>
 
+            <div className="mb-4">
+              <label className="block mb-1 font-medium">Tags</label>
+              <div className="flex flex-wrap gap-2 mb-2">
+                {tags.map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-dark-3 text-white px-2 py-1 rounded-md flex items-center text-xs"
+                  >
+                    {tag}
+                    <X
+                      size={16}
+                      className="ml-2 cursor-pointer"
+                      onClick={() =>
+                        setTags(tags.filter((_, i) => i !== index))
+                      }
+                    />
+                  </span>
+                ))}
+              </div>
+              <input
+                type="text"
+                className="w-full p-2 rounded bg-meta-2 text-white"
+                placeholder="Type a tag and press Enter or Comma"
+                onKeyDown={(e) => {
+                  if (
+                    (e.key === "Enter" || e.key === ",") &&
+                    e.currentTarget.value.trim()
+                  ) {
+                    e.preventDefault();
+                    const newTag = e.currentTarget.value.trim();
+                    if (!tags.includes(newTag)) {
+                      setTags([...tags, newTag]);
+                    }
+                    e.currentTarget.value = "";
+                  }
+                }}
+              />
+            </div>
           </div>
 
           {/* Right Column */}

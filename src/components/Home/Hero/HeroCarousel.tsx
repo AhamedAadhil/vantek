@@ -28,7 +28,13 @@ const HeroCarousal = () => {
         }
       }
 
-      const res = await fetch("/api/carousel");
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/carousel`
+      );
       if (!res.ok) {
         throw new Error("Failed to fetch banners.");
       }

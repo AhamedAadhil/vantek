@@ -16,7 +16,7 @@ import OrderStatusBreakdown from "./OrderStatusBreakdown";
 
 const Dashboard = () => {
   const [insights, setInsights] = useState(null);
-   const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -32,15 +32,22 @@ const Dashboard = () => {
   });
 
   const formattedDate = currentTime.toLocaleDateString();
-  
+
   const fetchInsights = async () => {
     try {
-      const res = await fetch("/api/admin/insights", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/insights`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to fetch insights");
@@ -57,11 +64,8 @@ const Dashboard = () => {
 
   console.log("Insights Data:", insights);
   return (
-    
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 w-full bg-[#000000] p-4">
-       
       <div className="h-fit">
-        
         <div className="bg-[#202020] border border-gray-600 p-2 rounded-lg flex items-center space-x-4 shadow-md">
           <div className="p-3 bg-gray-6 rounded-full">
             <DollarSign className="text-white" size={24} />
@@ -74,10 +78,12 @@ const Dashboard = () => {
               </span>
             </div>
             <span
-               className={
+              className={
                 insights?.change?.salesGrowth?.impact === "positive"
                   ? `text-xs text-green-light-2`
-                  :  insights?.change?.salesGrowth?.impact === "negative" ? `text-xs text-red-light-2` : `text-xs text-blue-light-2`
+                  : insights?.change?.salesGrowth?.impact === "negative"
+                  ? `text-xs text-red-light-2`
+                  : `text-xs text-blue-light-2`
               }
             >
               {insights?.change?.salesGrowth?.percentage}%{" "}
@@ -100,10 +106,12 @@ const Dashboard = () => {
               </span>
             </div>
             <span
-               className={
+              className={
                 insights?.change?.orderGrowth?.impact === "positive"
                   ? `text-xs text-green-light-2`
-                  :  insights?.change?.orderGrowth?.impact === "negative" ? `text-xs text-red-light-2` : `text-xs text-blue-light-2`
+                  : insights?.change?.orderGrowth?.impact === "negative"
+                  ? `text-xs text-red-light-2`
+                  : `text-xs text-blue-light-2`
               }
             >
               {insights?.change?.orderGrowth?.percentage}%{" "}
@@ -129,7 +137,9 @@ const Dashboard = () => {
               className={
                 insights?.change?.customerGrowth?.impact === "positive"
                   ? `text-xs text-green-light-2`
-                  :  insights?.change?.customerGrowth?.impact === "negative" ? `text-xs text-red-light-2` : `text-xs text-blue-light-2`
+                  : insights?.change?.customerGrowth?.impact === "negative"
+                  ? `text-xs text-red-light-2`
+                  : `text-xs text-blue-light-2`
               }
             >
               {insights?.change?.customerGrowth?.percentage}%{" "}

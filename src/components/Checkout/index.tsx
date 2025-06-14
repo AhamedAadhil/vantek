@@ -57,16 +57,23 @@ const Checkout = () => {
     setCouponPercentage(0);
 
     try {
-      const response = await fetch("/api/coupon/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          code,
-          userId: user._id,
-        }),
-      });
+      const response = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/coupon/validate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            code,
+            userId: user._id,
+          }),
+        }
+      );
 
       const data = await response.json();
 
@@ -391,11 +398,18 @@ const Checkout = () => {
                                   : billingData.countryName,
                             },
                           };
-                          const orderRes = await fetch("/api/checkout", {
-                            method: "POST",
-                            headers: { "Content-Type": "application/json" },
-                            body: JSON.stringify(orderPayload),
-                          });
+                          const orderRes = await fetch(
+                            `${
+                              process.env.NODE_ENV === "production"
+                                ? process.env.NEXT_PUBLIC_BASEURL
+                                : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+                            }/checkout`,
+                            {
+                              method: "POST",
+                              headers: { "Content-Type": "application/json" },
+                              body: JSON.stringify(orderPayload),
+                            }
+                          );
 
                           if (!orderRes.ok) {
                             const errorData = await orderRes.json();
@@ -420,7 +434,11 @@ const Checkout = () => {
                         // Step 2: Create PayPal order
                         try {
                           const paypalRes = await fetch(
-                            "/api/paypal/create-order",
+                            `${
+                              process.env.NODE_ENV === "production"
+                                ? process.env.NEXT_PUBLIC_BASEURL
+                                : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+                            }/paypal/create-order`,
                             {
                               method: "POST",
                               headers: { "Content-Type": "application/json" },
@@ -453,7 +471,11 @@ const Checkout = () => {
                         // Step 3: Capture PayPal payment
                         try {
                           const captureRes = await fetch(
-                            "/api/paypal/capture-order",
+                            `${
+                              process.env.NODE_ENV === "production"
+                                ? process.env.NEXT_PUBLIC_BASEURL
+                                : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+                            }/paypal/capture-order`,
                             {
                               method: "POST",
                               headers: { "Content-Type": "application/json" },

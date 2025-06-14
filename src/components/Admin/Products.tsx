@@ -74,7 +74,11 @@ const ProductList = () => {
     try {
       setIsLoading(true); // Start spinner
       const res = await fetch(
-        `/api/products`
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products`
       );
       const data = await res.json();
 
@@ -98,7 +102,11 @@ const ProductList = () => {
   ) => {
     try {
       const res = await fetch(
-        `/admin/product`,
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/product`,
         {
           method: "PATCH",
           headers: {

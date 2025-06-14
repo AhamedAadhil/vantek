@@ -3,7 +3,11 @@ export const fetchWishlistHelper = async (user, dispatch, setWishlist) => {
   if (user) {
     try {
       const res = await fetch(
-        `/products/wishlist`
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/products/wishlist`
       );
       const data = await res.json();
 

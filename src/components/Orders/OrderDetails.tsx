@@ -218,7 +218,11 @@ const OrderDetails = ({ orderItem }: any) => {
                                 onClose={() => setIsModalOpen(false)}
                                 onSubmit={async (rate, comment) => {
                                   const res = await fetch(
-                                    "/api/products/reviews",
+                                    `${
+                                      process.env.NODE_ENV === "production"
+                                        ? process.env.NEXT_PUBLIC_BASEURL
+                                        : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+                                    }/products/reviews`,
                                     {
                                       method: "POST",
                                       headers: {

@@ -70,13 +70,20 @@ const BannerList = () => {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/admin/carousel", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/carousel`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
       const data = await res.json();
 
@@ -109,9 +116,16 @@ const BannerList = () => {
 
   const handleDelete = async (id: string) => {
     try {
-      const res = await fetch(`/api/admin/carousel?id=${id}`, {
-        method: "DELETE",
-      });
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/carousel?id=${id}`,
+        {
+          method: "DELETE",
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         throw new Error(data.message || "Failed to delete banner.");
@@ -124,7 +138,13 @@ const BannerList = () => {
 
   const fetchBanners = async () => {
     try {
-      const res = await fetch("/api/admin/carousel");
+      const res = await fetch(
+        `${
+          process.env.NODE_ENV === "production"
+            ? process.env.NEXT_PUBLIC_BASEURL
+            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
+        }/admin/carousel`
+      );
       if (!res.ok) {
         throw new Error("Failed to fetch banners.");
       }
@@ -253,7 +273,11 @@ const BannerList = () => {
                       </div>
                       <div>
                         <label className="block text-sm mb-1">
-                          Upload Image <span className="text-xs text-gray-6"> [ Size 354px X 361px ] </span>
+                          Upload Image{" "}
+                          <span className="text-xs text-gray-6">
+                            {" "}
+                            [ Size 354px X 361px ]{" "}
+                          </span>
                         </label>
                         <input
                           type="file"
