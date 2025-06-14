@@ -134,8 +134,8 @@ const SingleGridItem = ({ item }: { item: Product }) => {
         </p>
       </div>
 
-      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5">
-        <Link href="/product"> {item?.name} </Link>
+      <h3 className="font-medium text-dark ease-out duration-200 hover:text-blue mb-1.5 cursor-pointer" onClick={() => router.push(`/product/${item?._id}`)}>
+         {item?.name} 
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">

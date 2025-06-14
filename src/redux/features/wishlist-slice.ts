@@ -24,8 +24,8 @@ type WishListProduct = {
   isVisible: boolean;
   overAllRating: number;
   reviews: any[]; // If you want you can type this more strongly
-  createdAt: Date;
-  updatedAt: Date;
+   createdAt: Date | string;
+  updatedAt: Date | string;
 };
 
 type InitialState = {
