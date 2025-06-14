@@ -16,8 +16,11 @@ import PreLoader from "../Common/PreLoader";
 import { parseCategoriesFromApiUrl } from "@/helper/parseCategoryFromApiUrl";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useRouter, usePathname } from "next/navigation";
 
 const ShopWithSidebar = () => {
+  const router = useRouter();
+  const pathname = usePathname();
   const apiUrl = useSelector((state: RootState) => state.shopFilter.apiUrl);
   console.log("API URL:", apiUrl);
   const [productStyle, setProductStyle] = useState("grid");
@@ -32,11 +35,18 @@ const ShopWithSidebar = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
+  const clearAllFilters = () => {
+    setSelected({});
+    setCurrentPage(1);
+
+    const newParams = new URLSearchParams(); // Empty params
+    router.replace(`${pathname}?${newParams.toString()}`);
+  };
+
   // 2. When apiUrl changes, fetch products
   useEffect(() => {
     if (!apiUrl || apiUrl === "") {
-      setLoading(false);
-      return; // no apiUrl, no fetch
+      fetchData(1);
     }
 
     const fetchProducts = async () => {
@@ -69,6 +79,7 @@ const ShopWithSidebar = () => {
   };
 
   const fetchData = async (page = 1) => {
+    if (page < 1) page = 1;
     setLoading(true);
     const cacheKey = buildCacheKey(page, selected);
 
@@ -202,7 +213,7 @@ const ShopWithSidebar = () => {
               >
                 <ArrowRightLeft />
               </button>
-              
+
               {/* <button
                 onClick={() => setProductSidebar(!productSidebar)}
                 aria-label="button for product sidebar toggle"
@@ -221,7 +232,9 @@ const ShopWithSidebar = () => {
                   <div className="bg-white shadow-1 rounded-lg py-4 px-5">
                     <div className="flex items-center justify-between">
                       <p>Filters:</p>
-                      <button className="text-blue">Clean All</button>
+                      <button onClick={clearAllFilters} className="text-blue">
+                        Clean All
+                      </button>
                     </div>
                   </div>
                   <SidebarShop selected={selected} setSelected={setSelected} />
