@@ -153,11 +153,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
     }
     try {
       const res = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/cart`,
+        `/cart`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -214,11 +210,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
 
     try {
       const res = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/products/wishlist`,
+        `/products/wishlist`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

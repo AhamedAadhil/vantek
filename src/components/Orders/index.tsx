@@ -7,11 +7,7 @@ const Orders = () => {
   const fetchOrders = async () => {
     try {
       const response = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/me/orders`
+        `/me/orders`
       );
       const data = await response.json();
       setOrders(data.orders);

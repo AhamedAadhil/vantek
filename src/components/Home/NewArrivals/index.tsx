@@ -14,11 +14,7 @@ const NewArrival = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/products?featuredProduct=true&limit=10`
+        `/products?featuredProduct=true&limit=10`
       );
       const data = await res.json();
 

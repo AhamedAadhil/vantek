@@ -55,11 +55,7 @@ const Signup = () => {
     try {
       setLoading(true);
       const res = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/signup`,
+        `/signup`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

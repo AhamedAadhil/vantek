@@ -11,11 +11,7 @@ const BestSeller = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        `${
-          process.env.NODE_ENV === "production"
-            ? process.env.NEXT_PUBLIC_BASEURL
-            : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/products?topSellingProduct=true&limit=10`
+        `/products?topSellingProduct=true&limit=10`
       );
       const data = await res.json();
 
