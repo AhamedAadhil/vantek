@@ -11,7 +11,7 @@ const BestSeller = () => {
   const fetchData = async () => {
     try {
       const res = await fetch(
-        `/products?topSellingProduct=true&limit=10`
+        `/api/products?topSellingProduct=true&limit=10`
       );
       const data = await res.json();
 
