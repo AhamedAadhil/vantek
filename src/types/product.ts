@@ -11,26 +11,28 @@
 //   };
 // };
 export type Product = {
-    _id: any; //added to resolve ts error
-    productCode: string;
-    name: string;
-    description: string;
-    mainCategory: string;
-    subCategory1: string;
-    subCategory2: string;
-    tags: string[];
-    images: string[];
-    variants: [{
-      name:string,
-      actualPrice:number,
-      labelPrice:number,
-      stock:number
-    }];
-    topSellingProduct: boolean;
-    featuredProduct: boolean;
-    isVisible: boolean;
-    overAllRating: number;
-    reviews: [];
-    createdAt: Date;
-    updatedAt: Date;
+  _id: any; //added to resolve ts error
+  productCode: string;
+  name: string;
+  description: string;
+  mainCategory: string;
+  subCategory1: string;
+  subCategory2: string;
+  tags: string[];
+  images: string[];
+  variants: [
+    {
+      name: string;
+      actualPrice: number;
+      labelPrice: number;
+      stock: number;
+    }
+  ];
+  topSellingProduct: boolean;
+  featuredProduct: boolean;
+  isVisible: boolean;
+  overAllRating: number;
+  reviews: [];
+  createdAt: Date | string;
+  updatedAt: Date | string;
 };

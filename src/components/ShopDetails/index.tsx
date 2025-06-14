@@ -57,6 +57,62 @@ const ShopDetails = ({ productId }: { productId: string }) => {
   const isInWishlist = wishlist.some(
     (wishItem) => wishItem._id === product?._id
   );
+
+  {
+    product && (
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            name: product.name,
+            image: product.images,
+            description: product.description,
+            sku: product.productCode,
+            brand: {
+              "@type": "Brand",
+              name: "Vantek",
+            },
+            aggregateRating: product.overAllRating
+              ? {
+                  "@type": "AggregateRating",
+                  ratingValue: product.overAllRating.toFixed(1),
+                  reviewCount: product.reviews.length,
+                }
+              : undefined,
+            offers: product.variants.map((variant: any) => ({
+              "@type": "Offer",
+              url: `${process.env.NEXT_PUBLIC_BASEURL}/shop-details/${product._id}`,
+              priceCurrency: "EUR",
+              price: variant.actualPrice,
+              priceValidUntil: "2025-12-31",
+              itemCondition: "https://schema.org/NewCondition",
+              availability:
+                variant.stock > 0
+                  ? "https://schema.org/InStock"
+                  : "https://schema.org/OutOfStock",
+              sku: variant._id,
+            })),
+            review: product.reviews.slice(0, 3).map((review: any) => ({
+              "@type": "Review",
+              author: {
+                "@type": "Person",
+                name: "Anonymous", // or fetch user name if available
+              },
+              datePublished: review.createdAt,
+              reviewBody: review.comment || "",
+              reviewRating: {
+                "@type": "Rating",
+                ratingValue: review.rate,
+              },
+            })),
+          }),
+        }}
+      />
+    );
+  }
+
   const handleIncrement = () =>
     setQuantity((prev) =>
       prev < product?.variants?.[selectedVariantIndex].stock ? prev + 1 : prev
@@ -216,13 +272,20 @@ const ShopDetails = ({ productId }: { productId: string }) => {
             {/* Column 1 - Product Images */}
             <div className="space-y-4">
               <div className="border rounded-xl overflow-hidden">
-                <Image
-                  src={product?.images[previewImg]}
-                  alt={product?.name}
-                  width={500}
-                  height={500}
-                  className="w-full object-cover"
-                />
+                {product?.images?.[previewImg] ? (
+                  <Image
+                    src={product.images[previewImg]}
+                    alt={product.name || "Product image"}
+                    width={500}
+                    height={500}
+                    className="w-full object-cover"
+                  />
+                ) : (
+                  // Optionally, render a placeholder or skeleton here
+                  <div
+                    style={{ width: 500, height: 500, background: "#eee" }}
+                  />
+                )}
               </div>
               <div className="flex gap-2">
                 {product?.images?.map((img: string, index: number) => (
@@ -235,7 +298,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                   >
                     <Image
                       src={img}
-                      alt={`Thumbnail ${index + 1}`}
+                      alt={product.name || `Thumbnail ${index + 1}`}
                       width={80}
                       height={80}
                       className="w-full h-full object-cover"
@@ -251,12 +314,13 @@ const ShopDetails = ({ productId }: { productId: string }) => {
                 {product?.name}
               </h2>
               <div className="flex justify-between items-center gap-2 text-sm">
-                
                 <span className="text-gray-600">
                   ⭐ {product?.overAllRating} Rating ({product?.reviews?.length}{" "}
                   Reviews)
                 </span>
-                <span className="font-semibold text-gray-900">SKU : {product?.productCode}</span>
+                <span className="font-semibold text-gray-900">
+                  SKU : {product?.productCode}
+                </span>
               </div>
               {/* <p className="text-sm text-gray-600">{product?.description}</p> */}
               <div

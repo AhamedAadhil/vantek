@@ -18,17 +18,17 @@ const PromoBanner = () => {
             </h2>
 
             <p>
-            Transit Custom 1st Gen’s Spare part are going upto 30% OFF for upcoming Weekend, Why are you waiting for !! Grab it and make your Van Unique.
+              Transit Custom 1st Gen’s Spare part are going upto 30% OFF for
+              upcoming Weekend, Why are you waiting for !! Grab it and make your
+              Van Unique.
             </p>
 
             <Link
               href="/shop"
               className="inline-flex font-medium text-custom-sm text-white bg-blue py-[11px] px-9.5 rounded-md ease-out duration-200 hover:bg-blue-dark mt-7.5"
             >
-              
-                Buy Now
+              Buy Now
             </Link>
-            
           </div>
 
           <Image
@@ -37,25 +37,24 @@ const PromoBanner = () => {
             className="absolute bottom-0 right-0 -z-1 scale-150 hidden sm:block"
             width={320}
             height={350}
+            style={{ width: "320px", height: "auto" }}
           />
-
         </div>
 
         <div className="grid gap-7.5 grid-cols-1 lg:grid-cols-2">
           {/* <!-- promo banner small --> */}
           <div className="relative z-1 overflow-hidden rounded-lg bg-[#DBF4F3] py-10 xl:py-16 px-4 sm:px-7.5 xl:px-10">
-          <Image
-            src="/images/promo/promo-van22.png"
-            alt="promo img"
-            className="absolute top-1/2 -translate-y-1/2 left-0 -z-1 scale-105 hidden sm:block"
-            width={241}
-            height={241}
-          />
+            <Image
+              src="/images/promo/promo-van22.png"
+              alt="promo img"
+              className="absolute top-1/2 -translate-y-1/2 left-0 -z-1 scale-105 hidden sm:block"
+              width={241}
+              height={241}
+              style={{ width: "241px", height: "auto" }}
+            />
 
             <div className="text-right">
-              <span className="block text-lg text-dark mb-1.5">
-                VW-T5
-              </span>
+              <span className="block text-lg text-dark mb-1.5">VW-T5</span>
 
               <h2 className="font-bold text-xl lg:text-heading-4 text-dark mb-2.5">
                 Premium Spares
@@ -65,10 +64,10 @@ const PromoBanner = () => {
                 Flat 20% off
               </p>
               <Link
-              href="/shop"
-              className="inline-flex font-medium text-custom-sm text-white bg-teal py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-teal-dark mt-9"
+                href="/shop"
+                className="inline-flex font-medium text-custom-sm text-white bg-teal py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-teal-dark mt-9"
               >
-              Grab Now
+                Grab Now
               </Link>
             </div>
           </div>
@@ -93,14 +92,13 @@ const PromoBanner = () => {
               </h2>
 
               <p className="max-w-[285px] text-custom-sm">
-                Up to 40% to VW-T7 Camping
-                Gadgets for this summer season
+                Up to 40% to VW-T7 Camping Gadgets for this summer season
               </p>
               <Link
-              href="/shop"
-              className="inline-flex font-medium text-custom-sm text-white bg-orange py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-orange-dark mt-7.5"
+                href="/shop"
+                className="inline-flex font-medium text-custom-sm text-white bg-orange py-2.5 px-8.5 rounded-md ease-out duration-200 hover:bg-orange-dark mt-7.5"
               >
-              Buy Now
+                Buy Now
               </Link>
             </div>
           </div>

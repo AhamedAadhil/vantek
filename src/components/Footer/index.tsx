@@ -203,27 +203,42 @@ const Footer = () => {
 
             <ul className="flex flex-col gap-3.5">
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/my-account">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/my-account"
+                >
                   My Account
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/signin">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/signin"
+                >
                   Login / Register
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/cart">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/cart"
+                >
                   Cart
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/wishlist">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/wishlist"
+                >
                   Wishlist
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/shop">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/shop"
+                >
                   Shop
                 </a>
               </li>
@@ -257,7 +272,10 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <a className="ease-out duration-200 hover:text-blue" href="/contact">
+                <a
+                  className="ease-out duration-200 hover:text-blue"
+                  href="/contact"
+                >
                   Contact
                 </a>
               </li>
@@ -338,7 +356,14 @@ const Footer = () => {
         <div className="max-w-[1170px] mx-auto px-4 sm:px-8 xl:px-0">
           <div className="flex gap-5 flex-wrap items-center justify-between">
             <p className="text-dark font-medium">
-              &copy; {year}. All rights reserved by VANTEK. Developed by <a href="https://www.digiflix.com" target="_blank" rel="noopener noreferrer">DigiFlix</a>
+              &copy; {year}. All rights reserved by VANTEK. Developed by{" "}
+              <a
+                href="https://www.digiflix.com"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                DigiFlix
+              </a>
             </p>
 
             <div className="flex flex-wrap items-center gap-4">
@@ -375,6 +400,7 @@ const Footer = () => {
                     alt="apple pay"
                     width={52.94}
                     height={22}
+                    style={{ width: "52.94px", height: "22px" }}
                   />
                 </a>
                 <a href="#" aria-label="payment system with google pay">

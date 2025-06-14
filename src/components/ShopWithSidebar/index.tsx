@@ -22,7 +22,6 @@ const ShopWithSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
   const apiUrl = useSelector((state: RootState) => state.shopFilter.apiUrl);
-  console.log("API URL:", apiUrl);
   const [productStyle, setProductStyle] = useState("grid");
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
@@ -47,6 +46,7 @@ const ShopWithSidebar = () => {
   useEffect(() => {
     if (!apiUrl || apiUrl === "") {
       fetchData(1);
+      return;
     }
 
     const fetchProducts = async () => {

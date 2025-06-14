@@ -7,6 +7,7 @@ type InitialState = {
 
 const initialState = {
   value: {
+    _id: "",
     productCode: "",
     name: "",
     description: "",
@@ -28,8 +29,8 @@ const initialState = {
     isVisible: true,
     overAllRating: 0,
     reviews: [],
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   } as Product,
 } as InitialState;
 

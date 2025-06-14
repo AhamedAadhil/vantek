@@ -100,6 +100,7 @@ const Header = () => {
                 alt="Logo"
                 width={219}
                 height={36}
+                style={{ width: "150px", height: "auto" }}
               />
             </Link>
 
