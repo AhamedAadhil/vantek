@@ -29,7 +29,7 @@ export const POST = async (req: NextRequest) => {
           purchase_units: [
             {
               amount: {
-                currency_code: "EUR",
+                currency_code: "GBP",
                 value: amount.toString(),
               },
             },

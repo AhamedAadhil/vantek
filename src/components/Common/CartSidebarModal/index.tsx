@@ -13,6 +13,7 @@ import SingleItem from "./SingleItem";
 import Link from "next/link";
 import EmptyCart from "./EmptyCart";
 import { fetchCartHelper } from "@/helper/getCartHelper";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const CartSidebarModal = () => {
   const { isCartModalOpen, closeCartModal } = useCartModalContext();
@@ -101,7 +102,7 @@ const CartSidebarModal = () => {
             <div className="flex items-center justify-between gap-5 mb-6">
               <p className="font-medium text-xl text-dark">Subtotal:</p>
 
-              <p className="font-medium text-xl text-dark">${totalPrice}</p>
+              <p className="font-medium text-xl text-dark">{formatToEuro(totalPrice)}</p>
             </div>
 
             <div className="flex items-center gap-4">

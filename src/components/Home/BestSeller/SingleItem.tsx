@@ -9,6 +9,7 @@ import { addItemToCart } from "@/redux/features/cart-slice";
 import Image from "next/image";
 import Link from "next/link";
 import { addItemToWishlist } from "@/redux/features/wishlist-slice";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const SingleItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -79,9 +80,9 @@ const SingleItem = ({ item }: { item: Product }) => {
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
-            <span className="text-dark">${item?.variants[0]?.actualPrice}</span>
+            <span className="text-dark">{formatToEuro(item?.variants[0]?.actualPrice)}</span>
             <span className="text-dark-4 line-through">
-              ${item.variants[0]?.labelPrice}
+              {formatToEuro(item.variants[0]?.labelPrice)}
             </span>
           </span>
         </div>

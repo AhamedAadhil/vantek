@@ -16,6 +16,7 @@ import Link from "next/link";
 import { Eye, Heart, Star } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const ProductItem = ({ item }: { item: Product }) => {
   const { openModal } = useModalContext();
@@ -150,9 +151,9 @@ const ProductItem = ({ item }: { item: Product }) => {
       </h3>
 
       <span className="flex items-center gap-2 font-medium text-lg">
-        <span className="text-dark">${item.variants[0].actualPrice}</span>
+        <span className="text-dark">{formatToEuro(item.variants[0]?.actualPrice)}</span>
         <span className="text-dark-4 line-through">
-          ${item.variants[0].labelPrice}
+          {formatToEuro(item.variants[0]?.labelPrice)}
         </span>
       </span>
     </div>

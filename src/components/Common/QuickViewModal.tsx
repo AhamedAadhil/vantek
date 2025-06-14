@@ -15,6 +15,7 @@ import {
   addItemToWishlist,
   removeItemFromWishlist,
 } from "@/redux/features/wishlist-slice";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const QuickViewModal = () => {
   const { isModalOpen, closeModal } = useModalContext();
@@ -225,10 +226,10 @@ const QuickViewModal = () => {
 
                   <span className="flex items-center gap-2">
                     <span className="font-semibold text-dark text-xl xl:text-heading-4">
-                      ${product.variants[0].actualPrice}
+                      {formatToEuro(product.variants[0]?.actualPrice)}
                     </span>
                     <span className="font-medium text-dark-4 text-lg xl:text-2xl line-through">
-                      ${product.variants[0].labelPrice}
+                      {formatToEuro(product.variants[0]?.labelPrice)}
                     </span>
                   </span>
                 </div>

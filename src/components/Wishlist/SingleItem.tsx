@@ -13,6 +13,7 @@ import { addItemToCart } from "@/redux/features/cart-slice";
 import Image from "next/image";
 import { XCircle } from "lucide-react";
 import { toast } from "sonner";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const SingleItem = ({ item }) => {
   const wishlist = useSelector(
@@ -118,7 +119,7 @@ const SingleItem = ({ item }) => {
 
       {/* Price */}
       <div className="w-full sm:w-1/2 text-sm text-dark sm:text-left mt-2 sm:mt-0">
-        ${item?.variants?.[0]?.actualPrice || "0.00"}
+        {formatToEuro(item?.variants?.[0]?.actualPrice) || "£0.00"}
       </div>
     </div>
   );

@@ -309,8 +309,8 @@ const OrderDetails = ({ orderItem }: any) => {
                   : orderItem.totalAmount > 150
                   ? "Free shipping"
                   : orderItem.shippingMethod === "standard"
-                  ? "4.50 EUR"
-                  : "8.50 EUR"}
+                  ? "4.50 GBP"
+                  : "8.50 GBP"}
               </span>
             </div>
             {/* ✅ Shipping Method (separate line, only if UK) */}

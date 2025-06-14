@@ -84,7 +84,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
             offers: product.variants.map((variant: any) => ({
               "@type": "Offer",
               url: `${process.env.NEXT_PUBLIC_BASEURL}/shop-details/${product._id}`,
-              priceCurrency: "EUR",
+              priceCurrency: "GBP",
               price: variant.actualPrice,
               priceValidUntil: "2025-12-31",
               itemCondition: "https://schema.org/NewCondition",

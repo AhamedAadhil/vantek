@@ -4,6 +4,7 @@ import { AppDispatch, RootState } from "@/redux/store";
 import Image from "next/image";
 import { Trash } from "lucide-react";
 import { removeFromCartHelper } from "@/helper/removeFromCartHelper";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const SingleItem = ({ item, removeItemFromCart }) => {
   const dispatch = useDispatch<AppDispatch>();
@@ -24,7 +25,7 @@ const SingleItem = ({ item, removeItemFromCart }) => {
           <h3 className="font-medium text-dark mb-1 ease-out duration-200 hover:text-blue">
             <a href="#"> {item.name} </a>
           </h3>
-          <p className="text-custom-sm">Price: ${item.actualPrice}</p>
+          <p className="text-custom-sm">Price: {formatToEuro(item.actualPrice)}</p>
           <p className="text-custom-sm">Quantity: x {item.quantity}</p>
         </div>
       </div>

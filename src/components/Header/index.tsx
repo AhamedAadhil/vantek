@@ -13,6 +13,7 @@ import Image from "next/image";
 import { Heart, Lock, Phone, Search, ShoppingCart, User } from "lucide-react";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
 import { clearApiUrl, setApiUrl } from "@/redux/features/shopFilter-slice";
+import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const Header = () => {
   const router = useRouter();
@@ -211,7 +212,7 @@ const Header = () => {
                       cart
                     </span>
                     <p className="font-medium text-custom-sm text-dark">
-                      ${totalPrice}
+                      {formatToEuro(totalPrice)}
                     </p>
                   </div>
                 </button>
