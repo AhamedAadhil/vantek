@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     // Compose description safely
     const description =
-      product.description?.slice(0, 160) ||
+      product.description?.replace(/<[^>]*>?/gm, "").slice(0, 160) ||
       `Buy ${product.name} online from Vantek.`;
 
     // Compose keywords from tags + categories + product name
@@ -60,7 +60,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       },
       twitter: {
         card: "summary_large_image",
-        site: "@VantekStore", // Replace with your Twitter handle
+        site: "@VantekStore",
         creator: "@VantekStore",
         title: product.name,
         description,

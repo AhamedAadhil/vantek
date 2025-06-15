@@ -68,7 +68,10 @@ const ShopDetails = ({ productId }: { productId: string }) => {
             "@type": "Product",
             name: product.name,
             image: product.images,
-            description: product.description,
+            description: product.description
+              ?.replace(/<[^>]*>?/gm, "")
+              .slice(0, 160),
+
             sku: product.productCode,
             brand: {
               "@type": "Brand",
@@ -86,7 +89,9 @@ const ShopDetails = ({ productId }: { productId: string }) => {
               url: `${process.env.NEXT_PUBLIC_BASEURL}/shop-details/${product._id}`,
               priceCurrency: "GBP",
               price: variant.actualPrice,
-              priceValidUntil: "2025-12-31",
+              priceValidUntil: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000)
+                .toISOString()
+                .split("T")[0], // ~6 months from now
               itemCondition: "https://schema.org/NewCondition",
               availability:
                 variant.stock > 0
@@ -98,7 +103,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
               "@type": "Review",
               author: {
                 "@type": "Person",
-                name: "Anonymous", // or fetch user name if available
+                name: "Ahamed Aathil Junain", // or fetch user name if available
               },
               datePublished: review.createdAt,
               reviewBody: review.comment || "",
