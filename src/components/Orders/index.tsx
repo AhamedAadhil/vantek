@@ -49,7 +49,6 @@ const Orders = () => {
             </div>
           )}
 
-
           {orders?.length > 0 ? (
             orders?.map((orderItem) => (
               <SingleOrder
@@ -60,7 +59,7 @@ const Orders = () => {
             ))
           ) : (
             <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">
-              You don't have any orders!
+              You don&apos;t have any orders!
             </p>
           )}
 
