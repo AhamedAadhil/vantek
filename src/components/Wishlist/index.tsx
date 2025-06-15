@@ -28,14 +28,14 @@ export const Wishlist = () => {
           </div>
 
           <div className="bg-white rounded-[10px] shadow-1">
-            <div className="w-full overflow-x-auto">
-              <div className="min-w-[1170px]">
+            <div className="w-fit overflow-x-auto">
+              <div className="lg:min-w-[1000px]">
                 {/* <!-- table header --> */}
                 <div className="hidden sm:flex items-center py-5.5 px-4 sm:px-6 md:px-10 border-b border-gray-200">
                   <div className="w-1/2">
                     <p className="text-dark font-medium">Product</p>
                   </div>
-                  <div className="w-1/2">
+                  <div className="pl-50 w-1/2">
                     <p className="text-dark font-medium">Price</p>
                   </div>
                 </div>

@@ -114,11 +114,13 @@ const SingleItem = ({ item }) => {
           >
             <a href="#">{item?.name}</a>
           </h3>
+          <p className="text-sm">SKU : {item?.productCode}</p>
+          <p className="text-xs">⭐ Review ({item?.overAllRating})</p>
         </div>
       </div>
 
       {/* Price */}
-      <div className="w-full sm:w-1/2 text-sm text-dark sm:text-left mt-2 sm:mt-0">
+      <div className="w-full sm:w-1/2 text-sm text-dark sm:text-left mt-2 lg:pl-50 sm:mt-0">
         {formatToEuro(item?.variants?.[0]?.actualPrice) || "£0.00"}
       </div>
     </div>

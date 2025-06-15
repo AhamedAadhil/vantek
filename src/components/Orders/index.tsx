@@ -27,7 +27,7 @@ const Orders = () => {
   return (
     <>
       <div className="w-full overflow-x-auto">
-        <div className="min-w-[770px]">
+        <div className="min-w-fit">
           {/* <!-- order item --> */}
           {orders?.length > 0 && (
             <div className="items-center justify-between py-4.5 px-7.5 hidden md:flex ">
@@ -49,6 +49,7 @@ const Orders = () => {
             </div>
           )}
 
+
           {orders?.length > 0 ? (
             orders?.map((orderItem) => (
               <SingleOrder
@@ -59,7 +60,7 @@ const Orders = () => {
             ))
           ) : (
             <p className="py-9.5 px-4 sm:px-7.5 xl:px-10">
-              You don&apos;t have any orders!
+              You don't have any orders!
             </p>
           )}
 

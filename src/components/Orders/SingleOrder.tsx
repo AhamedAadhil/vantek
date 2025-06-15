@@ -53,7 +53,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
 
           <div className="min-w-[113px]">
             <p className="text-custom-sm text-dark">
-              € {orderItem.totalAmount.toFixed(2)}
+              £ {orderItem.totalAmount.toFixed(2)}
             </p>
           </div>
 
@@ -103,7 +103,7 @@ const SingleOrder = ({ orderItem, smallView }: any) => {
 
             <div className="">
               <p className="text-custom-sm text-dark">
-                <span className="font-bold pr-2">Total:</span> $€{" "}
+                <span className="font-bold pr-2">Total:</span> £{" "}
                 {orderItem.totalAmount.toFixed(2)}
               </p>
             </div>

@@ -3,7 +3,7 @@ import { formatDateTime } from "@/helper/formatDateTime";
 import ReviewModal from "./ReviewModal";
 import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
 import { RootState } from "@/redux/store";
-import { Euro, ExternalLink, Link, Printer, Share } from "lucide-react";
+import {ExternalLink,} from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -16,8 +16,8 @@ const OrderDetails = ({ orderItem }: any) => {
   console.log(orderItem);
   return (
     <>
-      <div className="bg-dark text-white p-6 rounded-lg overflow-y-auto max-h-[90vh]">
-        <div className="bg-dark text-white p-6 rounded-lg">
+      <div className="bg-dark text-white p-3 sm:p-6 rounded-lg overflow-y-auto max-h-screen">
+        <div className="bg-dark text-white p-6 sm:p-2 rounded-lg overflow-y-auto">
           <div className="flex justify-between items-center border-b border-gray-700 pb-3">
             <h2 className="border-l-4 border-l-blue-600 pl-2 text-lg font-bold">
               Order No -{" "}
@@ -25,15 +25,15 @@ const OrderDetails = ({ orderItem }: any) => {
               <br />
               <span
                 className={`ml-2 inline-block rounded-full px-2 py-0.5 text-xs font-semibold 
-      ${
-        orderItem.status === "delivered"
-          ? "bg-green-100 text-green-700"
-          : orderItem.status === "pending"
-          ? "bg-yellow-100 text-yellow-700"
-          : orderItem.status === "cancelled"
-          ? "bg-red-100 text-red-700"
-          : "bg-gray-100 text-gray-700"
-      }`}
+                ${
+                  orderItem.status === "delivered"
+                    ? "bg-green-100 text-green-700"
+                    : orderItem.status === "pending"
+                    ? "bg-yellow-100 text-yellow-700"
+                    : orderItem.status === "cancelled"
+                    ? "bg-red-100 text-red-700"
+                    : "bg-gray-100 text-gray-700"
+                }`}
               >
                 {orderItem.status}
               </span>
@@ -319,12 +319,12 @@ const OrderDetails = ({ orderItem }: any) => {
                 <span>Shipping Method:</span>
                 <span
                   className={`px-2 py-1 rounded text-white text-sm font-medium uppercase
-        ${
-          orderItem.shippingMethod === "standard"
-            ? "bg-gray-600"
-            : "bg-blue-600"
-        }
-      `}
+                  ${
+                    orderItem.shippingMethod === "standard"
+                      ? "bg-gray-600"
+                      : "bg-blue-600"
+                  }
+                `}
                 >
                   {orderItem.shippingMethod}
                 </span>
@@ -336,14 +336,14 @@ const OrderDetails = ({ orderItem }: any) => {
             </div>
           </div>
 
-          <div className="flex justify-end space-x-3 mt-6">
+          {/* <div className="flex justify-end space-x-3 mt-6">
             <button className="flex items-center bg-teal-700 hover:bg-teal-900 text-white px-4 py-2 rounded">
               <Printer size={16} className="mr-2" /> Print
             </button>
             <button className="flex items-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
               <Share size={16} className="mr-2" /> Share Details
             </button>
-          </div>
+          </div> */}
         </div>
       </div>
     </>
