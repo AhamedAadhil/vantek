@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import { Toaster } from "sonner";
@@ -15,7 +14,6 @@ import { PreviewSliderProvider } from "../context/PreviewSliderContext";
 import PreviewSliderModal from "@/components/Common/PreviewSlider";
 
 import ScrollToTop from "@/components/Common/ScrollToTop";
-import PreLoader from "@/components/Common/PreLoader";
 import OfflineOverlay from "@/components/Common/OfflineOverlay";
 import ClientOnly from "@/components/Common/ClientOnly";
 
