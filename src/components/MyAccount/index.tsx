@@ -111,6 +111,7 @@ const MyAccount = () => {
     if (res.ok) {
       dispatch(updateUserName(data.name));
       toast.success("Name updated to " + data.name + " successfully!");
+      return;
     }
     toast.error("Name update failed: " + data.message);
     console.log("Name update failed", data.message);

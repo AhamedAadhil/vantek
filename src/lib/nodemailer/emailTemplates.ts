@@ -453,3 +453,41 @@ export const RESEND_VERIFICATION_OTP_TEMPLATE = (name: string, otp: string) => {
     </div>
   `;
 };
+
+export const CONTACT_FORM_TO_ADMIN_TEMPLATE = (
+  email: string,
+  message: string,
+  phone?: string,
+  subject?: string
+) => {
+  return `
+    <div style="max-width: 700px; margin: auto; padding: 20px; font-family: Arial, sans-serif; border: 1px solid #e0e0e0; border-radius: 10px;">
+      <h2 style="color: #2E86C1;">New Contact Form Submission</h2>
+      <p style="font-size: 16px; color: #333;">A new message has been submitted from the website contact form.</p>
+
+      <h3 style="color: #444; margin-top: 20px;">Details</h3>
+      <table style="width: 100%; font-size: 15px; border-collapse: collapse;">
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">Email:</td>
+          <td style="padding: 8px;">${email}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">Phone:</td>
+          <td style="padding: 8px;">${phone || "Not provided"}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">Subject:</td>
+          <td style="padding: 8px;">${subject || "Not provided"}</td>
+        </tr>
+        <tr>
+          <td style="padding: 8px; font-weight: bold; vertical-align: top;">Message:</td>
+          <td style="padding: 8px; white-space: pre-wrap; color: #555;">${message}</td>
+        </tr>
+      </table>
+
+      <p style="font-size: 14px; color: #888; margin-top: 30px;">Please respond to the user via the email provided above.</p>
+
+      <p style="font-size: 14px; color: #888;">Thanks,<br/><strong>Your Website Team</strong></p>
+    </div>
+  `;
+};

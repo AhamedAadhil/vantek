@@ -163,18 +163,22 @@ export const GET = async (req: NextRequest) => {
           name: 1,
           images: 1,
           variants: 1,
+          productCode: 1,
         }
       )
       .lean();
 
-    const products = dbProducts.flatMap((product) =>
-      product.variants.map((variant) => ({
-        name: product.name,
-        variantName: variant.name,
-        availableStocks: variant.stock,
-        inStock: variant.stock > 5,
-        image: product.images?.[0] || "/images/default.png",
-      }))
+    const lowStockProducts = dbProducts.flatMap((product) =>
+      product.variants
+        .filter((variant) => variant.stock < 5) // Filter variants with low stock
+        .map((variant) => ({
+          name: product.name,
+          variantName: variant.name,
+          availableStocks: variant.stock,
+          inStock: false,
+          productCode: product.productCode,
+          image: product.images?.[0] || "/images/default.png",
+        }))
     );
 
     // END OF LOW STOCK TABLE INFO
@@ -392,7 +396,7 @@ export const GET = async (req: NextRequest) => {
       },
       categoryData,
       topCustomers,
-      lowStockInfo: products,
+      lowStockInfo: lowStockProducts,
       orderStatusBreakdown: formattedBreakdown,
       recentOrders: await getRecentOrders(),
       topSellingProducts: await topSellingProductsInfo(),

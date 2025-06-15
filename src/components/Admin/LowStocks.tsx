@@ -28,6 +28,11 @@ const LowStocksTable = ({ lowStockInfo }) => {
         <h2 className="text-lg font-semibold flex items-center">
           <div className="w-1 h-5 bg-blues-500 mr-2"></div>
           Low Stock Products
+          <span
+            className={`ml-2 px-2 py-1 text-xs rounded-md text-reds-300 bg-reds-600/30`}
+          >
+            Low_Stock
+          </span>
         </h2>
       </div>
       <div className="overflow-x-auto">
@@ -35,8 +40,9 @@ const LowStocksTable = ({ lowStockInfo }) => {
           <thead>
             <tr className="text-left text-sm border-b bg-gray-6 border-gray-5">
               <th className="py-3 px-4 font-medium">Product Name</th>
+              <th className="py-3 px-4 font-medium">Product Code</th>
               <th className="py-3 px-4 font-medium">Variant</th>
-              <th className="py-3 px-4 font-medium">Stock</th>
+              {/* <th className="py-3 px-4 font-medium">Stock</th> */}
               <th className="py-3 px-4 font-medium text-right">
                 Available Stocks
               </th>
@@ -49,8 +55,9 @@ const LowStocksTable = ({ lowStockInfo }) => {
                 className="border-b border-gray-6 hover:bg-gray-6 transition-colors duration-150 ease-in-out"
               >
                 <td className="py-4 px-4">{product.name}</td>
+                <td className="py-4 px-4">{product.productCode}</td>
                 <td className="py-4 px-4">{product.variantName}</td>
-                <td className="py-4 px-4">
+                {/* <td className="py-4 px-4">
                   <span
                     className={`px-2 py-1 text-xs rounded-md ${
                       product.inStock
@@ -60,7 +67,7 @@ const LowStocksTable = ({ lowStockInfo }) => {
                   >
                     {product.inStock ? "In Stock" : "Low_Stock"}
                   </span>
-                </td>
+                </td> */}
                 <td className="py-4 px-4 text-right font-medium">
                   {product.availableStocks.toLocaleString()}
                 </td>
