@@ -131,12 +131,15 @@ const ShopDetails = ({ productId }: { productId: string }) => {
   };
 
   const handleShare = async () => {
+    if (!product || !product.name) {
+      toast.error("Product information is unavailable.");
+      return;
+    }
+
     if (navigator.share) {
       try {
         await navigator.share({
-          title: "Check out this product!",
-          text: "I found this amazing product on our store.",
-          url: window.location.href,
+          text: `Check out this amazing product on Vantek: ${product.name}\n${window.location.href}`,
         });
       } catch (err) {
         console.error("Sharing failed:", err);
@@ -147,6 +150,7 @@ const ShopDetails = ({ productId }: { productId: string }) => {
         toast.info("Link copied to clipboard!");
       } catch (err) {
         console.error("Clipboard write failed:", err);
+        toast.error("Failed to copy link to clipboard.");
       }
     }
   };
