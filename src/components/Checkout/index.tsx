@@ -1,10 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import Login from "./Login";
-import Shipping from "./Shipping";
 import ShippingMethod from "./ShippingMethod";
-import PaymentMethod from "./PaymentMethod";
 import Coupon from "./Coupon";
 import Billing from "./Billing";
 import Image from "next/image";
@@ -12,7 +9,7 @@ import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { removeAllItemsFromCart } from "@/redux/features/cart-slice";
-import { PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
+import { PayPalButtons } from "@paypal/react-paypal-js";
 import { PayPalScriptProvider } from "@paypal/react-paypal-js";
 import { updateUserAddress } from "@/redux/features/authSlice";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
@@ -212,9 +209,6 @@ const Checkout = () => {
                     shippingMethod={shippingMethod}
                     setShippingMethod={setShippingMethod}
                   />
-
-                  {/* <!-- payment box --> */}
-                  {/* <PaymentMethod /> */}
 
                   {/* <!-- order list box --> */}
                   <div className="bg-white shadow-1 rounded-[10px] mt-7.5">

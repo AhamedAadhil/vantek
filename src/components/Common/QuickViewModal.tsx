@@ -173,7 +173,11 @@ const QuickViewModal = () => {
 
             <div className="max-w-[445px] w-full">
               <span className="inline-block text-custom-xs font-medium text-white py-1 px-3 bg-green mb-6.5">
-                SALE 20% OFF
+                {(product?.overAllRating / 5) * 100 === 0
+                  ? "Not Rated"
+                  : `${
+                      (product?.overAllRating / 5) * 100
+                    }% Satisfaction Guaranteed`}
               </span>
 
               <h3 className="font-semibold text-xl xl:text-heading-5 text-dark mb-4">

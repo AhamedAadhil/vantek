@@ -15,13 +15,17 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import OfflineOverlay from "@/components/Common/OfflineOverlay";
 import ClientOnly from "@/components/Common/ClientOnly";
+import { Metadata } from "next";
 
-export const metadata = {
+export const metadata: Metadata = {
   title: "Vantek - UK’s Trusted Volkswagen Vehicle Parts Online Store",
-  description: "Shop genuine and high-quality Volkswagen vehicle parts at Vantek. Serving customers across the UK and internationally with fast delivery and expert support.",
+  description:
+    "Shop genuine and high-quality Volkswagen vehicle parts at Vantek. Serving customers across the UK and internationally with fast delivery and expert support.",
   icons: {
-    icon: "src\app\favicon.png", // can be .ico, .png, .svg
-  },
+    icon: "/favicon.png",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
