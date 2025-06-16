@@ -19,7 +19,6 @@ const AdminOrderDetails = () => {
 
   useEffect(() => {
     const storedOrder = sessionStorage.getItem("selectedOrder");
-    console.log("b4rrr updat session", JSON.parse(storedOrder));
     try {
       if (storedOrder && storedOrder !== "undefined") {
         const parsed = JSON.parse(storedOrder);

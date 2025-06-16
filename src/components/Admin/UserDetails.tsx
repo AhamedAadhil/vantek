@@ -6,8 +6,6 @@ import { formatDateTime } from "@/helper/formatDateTime";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const UserDetails = ({ user }) => {
-  console.log(user, "user details");
-
   if (!user) {
     return <div className="m-4 p-5 text-white">Loading user details...</div>;
   }

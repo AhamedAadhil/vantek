@@ -5,7 +5,6 @@ const Coupon = ({ onApplyCoupon, couponStatus, appliedCouponCode }) => {
 
   const handleApplyClick = () => {
     if (inputValue.trim() !== "") {
-      console.log("Applying coupon:", inputValue.trim());
       onApplyCoupon(inputValue.trim());
     }
   };

@@ -22,7 +22,6 @@ const Checkout = () => {
   const orderDataRef = useRef(null);
   const cart = useSelector((state: RootState) => state.cartReducer);
   const user = useSelector((state: RootState) => state.auth.user);
-  console.log(user);
   const [shippingMethod, setShippingMethod] = useState("standard");
   const [isUk, setIsUk] = useState(
     user?.address?.[0]?.country === "OutsideUK" ? false : true
@@ -100,10 +99,6 @@ const Checkout = () => {
   const isBillingDataValid = Object.values(
     billingDataWithoutUnwantedItems
   ).every((value) => value && value.trim() !== "");
-
-  useEffect(() => {
-    console.log("Billing Data:", billingData);
-  }, [billingData]);
 
   useEffect(() => {
     let fee = 0;
@@ -491,8 +486,6 @@ const Checkout = () => {
                           }
 
                           const captureData = await captureRes.json();
-
-                          console.log("Capture data:", captureData);
 
                           if (captureData.success) {
                             dispatch(removeAllItemsFromCart());

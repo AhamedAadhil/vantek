@@ -83,15 +83,15 @@ const MyAccount = () => {
       }/logout`
     );
     const data = await res.json();
-    console.log("Logout response:", data);
     if (data.success) {
       router.replace("/");
       dispatch(removeAllItemsFromWishlist());
       dispatch(removeAllItemsFromCart());
       dispatch(logout());
       toast.success("Logging out...");
+      return;
     }
-    // toast.error("Logout failed. Please try again.");
+    toast.error("Logout failed. Please try again.");
   };
 
   const handleUpdateName = async (name: string) => {

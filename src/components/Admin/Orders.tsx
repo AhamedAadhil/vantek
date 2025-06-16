@@ -40,8 +40,6 @@ const Orders = () => {
     fetchOrders();
   }, []);
 
-  console.log(orders);
-
   useEffect(() => {
     setCurrentPage(1);
   }, [search, fromDate, toDate]);
@@ -49,7 +47,6 @@ const Orders = () => {
   useEffect(() => {
     const filtered = orders.filter((order) => {
       const orderId = order.orderId || "Unknown";
-      console.log(orderId, "orderid");
       const matchesSearch = orderId
         .toLowerCase()
         .includes(search.toLowerCase());

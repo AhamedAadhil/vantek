@@ -3,7 +3,7 @@ import { formatDateTime } from "@/helper/formatDateTime";
 import ReviewModal from "./ReviewModal";
 import { getEstimatedDelivery } from "@/helper/getEstimatedDeliveryDate";
 import { RootState } from "@/redux/store";
-import {ExternalLink,} from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Image from "next/image";
 import React, { useState } from "react";
 import { useSelector } from "react-redux";
@@ -13,7 +13,6 @@ const OrderDetails = ({ orderItem }: any) => {
   const user = useSelector((state: RootState) => state.auth.user);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  console.log(orderItem);
   return (
     <>
       <div className="bg-dark text-white p-3 sm:p-6 rounded-lg overflow-y-auto max-h-screen">
