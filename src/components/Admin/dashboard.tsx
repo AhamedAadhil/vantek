@@ -1,13 +1,10 @@
 "use client";
 
-import { Currency, DollarSign, ShoppingBag, User } from "lucide-react";
-import { PieChart } from "recharts";
-import RevenueBreakdownChart from "./SalesByCatChart";
+import { DollarSign, ShoppingBag, User } from "lucide-react";
 import RecentOrdersTable from "./RecentOrdersTable";
 import TopSellingProductsTable from "./TopSellingItems";
 import TopCustomerTable from "./TopCustomer";
 import SalesReportChart from "./SalesByMonthChart";
-import PendingOrdersWidget from "./StateCards";
 import LowStocksTable from "./LowStocks";
 import SalesByCatergoryChart from "./SalesByCatChart";
 import { useEffect, useState } from "react";
