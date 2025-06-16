@@ -5,6 +5,9 @@ import { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Admin Dashboard | Vantek E-commerce",
   description: "Admin dashboard for managing Vantek E-commerce site",
+  icons: {
+    icon: "src\app\favicon.png", // can be .ico, .png, .svg
+  },
   robots: "noindex, nofollow", // Prevents search engines from indexing this page
 };
 

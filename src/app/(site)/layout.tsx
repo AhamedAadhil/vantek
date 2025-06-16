@@ -1,4 +1,3 @@
-"use client";
 import "../css/euclid-circular-a-font.css";
 import "../css/style.css";
 import { Toaster } from "sonner";
@@ -16,6 +15,14 @@ import PreviewSliderModal from "@/components/Common/PreviewSlider";
 import ScrollToTop from "@/components/Common/ScrollToTop";
 import OfflineOverlay from "@/components/Common/OfflineOverlay";
 import ClientOnly from "@/components/Common/ClientOnly";
+
+export const metadata = {
+  title: "Vantek - UK’s Trusted Volkswagen Vehicle Parts Online Store",
+  description: "Shop genuine and high-quality Volkswagen vehicle parts at Vantek. Serving customers across the UK and internationally with fast delivery and expert support.",
+  icons: {
+    icon: "src\app\favicon.png", // can be .ico, .png, .svg
+  },
+};
 
 export default function RootLayout({
   children,

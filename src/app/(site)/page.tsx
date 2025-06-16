@@ -8,6 +8,9 @@ export const metadata: Metadata = {
     "Shop genuine and high-quality Volkswagen vehicle parts at Vantek. Serving customers across the UK and internationally with fast delivery and expert support.",
   keywords:
     "Vantek, Volkswagen parts, vehicle parts, UK ecommerce, car parts, automotive, Volkswagen accessories, UK, international shipping",
+  icons: {
+    icon: "src\app\favicon.png", // can be .ico, .png, .svg
+  },
   alternates: {
     canonical: "https://www.vantekid.com",
   },
