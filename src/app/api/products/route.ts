@@ -16,7 +16,7 @@ export async function GET(req: Request) {
     const search: string = searchParams.get("search") || "";
     const mainCategory: string = searchParams.get("mainCategory") || "";
     const subCategory1: string = searchParams.get("subCategory1") || "";
-    const isVisible: string = searchParams.get("isVisible") || "";
+    const isVisible: boolean = searchParams.get("isVisible") === "true";
     // const subCategory2: string = searchParams.get("subCategory2") || "";
     const subCategory2: string[] =
       searchParams.get("subCategory2")?.split(",") || [];
@@ -50,7 +50,7 @@ export async function GET(req: Request) {
     }
     if (mainCategory) query.mainCategory = mainCategory;
     if (subCategory1) query.subCategory1 = subCategory1;
-    if (isVisible === "true") query.isVisible = true;
+    if (isVisible) query.isVisible = true;
     // if (subCategory2) query.subCategory2 = subCategory2;
     if (featured) query.featuredProduct = true;
     if (topSelling) query.topSellingProduct = true;
