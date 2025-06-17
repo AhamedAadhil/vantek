@@ -14,14 +14,16 @@ import Sidebar from "@/components/Admin/Sidebar";
 import OfflineOverlay from "@/components/Common/OfflineOverlay";
 import { Toaster } from "sonner";
 import ClientOnly from "@/components/Common/ClientOnly";
+import { Metadata } from "next";
 
-// export const metadata = {
-//   title: "Vantek - UK’s Trusted Volkswagen Vehicle Parts Online Store",
-//   description: "Shop genuine and high-quality Volkswagen vehicle parts at Vantek. Serving customers across the UK and internationally with fast delivery and expert support.",
-//   icons: {
-//     icon: "src\app\favicon.png", // can be .ico, .png, .svg
-//   },
-// };
+export const metadata: Metadata = {
+  title: "Admin Dashboard | Vantek E-commerce",
+  description: "Admin dashboard for managing Vantek E-commerce site",
+  icons: {
+    icon: "/favicon.png", // can be .ico, .png, .svg
+  },
+  robots: "noindex, nofollow", // Prevents search engines from indexing this page
+};
 
 export default function RootLayout({
   children,

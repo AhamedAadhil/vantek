@@ -28,7 +28,9 @@ export async function GET(req: Request) {
       searchParams.get("stockAvailable") === "true"; // If true, filter only available stock
 
     // ✅ Build Query Object
-    let query = {} as Record<string, any>;
+    let query = {
+      // isVisible: true, // TODO: admin can see all products included inVisible
+    } as Record<string, any>;
 
     if (search) {
       const regex = new RegExp(search, "i");

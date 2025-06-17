@@ -7,30 +7,36 @@ import { utils, writeFile } from "xlsx";
 import { formatDateTime } from "@/helper/formatDateTime";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 import { toast } from "sonner";
+import useDebounce from "../Common/CustomDebounce";
 
 const Customers = () => {
   const router = useRouter();
   const [users, setUsers] = useState([]);
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebounce(search, 500);
   const [currentPage, setCurrentPage] = useState(1);
   const customersPerPage = 10;
   const [initialLoading, setInitialLoading] = useState(true);
   const [activeToggleId, setActiveToggleId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (page = 1, limit = 10, search = "") => {
     try {
       const res = await fetch(
         `${
           process.env.NODE_ENV === "production"
             ? process.env.NEXT_PUBLIC_BASEURL
             : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/admin/user`
+        }/admin/user?page=${page}&limit=${limit}&search=${encodeURIComponent(
+          search
+        )}`
       );
       const data = await res.json();
       if (data.success) {
         setUsers(data.data);
+        setTotalPages(data.pagination.totalPages);
       } else {
         console.error("Failed to fetch users:", data.message);
       }
@@ -41,17 +47,7 @@ const Customers = () => {
     }
   };
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(search.toLowerCase()) ||
-      user.email.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const totalPages = Math.ceil(filteredUsers.length / customersPerPage);
-  const currentUsers = filteredUsers.slice(
-    (currentPage - 1) * customersPerPage,
-    currentPage * customersPerPage
-  );
+  const currentUsers = users;
 
   const handleDeleteClick = (id) => {
     setSelectedId(id);
@@ -144,8 +140,8 @@ const Customers = () => {
   };
 
   useEffect(() => {
-    fetchUsers();
-  }, []);
+    fetchUsers(currentPage, customersPerPage, debouncedSearch);
+  }, [currentPage, debouncedSearch]);
 
   return (
     <div className="m-4 p-6 bg-[#202020] border border-gray-600 text-white rounded-lg">

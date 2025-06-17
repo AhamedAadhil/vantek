@@ -20,9 +20,20 @@ export const GET = async (req: NextRequest) => {
     const sortBy = searchParams.get("sortBy") || "createdAt"; // Default: Sort by createdAt
     const order = searchParams.get("order") === "asc" ? 1 : -1; // Default: Descending order
     const skip = (page - 1) * limit;
+    const keyword = searchParams.get("search") || "";
+
+    // 👇 Search filter logic
+    const searchFilter = keyword
+      ? {
+          $or: [
+            { name: { $regex: keyword, $options: "i" } },
+            { email: { $regex: keyword, $options: "i" } },
+          ],
+        }
+      : {};
 
     const users = await (User as mongoose.Model<IUser>)
-      .find({ role: "user" })
+      .find({ role: "user", ...searchFilter })
       .select("-password")
       .populate("address") // Populate address field if needed
       .populate("orders")
