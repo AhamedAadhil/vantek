@@ -80,12 +80,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-// export const metadata: Metadata = {
-//   title: "Shop Details Page | Vantek E-commerce",
-//   description: "This is Shop Details Page for Vantek E-commerce Site",
-//   // other metadata
-// };
-
 interface Props {
   params: {
     id: string;

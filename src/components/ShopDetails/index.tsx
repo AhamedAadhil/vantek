@@ -6,10 +6,8 @@ import { usePreviewSlider } from "@/app/context/PreviewSliderContext";
 import {
   CreditCard,
   Heart,
-  Link,
   PackageCheck,
   RefreshCcw,
-  Share,
   Share2,
   ShieldCheck,
   Store,
@@ -32,10 +30,8 @@ import { toast } from "sonner";
 import { formatToEuro } from "@/helper/formatCurrencyToEuro";
 
 const ShopDetails = ({ productId }: { productId: string }) => {
-  const [activeColor, setActiveColor] = useState("");
   const { openPreviewModal } = usePreviewSlider();
   const [previewImg, setPreviewImg] = useState(0);
-  const [storage, setStorage] = useState("");
   const [quantity, setQuantity] = useState(1);
   const [product, setProduct] = useState<any>(null);
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);

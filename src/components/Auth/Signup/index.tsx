@@ -1,4 +1,4 @@
-"use client"; // Use this in Next.js App Router (for client components)
+"use client";
 
 import Breadcrumb from "@/components/Common/Breadcrumb";
 import { Eye, EyeOff } from "lucide-react";

@@ -283,7 +283,7 @@ export const PATCH = async (req: NextRequest) => {
       // Delete specific variants by name
       if (variantDeletes && variantDeletes.length > 0) {
         product.variants = product.variants.filter(
-          (variant: any) => !variantDeletes.includes(variant.name)
+          (variant: any) => !variantDeletes.includes(String(variant._id))
         );
       }
 

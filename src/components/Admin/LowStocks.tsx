@@ -1,25 +1,4 @@
 import React from "react";
-import { ShoppingBag, ShoppingCart, Shirt, Watch } from "lucide-react";
-import Image from "next/image";
-
-// Define the icon map first so we can reference its keys in the interface
-const iconMap = {
-  ShoppingBag: ShoppingBag,
-  Shirt: Shirt,
-  ShoppingCart: ShoppingCart,
-  Watch: Watch,
-};
-
-// Now we can use keyof typeof iconMap safely
-interface Product {
-  variantName: string;
-  id: number;
-  name: string;
-  category: string;
-  inStock: boolean;
-  availableStocks: number;
-  image: string;
-}
 
 const LowStocksTable = ({ lowStockInfo }) => {
   return (

@@ -2,7 +2,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { useCallback, useRef, useEffect } from "react";
 import data from "./categoryData";
-import Image from "next/image";
 
 // Import Swiper styles
 import "swiper/css/navigation";
@@ -37,9 +36,7 @@ const Categories = () => {
           <div className="mb-10 flex items-center justify-between">
             <div>
               <span className="flex items-center gap-2.5 font-medium text-dark mb-1.5">
-              <Tag
-              size={16}
-              />
+                <Tag size={16} />
                 Categories
               </span>
               <h2 className="font-semibold text-xl xl:text-heading-5 text-dark">
@@ -83,9 +80,7 @@ const Categories = () => {
                 </svg>
               </button>
             </div>
-
           </div>
-
 
           <Swiper
             ref={sliderRef}
@@ -105,16 +100,12 @@ const Categories = () => {
               },
             }}
           >
-           
-{data.map((item, key) => (
-              <SwiperSlide  key={key}>
+            {data.map((item, key) => (
+              <SwiperSlide key={key}>
                 <SingleItem item={item} />
               </SwiperSlide>
             ))}
-           
-            
           </Swiper>
-         
         </div>
       </div>
     </section>

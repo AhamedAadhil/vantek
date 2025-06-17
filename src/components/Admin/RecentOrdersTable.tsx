@@ -2,12 +2,9 @@ import React, { useState } from "react";
 import {
   Download,
   Edit,
-  ChevronRight,
-  ChevronLeft,
   ChevronUp,
   ChevronDown,
   ArrowDown,
-  Search,
 } from "lucide-react";
 import Image from "next/image";
 import { generateAvatarUrl } from "@/helper/generateAvatarUrl";
@@ -121,7 +118,6 @@ const RecentOrdersTable: React.FC<RecentOrdersTableProps> = ({
           <div className="w-1 h-5 bg-blues-500 mr-2"></div>
           <h2 className="text-white font-medium">Recent Orders</h2>
         </div>
-        
       </div>
 
       <div className="overflow-x-auto">

@@ -5,7 +5,6 @@ import { useModalContext } from "@/app/context/QuickViewModalContext";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "@/redux/store";
 import { updateQuickView } from "@/redux/features/quickView-slice";
-import { addItemToCart } from "@/redux/features/cart-slice";
 import Image from "next/image";
 import Link from "next/link";
 import { addItemToWishlist } from "@/redux/features/wishlist-slice";
@@ -19,16 +18,6 @@ const SingleItem = ({ item }: { item: Product }) => {
   const handleQuickViewUpdate = () => {
     dispatch(updateQuickView({ ...item }));
   };
-
-  // add to cart
-  // const handleAddToCart = () => {
-  //   dispatch(
-  //     addItemToCart({
-  //       ...item,
-  //       quantity: 1,
-  //     })
-  //   );
-  // };
 
   const handleItemToWishList = () => {
     dispatch(addItemToWishlist(item));
@@ -80,7 +69,9 @@ const SingleItem = ({ item }: { item: Product }) => {
           </h3>
 
           <span className="flex items-center justify-center gap-2 font-medium text-lg">
-            <span className="text-dark">{formatToEuro(item?.variants[0]?.actualPrice)}</span>
+            <span className="text-dark">
+              {formatToEuro(item?.variants[0]?.actualPrice)}
+            </span>
             <span className="text-dark-4 line-through">
               {formatToEuro(item.variants[0]?.labelPrice)}
             </span>

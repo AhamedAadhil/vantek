@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Search, Eye, Pencil, Trash2, Plus, Upload } from "lucide-react";
-import Image from "next/image";
+import { Search, Eye, Pencil, Plus, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
@@ -21,7 +20,6 @@ const ProductList = () => {
   const router = useRouter();
 
   const [selectedProducts, setSelectedProducts] = useState<number[]>([]);
-  const [selectAll, setSelectAll] = useState(false);
 
   const filteredProducts = productData.filter(
     (product) =>

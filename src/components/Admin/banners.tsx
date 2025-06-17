@@ -1,9 +1,8 @@
 "use client";
 
-import { Star, ChevronDown, Plus, X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import { idText } from "typescript";
 
 const statusStyles = {
   Active: "bg-green-500 text-white px-2 py-1 rounded text-xs",
