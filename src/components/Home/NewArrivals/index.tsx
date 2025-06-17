@@ -1,11 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import ProductItem from "@/components/Common/ProductItem";
-import { useDispatch } from "react-redux";
-import { setWishlist } from "@/redux/features/wishlist-slice";
-import { AppDispatch } from "@/redux/store";
 
 // FEATURED PRODUCT
 const NewArrival = () => {
@@ -18,7 +14,7 @@ const NewArrival = () => {
           process.env.NODE_ENV === "production"
             ? process.env.NEXT_PUBLIC_BASEURL
             : process.env.NEXT_PUBLIC_BASEURL_LOCAL
-        }/products?featuredProduct=true&limit=10`
+        }/products?featuredProduct=true&limit=10&isVisible=true`
       );
       const data = await res.json();
 

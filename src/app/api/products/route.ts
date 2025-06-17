@@ -9,11 +9,14 @@ export async function GET(req: Request) {
 
     // ✅ Extract query params from the request URL
     const { searchParams } = new URL(req.url);
+    // const isAdminRoute = req.url.includes("/admin/");
+    // console.log(isAdminRoute);
     const page: number = parseInt(searchParams.get("page")) || 1;
     const limit: number = parseInt(searchParams.get("limit")) || 10;
     const search: string = searchParams.get("search") || "";
     const mainCategory: string = searchParams.get("mainCategory") || "";
     const subCategory1: string = searchParams.get("subCategory1") || "";
+    const isVisible: string = searchParams.get("isVisible") || "";
     // const subCategory2: string = searchParams.get("subCategory2") || "";
     const subCategory2: string[] =
       searchParams.get("subCategory2")?.split(",") || [];
@@ -28,9 +31,11 @@ export async function GET(req: Request) {
       searchParams.get("stockAvailable") === "true"; // If true, filter only available stock
 
     // ✅ Build Query Object
-    let query = {
-      // isVisible: true, // TODO: admin can see all products included inVisible
-    } as Record<string, any>;
+    let query = {} as Record<string, any>;
+
+    // if (!isAdminRoute) {
+    //   query.isVisible = true;
+    // }
 
     if (search) {
       const regex = new RegExp(search, "i");
@@ -45,6 +50,7 @@ export async function GET(req: Request) {
     }
     if (mainCategory) query.mainCategory = mainCategory;
     if (subCategory1) query.subCategory1 = subCategory1;
+    if (isVisible === "true") query.isVisible = true;
     // if (subCategory2) query.subCategory2 = subCategory2;
     if (featured) query.featuredProduct = true;
     if (topSelling) query.topSellingProduct = true;

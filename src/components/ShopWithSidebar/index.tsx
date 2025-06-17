@@ -120,6 +120,7 @@ const ShopWithSidebar = () => {
           searchParams.set("mainCategory", main);
           searchParams.set("subCategory1", sub);
           searchParams.set("subCategory2", values.join(",")); // comma-separated
+          searchParams.set("isVisible", "true");
         }
       });
 
