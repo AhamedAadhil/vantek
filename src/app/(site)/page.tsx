@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   keywords:
     "Vantek, Volkswagen parts, vehicle parts, UK ecommerce, car parts, automotive, Volkswagen accessories, UK, international shipping",
   icons: {
-    icon: "src\app\favicon.png", // can be .ico, .png, .svg
-  },
+    icon: "/favicon.png",
+  },
   alternates: {
     canonical: "https://www.vantekid.com",
   },
