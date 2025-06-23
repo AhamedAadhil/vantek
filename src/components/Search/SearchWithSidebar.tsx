@@ -29,6 +29,7 @@ const SearchWithSidebar = () => {
   const [productSidebar, setProductSidebar] = useState(false);
   const [stickyMenu, setStickyMenu] = useState(false);
   const [selected, setSelected] = useState<Record<string, string[]>>({});
+  const [resetSidebar, setResetSidebar] = useState(false); //clear side bar props
 
   // Product data and pagination
   const [products, setProducts] = useState([]);
@@ -206,7 +207,7 @@ const SearchWithSidebar = () => {
                       </button>
                     </div>
                   </div>
-                  <SidebarShop selected={selected} setSelected={setSelected} />
+                  <SidebarShop selected={selected} setSelected={setSelected} resetSidebar={resetSidebar} setResetSidebar={setResetSidebar}/>
                 </div>
               </form>
             </div>
