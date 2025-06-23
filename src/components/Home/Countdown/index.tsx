@@ -8,16 +8,24 @@ const CounDown = () => {
   const [minutes, setMinutes] = useState(0);
   const [seconds, setSeconds] = useState(0);
 
-  const deadline = "December, 31, 2024";
+  const deadline = "December, 31, 2025";
 
   const getTime = () => {
-    const time = Date.parse(deadline) - Date.now();
+  const time = Date.parse(deadline) - Date.now();
 
+  if (time <= 0) {
+    setDays(0);
+    setHours(0);
+    setMinutes(0);
+    setSeconds(0);
+  } else {
     setDays(Math.floor(time / (1000 * 60 * 60 * 24)));
     setHours(Math.floor((time / (1000 * 60 * 60)) % 24));
     setMinutes(Math.floor((time / 1000 / 60) % 60));
     setSeconds(Math.floor((time / 1000) % 60));
-  };
+  }
+};
+
 
   useEffect(() => {
     // @ts-ignore
@@ -54,7 +62,7 @@ const CounDown = () => {
                   x-text="days"
                 >
                   {" "}
-                  7{" "}
+                  {days}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Days
@@ -68,7 +76,7 @@ const CounDown = () => {
                   x-text="hours"
                 >
                   {" "}
-                  18{" "}
+                  {hours}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Hours
@@ -81,7 +89,7 @@ const CounDown = () => {
                   className="min-w-[64px] h-14.5 font-semibold text-xl lg:text-3xl text-dark rounded-lg flex items-center justify-center bg-white shadow-2 px-4 mb-2"
                   x-text="minutes"
                 >
-                  38{" "}
+                  {minutes}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Minutes
@@ -94,7 +102,7 @@ const CounDown = () => {
                   className="min-w-[64px] h-14.5 font-semibold text-xl lg:text-3xl text-dark rounded-lg flex items-center justify-center bg-white shadow-2 px-4 mb-2"
                   x-text="seconds"
                 >
-                  {seconds < 10 ? "0" + seconds : seconds}{" "}
+                  {seconds}{" "}
                 </span>
                 <span className="block text-custom-sm text-dark text-center">
                   Seconds
