@@ -3,18 +3,25 @@ import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import categoryData from "@/data/van_parts_categories.json";
 
-const SidebarShop = ({ selected, setSelected }) => {
+const SidebarShop = ({ selected, setSelected, resetSidebar, setResetSidebar}) => {
   const [openMain, setOpenMain] = useState<string | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   // const [selected, setSelected] = useState<Record<string, string[]>>({});
   // clear all select botton clearing starts
+  // useEffect(() => {
+  //   // If selected is empty, collapse open dropdowns
+  //   if (Object.keys(selected).length === 0) {
+  //     setOpenMain(null);
+  //     setOpenSub(null);
+  //   }
+  // }, [selected]);
   useEffect(() => {
-    // If selected is empty, collapse open dropdowns
-    if (Object.keys(selected).length === 0) {
-      setOpenMain(null);
-      setOpenSub(null);
-    }
-  }, [selected]);
+  if (resetSidebar) {
+    setOpenMain(null);
+    setOpenSub(null);
+    setResetSidebar(false); // reset the trigger
+  }
+}, [resetSidebar]);
     // clear all select botton clearing Ends
 
   const handleMainToggle = (mainCat: string) => {

@@ -27,7 +27,7 @@ const ShopWithSidebar = () => {
   const [stickyMenu, setStickyMenu] = useState(false);
   const [loading, setLoading] = useState(false);
   const [selected, setSelected] = useState<Record<string, string[]>>({});
-
+  const [resetSidebar, setResetSidebar] = useState(false);
   //Fetching all Products
   const [products, setProducts] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,6 +37,7 @@ const ShopWithSidebar = () => {
   const clearAllFilters = () => {
     setSelected({});
     setCurrentPage(1);
+    setResetSidebar(true); // trigger sidebar reset
 
     const newParams = new URLSearchParams(); // Empty params
     router.replace(`${pathname}?${newParams.toString()}`);
@@ -250,7 +251,7 @@ const ShopWithSidebar = () => {
                       </button>
                     </div>
                   </div>
-                  <SidebarShop key={JSON.stringify(selected)} selected={selected} setSelected={setSelected} />
+                  <SidebarShop selected={selected} setSelected={setSelected} resetSidebar={resetSidebar} setResetSidebar={setResetSidebar}/>
                 </div>
               </form>
             </div>
