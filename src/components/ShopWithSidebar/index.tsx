@@ -250,7 +250,7 @@ const ShopWithSidebar = () => {
                       </button>
                     </div>
                   </div>
-                  <SidebarShop selected={selected} setSelected={setSelected} />
+                  <SidebarShop key={JSON.stringify(selected)} selected={selected} setSelected={setSelected} />
                 </div>
               </form>
             </div>
