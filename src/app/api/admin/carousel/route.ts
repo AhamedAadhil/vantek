@@ -40,7 +40,9 @@ export const POST = async (req: NextRequest, res: NextResponse) => {
       );
     }
     const start = new Date(startDate);
-    const end = new Date(endDate);
+    const end = new Date(
+      endDate.includes("T") ? endDate : `${endDate}T23:59:59.999Z`
+    );
 
     if (isNaN(start.getTime()) || isNaN(end.getTime())) {
       return NextResponse.json(

@@ -40,13 +40,12 @@ const HeroCarousal = () => {
       }
 
       const result = await res.json();
+      console.log("Fetched banners API:", result);
       const activeBanners = result.data.filter((banner: any) => {
-        const now = new Date();
-        return (
-          banner.isActive &&
-          new Date(banner.startDate) <= now &&
-          new Date(banner.endDate) >= now
-        );
+        const start = new Date(banner.startDate).getTime();
+        const end = new Date(banner.endDate).getTime();
+        const now = Date.now();
+        return banner.isActive && start <= now && end >= now;
       });
 
       setBanners(activeBanners);
@@ -66,6 +65,8 @@ const HeroCarousal = () => {
   useEffect(() => {
     fetchBanners();
   }, []);
+
+  console.log("Banners:", banners);
 
   if (banners.length === 0) {
     return (
