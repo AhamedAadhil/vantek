@@ -1,4 +1,4 @@
-// GET ALL CAROUSEL ITEMS
+// GET ALL ACTIVE CAROUSEL ITEMS
 // GET /api/carousel
 import connectDB from "@/lib/db";
 import CarouselItem, { ICarouselItem } from "@/lib/models/carousel";
@@ -8,31 +8,27 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req: NextRequest, res: NextResponse) => {
   try {
     await connectDB();
-    const carouselItems = await (CarouselItem as mongoose.Model<ICarouselItem>)
-      .find({})
-      .sort({ createdAt: -1 });
     const now = new Date();
 
-    // For any active promo past its endDate, mark inactive
-    const updates = carouselItems.map(async (item) => {
-      if (item.isActive && item.endDate < now) {
-        item.isActive = false;
-        await item.save();
-      }
-    });
-    await Promise.all(updates);
+    // Auto-deactivate expired promos (optional, if you want DB cleanup)
+    await CarouselItem.updateMany(
+      { isActive: true, endDate: { $lt: now } },
+      { $set: { isActive: false } }
+    );
 
-    // Refetch after updates
-    const updatedCarouselItems = await (
+    // Return only active banners within valid date range
+    const activeCarouselItems = await (
       CarouselItem as mongoose.Model<ICarouselItem>
     )
-      .find({})
-      .sort({
-        createdAt: -1,
-      });
+      .find({
+        isActive: true,
+        startDate: { $lte: now },
+        endDate: { $gte: now },
+      })
+      .sort({ createdAt: -1 });
 
     return NextResponse.json(
-      { success: true, data: updatedCarouselItems },
+      { success: true, data: activeCarouselItems },
       { status: 200 }
     );
   } catch (error: any) {

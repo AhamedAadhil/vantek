@@ -40,21 +40,14 @@ const HeroCarousal = () => {
       }
 
       const result = await res.json();
-      console.log("Fetched banners API:", result);
-      const activeBanners = result.data.filter((banner: any) => {
-        const start = new Date(banner.startDate).getTime();
-        const end = new Date(banner.endDate).getTime();
-        const now = Date.now();
-        return banner.isActive && start <= now && end >= now;
-      });
+      const fetchedBanners = result.data || [];
 
-      setBanners(activeBanners);
+      setBanners(fetchedBanners);
 
-      // Only cache if data is non-empty
-      if (activeBanners.length > 0) {
+      if (fetchedBanners.length > 0) {
         localStorage.setItem(
           CACHE_KEY,
-          JSON.stringify({ timestamp: Date.now(), data: activeBanners })
+          JSON.stringify({ timestamp: Date.now(), data: fetchedBanners })
         );
       }
     } catch (error) {
