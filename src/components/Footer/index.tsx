@@ -358,7 +358,7 @@ const Footer = () => {
             <p className="text-dark font-medium">
               &copy; {year}. All rights reserved by VANTEK. Developed by{" "}
               <a
-                href="https://www.digiflix.com"
+                href="https://www.digiflixsl.com"
                 target="_blank"
                 rel="noopener noreferrer"
               >

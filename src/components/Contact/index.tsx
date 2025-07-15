@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import Breadcrumb from "../Common/Breadcrumb";
-import { MapPin, Phone } from "lucide-react";
+import { MapPin, MessageSquare, Phone } from "lucide-react";
 import { toast } from "sonner";
 
 const Contact = () => {
@@ -67,7 +67,7 @@ const Contact = () => {
             <div className="xl:max-w-[370px] w-full bg-white rounded-xl shadow-1">
               <div className="py-5 px-4 sm:px-7.5 border-b border-gray-3">
                 <p className="font-medium text-xl text-dark">
-                  Vantek (PVT) Ltd.
+                  VAN TEK Innovation & Design Limited.
                 </p>
               </div>
 
@@ -75,11 +75,20 @@ const Contact = () => {
                 <div className="flex flex-col gap-4">
                   <p className="flex items-center gap-4"></p>
 
+                  <a href="https://wa.me/94771234567" target="_blank" rel="noopener noreferrer">
                   <p className="flex items-center gap-4">
-                    <Phone size={18} color="blue" />
+                    <MessageSquare size={18} color="blue" />
                     Whatsapp: 1234 567890
                   </p>
+                  </a>
 
+                  <a href="tel:+94771234567">
+                    <p className="flex items-center gap-4">
+
+                    <Phone size={18} color="blue" />
+                    Call : 1234 567890
+                    </p>
+                  </a>
                   <p className="flex gap-4">
                     <MapPin size={28} color="blue" />
                     Address: 7398 Smoke Ranch RoadLas Vegas, Nevada 89128

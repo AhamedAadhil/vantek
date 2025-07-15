@@ -15,14 +15,20 @@ const SingleItem = ({ item }: { item: Category }) => {
     <Link
       href="/shop"
       onClick={() => handleClick(item)}
-      className="group flex flex-col items-center"
+      className="group flex flex-col items-center px-1"
     >
-      <div className="max-w-[130px] w-full bg-[#F2F3F8] h-32.5 rounded-full flex items-center justify-center mb-4">
-        <Image src={item.img} alt={item.title} width={100} height={100} />
+      <div className="w-[70px] h-[70px] bg-[#F2F3F8] rounded-full flex items-center justify-center mb-2 sm:w-[100px] sm:h-[100px] sm:mb-4">
+        <Image
+          src={item.img}
+          alt={item.title}
+          width={50}
+          height={50}
+          className="object-contain sm:w-[70px] sm:h-[70px]"
+        />
       </div>
 
-      <div className="flex justify-center">
-        <h3 className="inline-block font-medium text-center text-dark bg-gradient-to-r from-blue to-blue bg-[length:0px_1px] bg-left-bottom bg-no-repeat transition-[background-size] duration-500 hover:bg-[length:100%_3px] group-hover:bg-[length:100%_1px] group-hover:text-blue">
+      <div className="flex justify-center text-center">
+        <h3 className="text-xs sm:text-sm font-medium text-dark group-hover:text-blue transition-colors duration-300">
           {item.title}
         </h3>
       </div>

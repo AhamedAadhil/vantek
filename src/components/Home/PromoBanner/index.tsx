@@ -17,11 +17,10 @@ const PromoBanner = () => {
               UP TO 30% OFF
             </h2>
 
-            <p>
-              Transit Custom 1st Gen’s Spare part are going upto 30% OFF for
-              upcoming Weekend, Why are you waiting for !! Grab it and make your
-              Van Unique.
+            <p className="w-3/4 shadow-lg p-4 rounded-lg bg-white text-gray-800">
+              Transit Custom 1st Gen’s Spare part are going upto 30% OFF for upcoming Weekend, Why are you waiting for !! Grab it and make your Van Unique.
             </p>
+
 
             <Link
               href="/shop"

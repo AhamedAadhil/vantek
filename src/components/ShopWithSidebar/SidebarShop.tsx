@@ -1,12 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
 import categoryData from "@/data/van_parts_categories.json";
 
-const SidebarShop = ({ selected, setSelected }) => {
+const SidebarShop = ({ selected, setSelected, resetSidebar, setResetSidebar}) => {
   const [openMain, setOpenMain] = useState<string | null>(null);
   const [openSub, setOpenSub] = useState<string | null>(null);
   // const [selected, setSelected] = useState<Record<string, string[]>>({});
+  // clear all select botton clearing starts
+  // useEffect(() => {
+  //   // If selected is empty, collapse open dropdowns
+  //   if (Object.keys(selected).length === 0) {
+  //     setOpenMain(null);
+  //     setOpenSub(null);
+  //   }
+  // }, [selected]);
+  useEffect(() => {
+  if (resetSidebar) {
+    setOpenMain(null);
+    setOpenSub(null);
+    setResetSidebar(false); // reset the trigger
+  }
+}, [resetSidebar]);
+    // clear all select botton clearing Ends
 
   const handleMainToggle = (mainCat: string) => {
     setOpenMain(openMain === mainCat ? null : mainCat);
@@ -28,9 +44,9 @@ const SidebarShop = ({ selected, setSelected }) => {
 
     let updated: string[];
     if (isAll) {
-  const allValues = categoryData[main][sub] as string[];
-  updated = allValues; // Select all real options
-} else {
+      const allValues = categoryData[main][sub] as string[];
+      updated = allValues; // Select all real options
+    } else {
       updated = existing.includes(item)
         ? existing.filter((i) => i !== item)
         : [...existing, item];
@@ -40,11 +56,11 @@ const SidebarShop = ({ selected, setSelected }) => {
   };
 
   const isAllChecked = (main: string, sub: string) => {
-  const key = `${main}--${sub}`;
-  const allItems = categoryData[main][sub] as string[];
-  const selectedItems = selected[key] || [];
-  return allItems.every((item) => selectedItems.includes(item));
-};
+    const key = `${main}--${sub}`;
+    const allItems = categoryData[main][sub] as string[];
+    const selectedItems = selected[key] || [];
+    return allItems.every((item) => selectedItems.includes(item));
+  };
 
   const isChecked = (main: string, sub: string, item: string) => {
     const key = `${main}--${sub}`;
@@ -60,7 +76,11 @@ const SidebarShop = ({ selected, setSelected }) => {
             className="w-full flex justify-between items-center font-medium"
           >
             <span>{main}</span>
-            {openMain === main ? <ChevronUp size={18} /> : <ChevronDown size={18} />}
+            {openMain === main ? (
+              <ChevronUp size={18} />
+            ) : (
+              <ChevronDown size={18} />
+            )}
           </button>
 
           {openMain === main && (
@@ -72,7 +92,11 @@ const SidebarShop = ({ selected, setSelected }) => {
                     className="w-full flex justify-between items-center font-medium text-sm text-gray-700"
                   >
                     <span>{sub}</span>
-                    {openSub === sub ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+                    {openSub === sub ? (
+                      <ChevronUp size={16} />
+                    ) : (
+                      <ChevronDown size={16} />
+                    )}
                   </button>
 
                   {openSub === sub && (
@@ -82,7 +106,9 @@ const SidebarShop = ({ selected, setSelected }) => {
                         <input
                           type="checkbox"
                           checked={isAllChecked(main, sub)}
-                          onChange={() => handleCheckboxChange(main, sub, "All", true)}
+                          onChange={() =>
+                            handleCheckboxChange(main, sub, "All", true)
+                          }
                           className="accent-blue-600"
                         />
                         <span>All</span>
@@ -91,7 +117,10 @@ const SidebarShop = ({ selected, setSelected }) => {
                       {/* SubSubCategories */}
                       {(subSubArray as string[]).length > 0 ? (
                         (subSubArray as string[]).map((item) => (
-                          <label key={item} className="flex items-center space-x-2">
+                          <label
+                            key={item}
+                            className="flex items-center space-x-2"
+                          >
                             <input
                               type="checkbox"
                               checked={isChecked(main, sub, item)}
