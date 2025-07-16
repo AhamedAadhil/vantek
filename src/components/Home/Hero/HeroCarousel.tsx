@@ -16,17 +16,17 @@ const HeroCarousal = () => {
 
   const fetchBanners = async () => {
     try {
-      // const cached = localStorage.getItem(CACHE_KEY);
-      // if (cached) {
-      //   const { timestamp, data } = JSON.parse(cached);
-      //   const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
-      //   const isDataValid = Array.isArray(data) && data.length > 0;
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { timestamp, data } = JSON.parse(cached);
+        const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
+        const isDataValid = Array.isArray(data) && data.length > 0;
 
-      //   if (isCacheValid && isDataValid) {
-      //     setBanners(data);
-      //     return;
-      //   }
-      // }
+        if (isCacheValid && isDataValid) {
+          setBanners(data);
+          return;
+        }
+      }
 
       const res = await fetch(
         `${
@@ -44,12 +44,12 @@ const HeroCarousal = () => {
 
       setBanners(fetchedBanners);
 
-      // if (fetchedBanners.length > 0) {
-      //   localStorage.setItem(
-      //     CACHE_KEY,
-      //     JSON.stringify({ timestamp: Date.now(), data: fetchedBanners })
-      //   );
-      // }
+      if (fetchedBanners.length > 0) {
+        localStorage.setItem(
+          CACHE_KEY,
+          JSON.stringify({ timestamp: Date.now(), data: fetchedBanners })
+        );
+      }
     } catch (error) {
       console.error("Error fetching banners:", error);
     }
@@ -61,13 +61,13 @@ const HeroCarousal = () => {
 
   console.log("Banners:", banners);
 
-  // if (banners.length === 0) {
-  //   return (
-  //     <div className="flex items-center justify-center h-64">
-  //       <p className="text-gray-500">No banners available at the moment.</p>
-  //     </div>
-  //   );
-  // }
+  if (banners.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <p className="text-gray-500">No banners available at the moment.</p>
+      </div>
+    );
+  }
   return (
     <Swiper
       spaceBetween={30}
