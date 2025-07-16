@@ -17,16 +17,16 @@ const HeroCarousal = () => {
   const fetchBanners = async () => {
     try {
       const cached = localStorage.getItem(CACHE_KEY);
-      if (cached) {
-        const { timestamp, data } = JSON.parse(cached);
-        const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
-        const isDataValid = Array.isArray(data) && data.length > 0;
+      // if (cached) {
+      //   const { timestamp, data } = JSON.parse(cached);
+      //   const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
+      //   const isDataValid = Array.isArray(data) && data.length > 0;
 
-        if (isCacheValid && isDataValid) {
-          setBanners(data);
-          return;
-        }
-      }
+      //   if (isCacheValid && isDataValid) {
+      //     setBanners(data);
+      //     return;
+      //   }
+      // }
 
       const res = await fetch(
         `${
