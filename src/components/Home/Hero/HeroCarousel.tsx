@@ -11,26 +11,26 @@ import { useEffect, useState } from "react";
 
 const HeroCarousal = () => {
   const [banners, setBanners] = useState([]);
-  const CACHE_KEY = "carousel_banners";
-  const CACHE_EXPIRY_MS = 1000 * 60 * 60; // 1 hour cache (1000 ms * 60 sec * 60 min)
+  // const CACHE_KEY = "carousel_banners";
+  // const CACHE_EXPIRY_MS = 1000 * 60 * 60; // 1 hour cache (1000 ms * 60 sec * 60 min)
 
   const fetchBanners = async () => {
     try {
-      const cached = localStorage.getItem(CACHE_KEY);
+      // const cached = localStorage.getItem(CACHE_KEY);
 
-      let cachedLastUpdated = "";
-      let isValidCache = false;
+      // let cachedLastUpdated = "";
+      // let isValidCache = false;
 
-      if (cached) {
-        const { timestamp, data, lastUpdated } = JSON.parse(cached);
-        const isCacheFresh = Date.now() - timestamp < CACHE_EXPIRY_MS;
-        const isDataValid = Array.isArray(data) && data.length > 0;
+      // if (cached) {
+      //   const { timestamp, data, lastUpdated } = JSON.parse(cached);
+      //   const isCacheFresh = Date.now() - timestamp < CACHE_EXPIRY_MS;
+      //   const isDataValid = Array.isArray(data) && data.length > 0;
 
-        if (isCacheFresh && isDataValid) {
-          cachedLastUpdated = lastUpdated;
-          isValidCache = true;
-        }
-      }
+      //   if (isCacheFresh && isDataValid) {
+      //     cachedLastUpdated = lastUpdated;
+      //     isValidCache = true;
+      //   }
+      // }
 
       const res = await fetch(
         `${
@@ -44,28 +44,29 @@ const HeroCarousal = () => {
 
       const result = await res.json();
       const fetchedBanners = result.data || [];
-      const serverLastUpdated = result.lastUpdated || "";
+      setBanners(fetchedBanners);
+      // const serverLastUpdated = result.lastUpdated || "";
 
       // Only update if there's a change in backend data
-      const isUpdateRequired = serverLastUpdated !== cachedLastUpdated;
+      // const isUpdateRequired = serverLastUpdated !== cachedLastUpdated;
 
-      if (isUpdateRequired || !isValidCache) {
-        setBanners(fetchedBanners);
+      // if (isUpdateRequired || !isValidCache) {
 
-        if (fetchedBanners.length > 0) {
-          localStorage.setItem(
-            CACHE_KEY,
-            JSON.stringify({
-              timestamp: Date.now(),
-              data: fetchedBanners,
-              lastUpdated: serverLastUpdated,
-            })
-          );
-        }
-      } else {
-        const { data } = JSON.parse(cached);
-        setBanners(data);
-      }
+      // if (fetchedBanners.length > 0) {
+      //   localStorage.setItem(
+      //     CACHE_KEY,
+      //     JSON.stringify({
+      //       timestamp: Date.now(),
+      //       data: fetchedBanners,
+      //       lastUpdated: serverLastUpdated,
+      //     })
+      //   );
+      // }
+
+      //    else {
+      //   const { data } = JSON.parse(cached);
+      //   setBanners(data);
+      // }
     } catch (error) {
       console.error("Error fetching banners:", error);
     }
