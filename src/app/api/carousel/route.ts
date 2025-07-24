@@ -10,7 +10,7 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
     await connectDB();
     const now = new Date();
 
-    // Auto-deactivate expired promos (optional, if you want DB cleanup)
+    // Auto-deactivate expired promos
     await CarouselItem.updateMany(
       { isActive: true, endDate: { $lt: now } },
       { $set: { isActive: false } }
@@ -27,8 +27,20 @@ export const GET = async (req: NextRequest, res: NextResponse) => {
       })
       .sort({ createdAt: -1 });
 
+    // Add lastUpdated as the latest `updatedAt` or `createdAt` timestamp
+    const lastUpdated =
+      activeCarouselItems.length > 0
+        ? new Date(
+            Math.max(
+              ...activeCarouselItems.map((item) =>
+                new Date(item.updatedAt || item.createdAt).getTime()
+              )
+            )
+          ).toISOString()
+        : new Date().toISOString();
+
     return NextResponse.json(
-      { success: true, data: activeCarouselItems },
+      { success: true, lastUpdated, data: activeCarouselItems },
       { status: 200 }
     );
   } catch (error: any) {

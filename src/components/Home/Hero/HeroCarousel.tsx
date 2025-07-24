@@ -17,14 +17,18 @@ const HeroCarousal = () => {
   const fetchBanners = async () => {
     try {
       const cached = localStorage.getItem(CACHE_KEY);
+
+      let cachedLastUpdated = "";
+      let isValidCache = false;
+
       if (cached) {
-        const { timestamp, data } = JSON.parse(cached);
-        const isCacheValid = Date.now() - timestamp < CACHE_EXPIRY_MS;
+        const { timestamp, data, lastUpdated } = JSON.parse(cached);
+        const isCacheFresh = Date.now() - timestamp < CACHE_EXPIRY_MS;
         const isDataValid = Array.isArray(data) && data.length > 0;
 
-        if (isCacheValid && isDataValid) {
-          setBanners(data);
-          return;
+        if (isCacheFresh && isDataValid) {
+          cachedLastUpdated = lastUpdated;
+          isValidCache = true;
         }
       }
 
@@ -35,20 +39,32 @@ const HeroCarousal = () => {
             : process.env.NEXT_PUBLIC_BASEURL_LOCAL
         }/carousel`
       );
-      if (!res.ok) {
-        throw new Error("Failed to fetch banners.");
-      }
+
+      if (!res.ok) throw new Error("Failed to fetch banners.");
 
       const result = await res.json();
       const fetchedBanners = result.data || [];
+      const serverLastUpdated = result.lastUpdated || "";
 
-      setBanners(fetchedBanners);
+      // Only update if there's a change in backend data
+      const isUpdateRequired = serverLastUpdated !== cachedLastUpdated;
 
-      if (fetchedBanners.length > 0) {
-        localStorage.setItem(
-          CACHE_KEY,
-          JSON.stringify({ timestamp: Date.now(), data: fetchedBanners })
-        );
+      if (isUpdateRequired || !isValidCache) {
+        setBanners(fetchedBanners);
+
+        if (fetchedBanners.length > 0) {
+          localStorage.setItem(
+            CACHE_KEY,
+            JSON.stringify({
+              timestamp: Date.now(),
+              data: fetchedBanners,
+              lastUpdated: serverLastUpdated,
+            })
+          );
+        }
+      } else {
+        const { data } = JSON.parse(cached);
+        setBanners(data);
       }
     } catch (error) {
       console.error("Error fetching banners:", error);
@@ -59,7 +75,7 @@ const HeroCarousal = () => {
     fetchBanners();
   }, []);
 
-  console.log("Banners:", banners);
+  // console.log("Banners:", banners);
 
   if (banners.length === 0) {
     return (
