@@ -1,5 +1,6 @@
 // GET ALL ACTIVE CAROUSEL ITEMS
 // GET /api/carousel
+export const revalidate = 0;
 import connectDB from "@/lib/db";
 import CarouselItem, { ICarouselItem } from "@/lib/models/carousel";
 import mongoose from "mongoose";
